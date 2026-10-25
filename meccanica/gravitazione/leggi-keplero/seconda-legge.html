@@ -117,7 +117,7 @@ new p5(function(p) {
 
   // Draw a sector: polygon from Sun through orbital arc M_start→M_end
   function drawSector(M_start, M_end, a, ecc, scale, cx, cy, col, alpha) {
-    let sunX = cx - a * ecc * scale;
+    let sunX = cx + a * ecc * scale;  // right focus → perihelion at E=0 ✓
     let sunY = cy;
     let steps = 60;
 
@@ -167,7 +167,7 @@ new p5(function(p) {
     let cx = p.width * 0.50;
     let cy = p.height * 0.50;
     let b = Math.sqrt(1 - e * e);
-    let sunX = cx - a * e * scale;
+    let sunX = cx + a * e * scale;
     let sunY = cy;
 
     // Current mean anomaly

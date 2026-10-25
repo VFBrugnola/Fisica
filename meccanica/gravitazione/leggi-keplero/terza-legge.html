@@ -188,8 +188,9 @@ new p5(function(p) {
     // Sun at (cx, cy). Ellipse center shifts right by a*e for each planet.
     // Planet1 center: (cx + a1*e1*scale, cy)
     // Planet2 center: (cx + a2*e2*scale, cy)
-    let c1x = cx + a1 * e1 * scale;
-    let c2x = cx + a2 * e2 * scale;
+    // Ellipse centers shifted LEFT of Sun so Sun is at right focus → E=0 = perihelion ✓
+    let c1x = cx - a1 * e1 * scale;
+    let c2x = cx - a2 * e2 * scale;
     let sunX = cx;
     let sunY = cy;
 

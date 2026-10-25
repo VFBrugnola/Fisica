@@ -126,9 +126,10 @@ new p5(function(p) {
     let cx = p.width * 0.48;
     let cy = p.height * 0.50;
     let b = Math.sqrt(1 - e * e);
-    let sunX = cx - a * e * scale;
+    // Sun at RIGHT focus → E=0 is perihelion (closest), dE/dt max there → fastest ✓
+    let sunX = cx + a * e * scale;
     let sunY = cy;
-    let emptyFocusX = cx + a * e * scale;
+    let emptyFocusX = cx - a * e * scale;
 
     // Orbit ellipse
     p.noFill();
@@ -149,14 +150,16 @@ new p5(function(p) {
     p.noStroke();
     p.textFont('IBM Plex Mono');
     p.textSize(11);
+    // a labels along major axis (center cx, perielio right, afelio left)
     p.textAlign(p.CENTER);
-    p.text('a', cx - a * e * scale / 2, cy - 10);
-    p.text('a', cx + (a * scale - a * e * scale) / 2, cy - 10);
+    p.text('a', cx + a * scale / 2, cy - 10);   // center → perielio
+    p.text('a', cx - a * scale / 2, cy - 10);   // center → afelio
     p.text('b', cx + 8, cy - b * scale / 2);
 
-    // Perielio / Afelio markers
-    let periX = cx - a * scale;
-    let afX   = cx + a * scale;
+    // Perielio at E=0 (right vertex, closest to Sun at right focus)
+    // Afelio  at E=π (left vertex, farthest from Sun)
+    let periX = cx + a * scale;
+    let afX   = cx - a * scale;
     p.stroke('#2C4080');
     p.strokeWeight(1);
     p.line(periX, cy - 5, periX, cy + 5);
@@ -164,10 +167,10 @@ new p5(function(p) {
     p.noStroke();
     p.fill('#4A60A0');
     p.textSize(10);
-    p.textAlign(p.RIGHT);
-    p.text('perielio', periX - 4, cy + 14);
     p.textAlign(p.LEFT);
-    p.text('afelio', afX + 4, cy + 14);
+    p.text('perielio', periX + 4, cy + 14);
+    p.textAlign(p.RIGHT);
+    p.text('afelio', afX - 4, cy + 14);
 
     // Empty focus
     p.fill('#3A4A80');
@@ -188,8 +191,8 @@ new p5(function(p) {
     p.ellipse(sunX, sunY, 14, 14);
     p.fill('#A8B8D8');
     p.textSize(10);
-    p.textAlign(p.LEFT);
-    p.text('F₁ · Sole', sunX + 10, sunY - 10);
+    p.textAlign(p.RIGHT);
+    p.text('F₁ · Sole', sunX - 10, sunY - 10);
 
     // Mean anomaly
     let M = ((p.TWO_PI / T_PERIOD) * t) % p.TWO_PI;
