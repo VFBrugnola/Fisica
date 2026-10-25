@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terza Legge di Keplero — Fisica TOLC-I</title>
+  <link rel="stylesheet" href="../../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+      <span class="logo-sub">Preparazione TOLC-I</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../../index.html">Home</a></span>
+      <span><a href="index.html">Leggi di Keplero</a></span>
+      <span>Terza Legge</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Terza Legge — Legge dei Periodi</h1>
+      <p>T² / a³ = costante per tutti i pianeti dello stesso sistema.</p>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Semiasse P₁ <em>a₁</em></label>
+        <input type="range" id="a1-slider" min="30" max="80" value="50" step="1">
+        <span class="value-display" id="a1-val">0.50</span>
+        <label style="margin-left:4px;">UA</label>
+      </div>
+      <div class="control-group">
+        <label>Semiasse P₂ <em>a₂</em></label>
+        <input type="range" id="a2-slider" min="55" max="95" value="80" step="1">
+        <span class="value-display" id="a2-val">0.80</span>
+        <label style="margin-left:4px;">UA</label>
+      </div>
+      <div class="control-group">
+        <button class="btn-control" id="toggle-btn">Pausa</button>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      I due pianeti orbitano attorno allo stesso Sole con semiassi maggiori diversi.
+      Il rapporto <strong>T² / a³</strong> (mostrato in tempo reale) è identico per entrambi —
+      dimostrando la Terza Legge. In unità astronomiche e anni, questo rapporto vale 1 per ogni
+      pianeta del Sistema Solare. Trascina i cursori per cambiare le orbite e verifica che
+      la costante rimanga invariata.
+    </p>
+
+    <div class="anim-nav">
+      <a href="seconda-legge.html">
+        <span>← Indietro</span>
+        Seconda Legge
+      </a>
+      <a href="index.html" class="next">
+        <span>↑ Su</span>
+        Teoria
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+new p5(function(p) {
+  let running = true;
+  let t = 0;
+  // a in [0,1] normalized — displayed as UA
+  let a1 = 0.50;
+  let a2 = 0.80;
+  let e1 = 0.20; // small fixed eccentricity for visual interest
+  let e2 = 0.15;
+
+  const COL_P1 = [255, 180, 60];    // warm yellow-orange
+  const COL_P2 = [100, 220, 180];   // teal
+
+  function solveKepler(M, ecc) {
+    let E = M;
+    for (let i = 0; i < 60; i++) {
+      let dE = (M - E + ecc * Math.sin(E)) / (1 - ecc * Math.cos(E));
+      E += dE;
+      if (Math.abs(dE) < 1e-9) break;
+    }
+    return E;
+  }
+
+  // Period: T = a^(3/2) in normalized units where T(1UA) = 1 year
+  function period(a) {
+    return Math.pow(a, 1.5);
+  }
+
+  function drawOrbit(a, ecc, scale, cx, cy, col) {
+    let b = a * Math.sqrt(1 - ecc * ecc);
+    let sunX = cx - a * ecc * scale;
+    p.noFill();
+    p.stroke(col[0], col[1], col[2], 60);
+    p.strokeWeight(1);
+    p.push();
+    p.translate(sunX, cy);
+    p.ellipse(0, 0, 2 * a * scale, 2 * b * scale);
+    p.pop();
+  }
+
+  function planetPos(t_current, a, ecc, scale, cx, cy) {
+    let T = period(a);
+    let M = (p.TWO_PI / T) * t_current;
+    M = M % p.TWO_PI;
+    let E = solveKepler(M, ecc);
+    let x = a * (Math.cos(E) - ecc) * scale;
+    let y = -a * Math.sqrt(1 - ecc * ecc) * Math.sin(E) * scale;
+    let sunX = cx - a * ecc * scale;
+    return { x: sunX + x, y: cy + y, M, E };
+  }
+
+  function drawPlanet(pos, col) {
+    for (let r = 14; r > 0; r -= 3) {
+      p.fill(col[0], col[1], col[2], Math.floor(3 * (14 - r)));
+      p.noStroke();
+      p.ellipse(pos.x, pos.y, r, r);
+    }
+    p.fill(col[0], col[1], col[2]);
+    p.noStroke();
+    p.ellipse(pos.x, pos.y, 9, 9);
+  }
+
+  // Draw trail for planet
+  let trail1 = [];
+  let trail2 = [];
+  const TRAIL_LEN = 180;
+
+  p.setup = function() {
+    let cnv = p.createCanvas(800, 420);
+    cnv.parent('canvas-container');
+
+    document.getElementById('a1-slider').addEventListener('input', function() {
+      a1 = this.value / 100;
+      document.getElementById('a1-val').textContent = a1.toFixed(2);
+      trail1 = [];
+      t = 0;
+      // enforce a1 < a2
+      if (a1 >= a2) {
+        a2 = a1 + 0.15;
+        if (a2 > 0.95) a2 = 0.95;
+        document.getElementById('a2-slider').value = Math.round(a2 * 100);
+        document.getElementById('a2-val').textContent = a2.toFixed(2);
+      }
+    });
+
+    document.getElementById('a2-slider').addEventListener('input', function() {
+      a2 = this.value / 100;
+      document.getElementById('a2-val').textContent = a2.toFixed(2);
+      trail2 = [];
+      t = 0;
+      if (a2 <= a1) {
+        a1 = a2 - 0.15;
+        if (a1 < 0.20) a1 = 0.20;
+        document.getElementById('a1-slider').value = Math.round(a1 * 100);
+        document.getElementById('a1-val').textContent = a1.toFixed(2);
+      }
+    });
+
+    document.getElementById('toggle-btn').addEventListener('click', function() {
+      running = !running;
+      this.textContent = running ? 'Pausa' : 'Avvia';
+    });
+  };
+
+  p.draw = function() {
+    p.background('#0F1220');
+
+    let cx = p.width / 2 + 20;
+    let cy = p.height / 2;
+    let scale = 180;
+
+    // Grid
+    p.stroke('#1A2040');
+    p.strokeWeight(0.5);
+    for (let x = 0; x < p.width; x += 40)  p.line(x, 0, x, p.height);
+    for (let y = 0; y < p.height; y += 40) p.line(0, y, p.width, y);
+
+    // Draw orbit outlines
+    drawOrbit(a1, e1, scale, cx, cy, COL_P1);
+    drawOrbit(a2, e2, scale, cx, cy, COL_P2);
+
+    // Sun
+    for (let r = 24; r > 0; r -= 4) {
+      p.fill(255, 200, 50, Math.floor(4 * (24 - r)));
+      p.noStroke();
+      p.ellipse(cx, cy, r, r);
+    }
+    p.fill('#FFD060');
+    p.noStroke();
+    p.ellipse(cx, cy, 15, 15);
+    p.fill('#8899CC');
+    p.textFont('IBM Plex Mono');
+    p.textSize(10);
+    p.textAlign(p.CENTER);
+    p.text('Sole', cx, cy + 18);
+
+    // Advance time
+    if (running) {
+      t += p.deltaTime / 1000 * 0.6;
+    }
+
+    // Planets
+    let pos1 = planetPos(t, a1, e1, scale, cx, cy);
+    let pos2 = planetPos(t, a2, e2, scale, cx, cy);
+
+    // Trails
+    if (running) {
+      trail1.push(p.createVector(pos1.x, pos1.y));
+      trail2.push(p.createVector(pos2.x, pos2.y));
+      if (trail1.length > TRAIL_LEN) trail1.shift();
+      if (trail2.length > TRAIL_LEN) trail2.shift();
+    }
+
+    // Draw trails
+    p.noFill();
+    p.strokeWeight(1.5);
+    for (let i = 1; i < trail1.length; i++) {
+      let alpha = p.map(i, 0, trail1.length, 0, 160);
+      p.stroke(COL_P1[0], COL_P1[1], COL_P1[2], alpha);
+      p.line(trail1[i-1].x, trail1[i-1].y, trail1[i].x, trail1[i].y);
+    }
+    for (let i = 1; i < trail2.length; i++) {
+      let alpha = p.map(i, 0, trail2.length, 0, 160);
+      p.stroke(COL_P2[0], COL_P2[1], COL_P2[2], alpha);
+      p.line(trail2[i-1].x, trail2[i-1].y, trail2[i].x, trail2[i].y);
+    }
+
+    drawPlanet(pos1, COL_P1);
+    drawPlanet(pos2, COL_P2);
+
+    // ── Data panel ──
+    let T1 = period(a1);
+    let T2 = period(a2);
+    let k1 = (T1 * T1) / (a1 * a1 * a1);
+    let k2 = (T2 * T2) / (a2 * a2 * a2);
+
+    let panelX = 14;
+    p.textFont('IBM Plex Mono');
+    p.textAlign(p.LEFT);
+
+    // P1 data
+    p.fill(COL_P1[0], COL_P1[1], COL_P1[2]);
+    p.noStroke();
+    p.ellipse(panelX + 5, 26, 9, 9);
+
+    p.fill('#8899CC');
+    p.textSize(10);
+    p.text('P₁', panelX + 15, 30);
+    p.textSize(11);
+    p.text('a₁  = ' + a1.toFixed(3) + ' UA', panelX, 48);
+    p.text('T₁  = ' + T1.toFixed(3) + ' anni', panelX, 64);
+    p.text('T₁² = ' + (T1*T1).toFixed(4), panelX, 80);
+    p.text('a₁³ = ' + (a1*a1*a1).toFixed(4), panelX, 96);
+
+    // Highlight ratio
+    p.fill(220, 240, 100);
+    p.textSize(11);
+    p.text('T₁²/a₁³ = ' + k1.toFixed(4), panelX, 114);
+
+    // P2 data
+    p.fill(COL_P2[0], COL_P2[1], COL_P2[2]);
+    p.noStroke();
+    p.ellipse(panelX + 5, 140, 9, 9);
+
+    p.fill('#8899CC');
+    p.textSize(10);
+    p.text('P₂', panelX + 15, 144);
+    p.textSize(11);
+    p.text('a₂  = ' + a2.toFixed(3) + ' UA', panelX, 162);
+    p.text('T₂  = ' + T2.toFixed(3) + ' anni', panelX, 178);
+    p.text('T₂² = ' + (T2*T2).toFixed(4), panelX, 194);
+    p.text('a₂³ = ' + (a2*a2*a2).toFixed(4), panelX, 210);
+
+    p.fill(220, 240, 100);
+    p.textSize(11);
+    p.text('T₂²/a₂³ = ' + k2.toFixed(4), panelX, 228);
+
+    // Separator
+    p.stroke('#2C3A6A');
+    p.strokeWeight(1);
+    p.line(panelX, 240, panelX + 185, 240);
+
+    // Equality check
+    let diff = Math.abs(k1 - k2);
+    p.fill(diff < 0.001 ? [100, 230, 150] : [230, 150, 100]);
+    p.noStroke();
+    p.textSize(11);
+    p.text('Costante:', panelX, 258);
+    p.fill(180, 240, 120);
+    p.text('k = ' + ((k1 + k2) / 2).toFixed(4), panelX, 274);
+
+    // Year counter
+    p.fill('#3A4A6A');
+    p.textSize(10);
+    p.textAlign(p.RIGHT);
+    p.text('t = ' + t.toFixed(1) + ' anni', p.width - 14, p.height - 12);
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('canvas-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 800), 420);
+    trail1 = [];
+    trail2 = [];
+  };
+});
+</script>
+
+</body>
+</html>

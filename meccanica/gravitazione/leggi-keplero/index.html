@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leggi di Keplero — Fisica TOLC-I</title>
+  <link rel="stylesheet" href="../../../assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"
+    onload="renderMathInElement(document.body, {
+      delimiters: [
+        {left: '$$', right: '$$', display: true},
+        {left: '$', right: '$', display: false}
+      ]
+    })"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+      <span class="logo-sub">Preparazione TOLC-I</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../../index.html">Home</a></span>
+      <span>Meccanica</span>
+      <span>Leggi di Keplero</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-content">
+
+    <h1>Leggi di Keplero</h1>
+    <p class="subtitle">
+      Johannes Keplero (1571–1630) formulò tre leggi empiriche del moto planetario
+      basandosi sui dati osservativi di Tycho Brahe. Newton dimostrò in seguito
+      che seguono dalla legge di gravitazione universale.
+    </p>
+
+    <!-- Prima legge -->
+    <div class="law">
+      <div class="law-number">Prima Legge · Legge delle Orbite</div>
+      <h2>I pianeti percorrono orbite ellittiche con il Sole in uno dei due fuochi.</h2>
+      <p>
+        Un'ellisse è definita dal <strong>semiasse maggiore</strong> $a$ e dall'<strong>eccentricità</strong>
+        $e$ (con $0 \le e < 1$). Per $e = 0$ l'orbita è circolare.
+        Il punto di minima distanza dal Sole è il <strong>perielio</strong>,
+        quello di massima distanza è l'<strong>afelio</strong>.
+      </p>
+      <p>
+        In coordinate polari con il Sole in un fuoco:
+      </p>
+      <div class="math-block">
+        $$r = \frac{a(1 - e^2)}{1 + e\cos\theta}$$
+      </div>
+      <p>
+        Dove $\theta$ è l'anomalia vera (angolo misurato dal perielio) e
+        $p = a(1 - e^2)$ è il semi-latus rectum.
+        Le distanze agli estremi: $r_{\min} = a(1-e)$ al perielio, $r_{\max} = a(1+e)$ all'afelio.
+      </p>
+      <a href="prima-legge.html" class="law-link">→ Simulazione interattiva</a>
+    </div>
+
+    <!-- Seconda legge -->
+    <div class="law">
+      <div class="law-number">Seconda Legge · Legge delle Aree</div>
+      <h2>Il raggio vettore spazza aree uguali in tempi uguali.</h2>
+      <p>
+        Il <strong>raggio vettore</strong> è il segmento che unisce il Sole al pianeta.
+        In intervalli di tempo uguali, questo segmento spazza aree identiche —
+        indipendentemente dalla posizione del pianeta sull'orbita.
+      </p>
+      <p>
+        La conseguenza diretta è che il pianeta si muove <em>più velocemente</em>
+        al perielio (vicino al Sole) e <em>più lentamente</em> all'afelio (lontano dal Sole).
+        La legge è equivalente alla conservazione del momento angolare:
+      </p>
+      <div class="math-block">
+        $$\frac{dA}{dt} = \frac{L}{2m} = \text{costante}$$
+      </div>
+      <p>
+        Dove $L$ è il momento angolare del pianeta di massa $m$ rispetto al Sole.
+        Poiché non agiscono forze tangenziali (la forza gravitazionale è centrale), $L$ si conserva.
+      </p>
+      <a href="seconda-legge.html" class="law-link">→ Simulazione interattiva</a>
+    </div>
+
+    <!-- Terza legge -->
+    <div class="law">
+      <div class="law-number">Terza Legge · Legge dei Periodi</div>
+      <h2>Il quadrato del periodo è proporzionale al cubo del semiasse maggiore.</h2>
+      <p>
+        Per tutti i pianeti del Sistema Solare il rapporto $T^2 / a^3$ è la stessa costante,
+        che dipende solo dalla massa del Sole $M_\odot$:
+      </p>
+      <div class="math-block">
+        $$\frac{T^2}{a^3} = \frac{4\pi^2}{GM_\odot}$$
+      </div>
+      <p>
+        In unità pratiche (periodo in anni, semiasse in UA):
+      </p>
+      <div class="law-formula">T² / a³ ≈ 1  (con T in anni, a in UA)</div>
+      <p>
+        Esempi: Terra ($a = 1\,\text{UA},\; T = 1\,\text{anno}$),
+        Marte ($a \approx 1.52\,\text{UA},\; T \approx 1.88\,\text{anni}$),
+        Giove ($a \approx 5.20\,\text{UA},\; T \approx 11.86\,\text{anni}$).
+      </p>
+      <a href="terza-legge.html" class="law-link">→ Simulazione interattiva</a>
+    </div>
+
+    <div class="info-box">
+      <strong>Nota storica.</strong> Keplero pubblicò la Prima e Seconda Legge nella
+      <em>Astronomia Nova</em> (1609) e la Terza nella <em>Harmonices Mundi</em> (1619).
+      Newton dimostrò nel 1687 che tutte e tre derivano dalla legge $F = GMm/r^2$.
+    </div>
+
+  </div>
+</main>
+
+</body>
+</html>

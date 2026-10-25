@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seconda Legge di Keplero — Fisica TOLC-I</title>
+  <link rel="stylesheet" href="../../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+      <span class="logo-sub">Preparazione TOLC-I</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../../index.html">Home</a></span>
+      <span><a href="index.html">Leggi di Keplero</a></span>
+      <span>Seconda Legge</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Seconda Legge — Legge delle Aree</h1>
+      <p>Il raggio vettore spazza aree uguali in tempi uguali.</p>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Eccentricità <em>e</em></label>
+        <input type="range" id="ecc-slider" min="10" max="75" value="55" step="1">
+        <span class="value-display" id="ecc-val">0.55</span>
+      </div>
+      <div class="control-group">
+        <label>Settori mostrati</label>
+        <input type="range" id="sectors-slider" min="3" max="8" value="6" step="1">
+        <span class="value-display" id="sectors-val">6</span>
+      </div>
+      <div class="control-group">
+        <button class="btn-control" id="toggle-btn">Pausa</button>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      L'orbita è divisa in settori di <strong>uguale intervallo di tempo</strong>.
+      I settori colorati hanno tutti la stessa area — la legge è equivalente alla
+      conservazione del momento angolare. Osserva come il pianeta percorra
+      <strong>archi più corti vicino all'afelio</strong> (lontano dal Sole)
+      e <strong>archi più lunghi al perielio</strong> (vicino al Sole).
+    </p>
+
+    <div class="anim-nav">
+      <a href="prima-legge.html">
+        <span>← Indietro</span>
+        Prima Legge
+      </a>
+      <a href="terza-legge.html" class="next">
+        <span>Avanti →</span>
+        Terza Legge
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+new p5(function(p) {
+  let running = true;
+  let t = 0;
+  let e = 0.55;
+  let numSectors = 6;
+  const T_PERIOD = 7.0;
+
+  // Palette for sectors — distinct, not sequential
+  const SECTOR_COLORS = [
+    [80, 180, 120],   // green
+    [200, 130, 60],   // orange
+    [100, 160, 230],  // blue
+    [210, 80, 120],   // rose
+    [160, 120, 210],  // purple
+    [70, 200, 190],   // teal
+    [230, 210, 70],   // yellow
+    [200, 100, 80],   // coral
+  ];
+
+  function solveKepler(M, ecc) {
+    let E = M;
+    for (let i = 0; i < 60; i++) {
+      let dE = (M - E + ecc * Math.sin(E)) / (1 - ecc * Math.cos(E));
+      E += dE;
+      if (Math.abs(dE) < 1e-9) break;
+    }
+    return E;
+  }
+
+  // Returns planet position in canvas coordinates
+  function planetPos(M, a, ecc, scale, sunX) {
+    let E = solveKepler(M, ecc);
+    let x = a * (Math.cos(E) - ecc) * scale;
+    let y = -a * Math.sqrt(1 - ecc * ecc) * Math.sin(E) * scale;
+    return p.createVector(x + sunX, y);
+  }
+
+  // Compute a sector's filled polygon from M_start to M_end
+  function drawSector(M_start, M_end, a, ecc, scale, sunX, col, alpha) {
+    let steps = 60;
+    p.fill(col[0], col[1], col[2], alpha);
+    p.noStroke();
+    p.beginShape();
+    p.vertex(sunX, 0); // Sun
+    for (let i = 0; i <= steps; i++) {
+      let M = p.lerp(M_start, M_end, i / steps);
+      let E = solveKepler(M, ecc);
+      let x = a * (Math.cos(E) - ecc) * scale;
+      let y = -a * Math.sqrt(1 - ecc * ecc) * Math.sin(E) * scale;
+      p.vertex(x + sunX, y);
+    }
+    p.endShape(p.CLOSE);
+
+    // Sector border
+    p.noFill();
+    p.stroke(col[0], col[1], col[2], Math.min(alpha + 60, 255));
+    p.strokeWeight(1);
+    p.beginShape();
+    for (let i = 0; i <= steps; i++) {
+      let M = p.lerp(M_start, M_end, i / steps);
+      let E = solveKepler(M, ecc);
+      let x = a * (Math.cos(E) - ecc) * scale;
+      let y = -a * Math.sqrt(1 - ecc * ecc) * Math.sin(E) * scale;
+      p.vertex(x + sunX, y);
+    }
+    p.endShape();
+  }
+
+  p.setup = function() {
+    let cnv = p.createCanvas(800, 420);
+    cnv.parent('canvas-container');
+
+    document.getElementById('ecc-slider').addEventListener('input', function() {
+      e = this.value / 100;
+      document.getElementById('ecc-val').textContent = e.toFixed(2);
+      t = 0;
+    });
+
+    document.getElementById('sectors-slider').addEventListener('input', function() {
+      numSectors = parseInt(this.value);
+      document.getElementById('sectors-val').textContent = numSectors;
+    });
+
+    document.getElementById('toggle-btn').addEventListener('click', function() {
+      running = !running;
+      this.textContent = running ? 'Pausa' : 'Avvia';
+    });
+  };
+
+  p.draw = function() {
+    p.background('#0F1220');
+
+    let cx = p.width / 2;
+    let cy = p.height / 2;
+    let a = 1.0;
+    let scale = 155;
+    let b = a * Math.sqrt(1 - e * e);
+    let sunX = cx - a * e * scale; // Sun at left focus in screen coords
+
+    // Grid
+    p.stroke('#1A2040');
+    p.strokeWeight(0.5);
+    for (let x = 0; x < p.width; x += 40)  p.line(x, 0, x, p.height);
+    for (let y = 0; y < p.height; y += 40) p.line(0, y, p.width, y);
+
+    // Current mean anomaly
+    let M_now = (p.TWO_PI / T_PERIOD) * t;
+    // Normalize M to [0, 2PI]
+    M_now = M_now % p.TWO_PI;
+
+    // Each sector spans TWO_PI / numSectors in M
+    let dM = p.TWO_PI / numSectors;
+
+    // Draw completed sectors (all before current)
+    let currentSector = Math.floor(M_now / dM);
+
+    // Draw all full completed sectors
+    for (let s = 0; s < numSectors; s++) {
+      let M_s = s * dM;
+      let M_e = (s + 1) * dM;
+      let col = SECTOR_COLORS[s % SECTOR_COLORS.length];
+
+      if (s < currentSector) {
+        // Full sector
+        p.push();
+        p.translate(cx - sunX + sunX, cy);
+        p.translate(-cx, -cy);
+        drawSector(M_s, M_e, a, e, scale, sunX, col, 70);
+        p.pop();
+        // Simpler: just draw directly
+        drawSector(M_s, M_e, a, e, scale, sunX - (cx - cx), col, 55);
+      }
+    }
+
+    // Draw current partial sector
+    {
+      let M_s = currentSector * dM;
+      let col = SECTOR_COLORS[currentSector % SECTOR_COLORS.length];
+      drawSector(M_s, M_now, a, e, scale, sunX, col, 90);
+    }
+
+    // Orbit ellipse
+    p.push();
+    p.translate(cx, cy);
+    p.noFill();
+    p.stroke(42, 58, 128);
+    p.strokeWeight(1.2);
+    p.ellipse(-a * e * scale, 0, 2 * a * scale, 2 * b * scale);
+    p.pop();
+
+    // Sun glow
+    for (let r = 22; r > 0; r -= 4) {
+      p.fill(255, 200, 50, Math.floor(3 * (22 - r)));
+      p.noStroke();
+      p.ellipse(sunX, cy, r, r);
+    }
+    p.fill('#FFD060');
+    p.noStroke();
+    p.ellipse(sunX, cy, 13, 13);
+
+    // Planet
+    let pos = planetPos(M_now, a, e, scale, sunX);
+    let py = cy + pos.y;
+
+    // Radius vector
+    p.stroke(120, 160, 220, 120);
+    p.strokeWeight(1.2);
+    p.line(sunX, cy, pos.x, py);
+
+    for (let r = 16; r > 0; r -= 4) {
+      p.fill(96, 170, 255, Math.floor(3 * (16 - r)));
+      p.noStroke();
+      p.ellipse(pos.x, py, r, r);
+    }
+    p.fill('#60AAFF');
+    p.noStroke();
+    p.ellipse(pos.x, py, 10, 10);
+
+    if (running) {
+      t += p.deltaTime / 1000;
+    }
+
+    // HUD
+    p.fill('#8899CC');
+    p.noStroke();
+    p.textFont('IBM Plex Mono');
+    p.textSize(11);
+    p.textAlign(p.LEFT);
+    p.text('e = ' + e.toFixed(2), 14, 22);
+    p.text('Settore ' + (currentSector + 1) + ' / ' + numSectors, 14, 38);
+
+    let frac = (M_now % dM) / dM;
+    p.text('Progresso settore: ' + Math.floor(frac * 100) + '%', 14, 54);
+
+    // Speed indicator
+    let E_now = solveKepler(M_now, e);
+    let r_now = a * (1 - e * Math.cos(E_now));
+    let v_rel = 1 / r_now; // proportional to speed (L/mr)
+    p.text('Velocità rel.: ' + v_rel.toFixed(2) + ' (1/r)', 14, 70);
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('canvas-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 800), 420);
+  };
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prima Legge di Keplero — Fisica TOLC-I</title>
+  <link rel="stylesheet" href="../../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+      <span class="logo-sub">Preparazione TOLC-I</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../../index.html">Home</a></span>
+      <span><a href="index.html">Leggi di Keplero</a></span>
+      <span>Prima Legge</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Prima Legge — Orbita Ellittica</h1>
+      <p>I pianeti percorrono orbite ellittiche con il Sole in uno dei due fuochi.</p>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Eccentricità <em>e</em></label>
+        <input type="range" id="ecc-slider" min="0" max="85" value="40" step="1">
+        <span class="value-display" id="ecc-val">0.40</span>
+      </div>
+      <div class="control-group">
+        <button class="btn-control" id="toggle-btn">Pausa</button>
+      </div>
+      <div class="control-group">
+        <label>Mostra assi</label>
+        <input type="checkbox" id="show-axes" checked>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      Il <strong>Sole</strong> (punto giallo) occupa uno dei due fuochi dell'ellisse — non il centro.
+      Il <strong>fuoco vuoto</strong> (punto bianco) è simmetrico rispetto al centro dell'ellisse.
+      Al variare dell'eccentricità $e$ l'orbita passa da circolare ($e = 0$) a sempre più allungata.
+      Il punto più vicino al Sole è il <strong>perielio</strong>, quello più lontano l'<strong>afelio</strong>.
+    </p>
+
+    <div class="anim-nav">
+      <a href="index.html">
+        <span>← Indietro</span>
+        Teoria
+      </a>
+      <a href="seconda-legge.html" class="next">
+        <span>Avanti →</span>
+        Seconda Legge
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+new p5(function(p) {
+  let running = true;
+  let t = 0;
+  let e = 0.40;
+  let showAxes = true;
+  let trail = [];
+  const TRAIL_LEN = 280;
+
+  // Colors
+  const COL_BG    = '#0F1220';
+  const COL_GRID  = '#1A2040';
+  const COL_SUN   = '#FFD060';
+  const COL_SUN2  = '#FF8C00';
+  const COL_PLANET= '#60AAFF';
+  const COL_ORBIT = '#2A3A80';
+  const COL_FOCUS = '#FFFFFF';
+  const COL_AXIS  = '#2C3A6A';
+  const COL_LABEL = '#8899CC';
+
+  // Solve Kepler's equation M = E - e*sin(E) by Newton-Raphson
+  function solveKepler(M, ecc) {
+    let E = M;
+    for (let i = 0; i < 60; i++) {
+      let dE = (M - E + ecc * Math.sin(E)) / (1 - ecc * Math.cos(E));
+      E += dE;
+      if (Math.abs(dE) < 1e-9) break;
+    }
+    return E;
+  }
+
+  function getPos(M, a, ecc, scale) {
+    let E = solveKepler(M, ecc);
+    let x = a * (Math.cos(E) - ecc) * scale;
+    let y = a * Math.sqrt(1 - ecc * ecc) * Math.sin(E) * scale;
+    return p.createVector(x, y);
+  }
+
+  p.setup = function() {
+    let cnv = p.createCanvas(800, 420);
+    cnv.parent('canvas-container');
+    p.textFont('IBM Plex Mono');
+
+    document.getElementById('ecc-slider').addEventListener('input', function() {
+      e = this.value / 100;
+      document.getElementById('ecc-val').textContent = e.toFixed(2);
+      trail = [];
+      t = 0;
+    });
+
+    document.getElementById('toggle-btn').addEventListener('click', function() {
+      running = !running;
+      this.textContent = running ? 'Pausa' : 'Avvia';
+    });
+
+    document.getElementById('show-axes').addEventListener('change', function() {
+      showAxes = this.checked;
+    });
+  };
+
+  p.draw = function() {
+    p.background(COL_BG);
+
+    let cx = p.width / 2;
+    let cy = p.height / 2;
+    let a = 1.0; // normalized semi-major axis
+    let scale = 160;
+
+    // Subtle grid
+    p.stroke(COL_GRID);
+    p.strokeWeight(0.5);
+    for (let x = 0; x < p.width; x += 40)  p.line(x, 0, x, p.height);
+    for (let y = 0; y < p.height; y += 40) p.line(0, y, p.width, y);
+
+    p.push();
+    p.translate(cx, cy);
+
+    let b = a * Math.sqrt(1 - e * e);
+
+    // Draw orbit ellipse
+    p.noFill();
+    p.stroke(COL_ORBIT);
+    p.strokeWeight(1.2);
+    p.ellipse(-e * scale, 0, 2 * a * scale, 2 * b * scale);
+
+    // Axes with labels
+    if (showAxes) {
+      p.stroke(COL_AXIS);
+      p.strokeWeight(0.8);
+      // semi-major axis
+      p.line(-a * scale, 0, a * scale, 0);
+      // semi-minor axis
+      p.line(0, -b * scale, 0, b * scale);
+
+      // a label
+      p.fill(COL_LABEL);
+      p.noStroke();
+      p.textSize(11);
+      p.text('a', -e * scale / 2 - 4, -8);
+      p.text('a', -e * scale / 2 + a * scale / 2 - 4, -8);
+
+      // Label perihelion and aphelion
+      p.textSize(10);
+      p.fill(COL_LABEL);
+      p.text('perielio', -(a * scale + e * scale) - 56, 14);
+      p.text('afelio', (a * scale - e * scale) + 6, 14);
+
+      // b label
+      p.text('b', 4, -b * scale / 2);
+    }
+
+    // Foci
+    // Empty focus (right side in standard, but Sun is at -a*e)
+    p.fill(COL_FOCUS);
+    p.noStroke();
+    p.ellipse(a * e * scale, 0, 6, 6);
+    p.textSize(10);
+    p.fill(COL_LABEL);
+    p.text('F₂ (vuoto)', a * e * scale + 5, -8);
+
+    // Sun (at focus F1 = left focus)
+    let sunX = -a * e * scale;
+    // Sun glow
+    for (let r = 20; r > 0; r -= 4) {
+      p.fill(255, 200, 50, Math.floor(4 * (20 - r)));
+      p.noStroke();
+      p.ellipse(sunX, 0, r, r);
+    }
+    p.fill(COL_SUN);
+    p.noStroke();
+    p.ellipse(sunX, 0, 13, 13);
+    p.fill(COL_LABEL);
+    p.textSize(10);
+    p.text('F₁ · Sole', sunX + 8, -10);
+
+    // Advance time
+    let T = 6.0; // period in seconds
+    let M = (p.TWO_PI / T) * t;
+
+    // Planet position
+    let pos = getPos(M, a, e, scale);
+    // Offset for Sun at focus
+    let px = pos.x - e * scale;
+    let py = -pos.y; // flip y
+
+    // Trail
+    if (running) {
+      trail.push(p.createVector(px, py));
+      if (trail.length > TRAIL_LEN) trail.shift();
+      t += p.deltaTime / 1000;
+    }
+
+    // Draw trail
+    p.noFill();
+    p.strokeWeight(1.5);
+    for (let i = 1; i < trail.length; i++) {
+      let alpha = p.map(i, 0, trail.length, 0, 200);
+      p.stroke(96, 170, 255, alpha);
+      p.line(trail[i-1].x, trail[i-1].y, trail[i].x, trail[i].y);
+    }
+
+    // Radius vector
+    p.stroke(80, 120, 200, 100);
+    p.strokeWeight(1);
+    p.line(sunX, 0, px, py);
+
+    // Planet glow
+    for (let r = 16; r > 0; r -= 4) {
+      p.fill(96, 170, 255, Math.floor(3 * (16 - r)));
+      p.noStroke();
+      p.ellipse(px, py, r, r);
+    }
+    p.fill(COL_PLANET);
+    p.noStroke();
+    p.ellipse(px, py, 10, 10);
+
+    p.pop();
+
+    // HUD
+    p.fill(COL_LABEL);
+    p.noStroke();
+    p.textSize(11);
+    p.textAlign(p.LEFT);
+    let r_curr = Math.sqrt((px + (cx - e*scale) - cx) ** 2 + (py - cy + cy) ** 2) / scale;
+    // compute actual r
+    let M2 = (p.TWO_PI / 6.0) * t;
+    let E2 = solveKepler(M2, e);
+    let r2 = a * (1 - e * Math.cos(E2));
+    p.text('e = ' + e.toFixed(2), 14, 22);
+    p.text('r = ' + r2.toFixed(3) + ' UA', 14, 38);
+    p.text('r_min = ' + (a * (1-e)).toFixed(3) + ' UA', 14, 54);
+    p.text('r_max = ' + (a * (1+e)).toFixed(3) + ' UA', 14, 70);
+    p.textAlign(p.RIGHT);
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('canvas-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 800), 420);
+    trail = [];
+  };
+});
+</script>
+
+</body>
+</html>
