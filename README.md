@@ -1,6 +1,6 @@
-# Fisica — TOLC-I
+# Fisica 
 
-Materiali interattivi per la preparazione all'esame TOLC-I, modulo di Fisica.
+Materiali interattivi di fisica
 
 ## Contenuti
 
