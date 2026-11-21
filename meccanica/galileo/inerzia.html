@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>I due piani inclinati — Galileo — Fisica</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../index.html">Home</a></span>
+      <span><a href="index.html">Galileo Galilei</a></span>
+      <span>Due piani inclinati</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Esperimento 4 — I due piani inclinati</h1>
+      <p>La sfera scende da 1,5 m di altezza e risale sul secondo piano. Che cosa succede se il secondo piano diventa sempre meno inclinato?</p>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="ang-slider">Inclinazione 2° piano</label>
+        <input type="range" id="ang-slider" min="0" max="45" value="30" step="1">
+        <span class="value-display" id="ang-val">30°</span>
+      </div>
+      <div class="control-group">
+        <input type="checkbox" id="fric-chk">
+        <label for="fric-chk">Attrito</label>
+      </div>
+      <div class="control-group">
+        <button class="btn-control btn-primary" id="go-btn">Lascia andare</button>
+        <button class="btn-control" id="toggle-btn">Pausa</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="hud"></table>
+    </div>
+
+    <p class="anim-explain">
+      Senza attrito la sfera risale <strong>sempre fino all'altezza di partenza</strong>
+      (la linea tratteggiata), qualunque sia l'inclinazione del secondo piano. Quanto più
+      il piano è dolce, tanto più strada deve fare per arrivarci. Porta l'inclinazione a
+      <strong>0°</strong>: il secondo piano è orizzontale e la sfera non raggiunge mai
+      l'altezza iniziale, quindi non si ferma. Attiva l'attrito per vedere
+      ciò che si osserva davvero: la sfera si ferma, e proprio per questo
+      l'esperienza quotidiana sembra dare ragione ad Aristotele.
+    </p>
+
+    <div class="philo-box">
+      <strong>Il punto filosofico</strong>
+      Per Aristotele il moto è un processo che ha bisogno di una causa che lo
+      mantenga: tolto il motore, il corpo si ferma, e il suo stato «naturale» è la quiete.
+      Galileo rovescia la prospettiva: il moto uniforme è uno <em>stato</em>, come la quiete,
+      e ciò che va spiegato non è perché un corpo continua a muoversi, ma perché si ferma
+      (l'attrito). Il piano orizzontale perfettamente liscio e infinito non esiste: è un
+      <em>caso limite</em>, ricavato con il ragionamento da esperienze reali. Galileo però pensa
+      ancora a un moto che segue la superficie terrestre: il principio d'inerzia rettilineo
+      sarà formulato da Cartesio e Newton.
+    </div>
+
+    <div class="anim-nav">
+      <a href="pendolo.html">
+        <span>← Indietro</span>
+        Il pendolo
+      </a>
+      <a href="nave.html" class="next">
+        <span>Avanti →</span>
+        La nave di Galileo
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+new p5(function(p) {
+  const G = 9.81, K = 5 / 7;              // rolling sphere
+  const TH1 = 30 * Math.PI / 180, H0 = 1.5;
+  const S0 = -H0 / Math.sin(TH1);
+  const MU = 0.04;
+  let th2 = 30 * Math.PI / 180;
+  let friction = false;
+  let s = S0, v = 0, running = false, paused = false;
+  let maxH = 0, maxS = 0, stopped = false, tElapsed = 0;
+  let camX = 0;
+
+  function reset(start) {
+    s = S0; v = 0; maxH = 0; maxS = 0; stopped = false; tElapsed = 0;
+    running = !!start;
+  }
+
+  function slopeAt(ss) { return ss < 0 ? TH1 : th2; }
+  function worldXY(ss) {
+    return ss < 0 ? [ss * Math.cos(TH1), -ss * Math.sin(TH1)] : [ss * Math.cos(th2), ss * Math.sin(th2)];
+  }
+
+  function step(dt) {
+    const th = slopeAt(s);
+    let a = s < 0 ? K * G * Math.sin(TH1) : -K * G * Math.sin(th2);
+    if (friction) {
+      const fr = MU * G * Math.cos(th);
+      if ((Math.abs(v) < 0.02 && Math.abs(a) <= fr) || (Math.abs(v) < 0.05 && Math.abs(s) < 0.03)) {
+        v = 0; stopped = true; return;
+      }
+      a -= Math.sign(v || a) * fr;
+    }
+    v += a * dt;
+    s += v * dt;
+    tElapsed += dt;
+    if (s > 0) {
+      maxS = Math.max(maxS, s);
+      maxH = Math.max(maxH, s * Math.sin(th2));
+    }
+  }
+
+  function updateHud() {
+    const h = worldXY(s)[1];
+    let html = '<tr><th style="text-align:left">Grandezza</th><th>Valore</th></tr>' +
+      '<tr><td style="text-align:left">Altezza di partenza</td><td>' + H0.toFixed(2) + ' m</td></tr>' +
+      '<tr><td style="text-align:left">Altezza attuale</td><td>' + h.toFixed(2) + ' m</td></tr>' +
+      '<tr><td style="text-align:left">Velocità</td><td>' + Math.abs(v).toFixed(2) + ' m/s</td></tr>' +
+      '<tr><td style="text-align:left">Strada percorsa sul 2° piano (max)</td><td>' + maxS.toFixed(2) + ' m</td></tr>' +
+      '<tr><td style="text-align:left">Altezza massima raggiunta sul 2° piano</td><td>' +
+        (th2 === 0 ? '0 m (piano orizzontale)' : maxH.toFixed(2) + ' m') + '</td></tr>';
+    if (th2 > 0) {
+      html += '<tr><td style="text-align:left">Strada prevista senza attrito (h / sin θ)</td><td>' + (H0 / Math.sin(th2)).toFixed(2) + ' m</td></tr>';
+    }
+    document.getElementById('hud').innerHTML = html;
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('canvas-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), 380).parent('canvas-container');
+    document.getElementById('ang-slider').addEventListener('input', function() {
+      th2 = this.value * Math.PI / 180;
+      document.getElementById('ang-val').textContent = this.value + '°';
+      reset(false); camX = 0;
+    });
+    document.getElementById('fric-chk').addEventListener('change', function() { friction = this.checked; reset(false); camX = 0; });
+    document.getElementById('go-btn').addEventListener('click', () => { reset(true); camX = 0; });
+    document.getElementById('toggle-btn').addEventListener('click', function() {
+      paused = !paused; this.textContent = paused ? 'Avvia' : 'Pausa';
+    });
+    updateHud();
+  };
+
+  let hudTick = 0;
+
+  p.draw = function() {
+    p.background('#0F1220');
+    p.stroke('#161D38'); p.strokeWeight(1);
+    for (let x = 0; x < p.width; x += 36) p.line(x, 0, x, p.height);
+    for (let y = 0; y < p.height; y += 36) p.line(0, y, p.width, y);
+
+    if (running && !paused && !stopped) {
+      const dtF = Math.min(p.deltaTime / 1000, 0.05);
+      for (let i = 0; i < 20; i++) step(dtF / 20);
+    }
+
+    const sc = Math.min(110, p.width * 0.30 / 3.0);   // keep the whole first ramp (2.6 m wide) in view
+    const jx = p.width * 0.32, groundY = p.height - 70;
+    const [bxW, byW] = worldXY(s);
+    camX = Math.max(0, bxW - (0.65 * p.width - jx) / sc);
+    const X = (x) => jx + (x - camX) * sc;
+    const Y = (y) => groundY - y * sc;
+
+    // starting-height line
+    p.stroke(255, 200, 90, 120); p.strokeWeight(1);
+    p.drawingContext.setLineDash([6, 6]);
+    p.line(0, Y(H0), p.width, Y(H0));
+    p.drawingContext.setLineDash([]);
+    p.noStroke(); p.fill(255, 200, 90, 180); p.textFont('IBM Plex Mono'); p.textSize(10); p.textAlign(p.RIGHT);
+    p.text('altezza di partenza', p.width - 10, Y(H0) - 6);
+
+    // ramps (filled)
+    const sEnd = (camX + p.width / sc) / Math.max(Math.cos(th2), 0.01) + 2;
+    p.noStroke(); p.fill('#1C2440');
+    p.beginShape();
+    p.vertex(X(-4 * Math.cos(TH1)), p.height);
+    p.vertex(X(-4 * Math.cos(TH1)), Y(4 * Math.sin(TH1)));
+    p.vertex(X(0), Y(0));
+    p.vertex(X(sEnd * Math.cos(th2)), Y(sEnd * Math.sin(th2)));
+    p.vertex(X(sEnd * Math.cos(th2)), p.height);
+    p.endShape(p.CLOSE);
+    p.stroke('#5A70B0'); p.strokeWeight(2);
+    p.line(X(-4 * Math.cos(TH1)), Y(4 * Math.sin(TH1)), X(0), Y(0));
+    p.line(X(0), Y(0), X(sEnd * Math.cos(th2)), Y(sEnd * Math.sin(th2)));
+
+    // distance ticks on second plane
+    const step_m = sc * 1 < 30 ? 5 : 1;
+    p.textAlign(p.CENTER); p.textSize(9);
+    for (let d = step_m; d < sEnd; d += step_m) {
+      const x = X(d * Math.cos(th2)), y = Y(d * Math.sin(th2));
+      if (x < -20 || x > p.width + 20) continue;
+      p.stroke('#3A4A80'); p.strokeWeight(1);
+      p.line(x, y, x, y + 6);
+      if (d % (step_m * (sc < 60 ? 5 : 1)) === 0) { p.noStroke(); p.fill('#4A5A90'); p.text(d + ' m', x, y + 18); }
+    }
+
+    // predicted turning point
+    if (th2 > 0) {
+      const sp = H0 / Math.sin(th2);
+      const x = X(sp * Math.cos(th2)), y = Y(sp * Math.sin(th2));
+      p.stroke(255, 200, 90, 160); p.strokeWeight(1.5);
+      p.line(x, y - 8, x, y + 8);
+    }
+
+    // ball
+    const th = slopeAt(s);
+    const nx = s < 0 ? Math.sin(TH1) : -Math.sin(th2), ny = s < 0 ? Math.cos(TH1) : Math.cos(th2);
+    const r = 10;
+    const bx = X(bxW) + nx * r, by = Y(byW) - ny * r;
+    p.noStroke(); p.fill('#D8B060'); p.ellipse(bx, by, 2 * r, 2 * r);
+    const rot = s * sc / r;
+    p.stroke('#6A4A10'); p.strokeWeight(1.5);
+    p.line(bx, by, bx + Math.cos(rot) * r, by + Math.sin(rot) * r);
+
+    // messages
+    p.noStroke(); p.textAlign(p.LEFT); p.textSize(12);
+    if (!running) {
+      p.fill('#A8B8D8'); p.text('Premi «Lascia andare»', 14, 24);
+    } else if (stopped) {
+      p.fill('#FF9A70'); p.text('Con l\'attrito la sfera si ferma: è quello che vediamo tutti i giorni.', 14, 24);
+    } else if (th2 === 0 && s > 6) {
+      p.fill('#78E6A0');
+      p.text('Sul piano orizzontale nessuna forza la frena: senza attrito non si fermerebbe mai.', 14, 24);
+      p.fill('#6878A8'); p.textSize(11);
+      p.text('distanza percorsa: ' + s.toFixed(0) + ' m', 14, 42);
+    }
+
+    if (++hudTick % 6 === 0) updateHud();
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('canvas-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), 380);
+  };
+});
+</script>
+
+</body>
+</html>

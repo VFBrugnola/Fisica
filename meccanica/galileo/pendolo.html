@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Il pendolo — Galileo — Fisica</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../index.html">Home</a></span>
+      <span><a href="index.html">Galileo Galilei</a></span>
+      <span>Pendolo</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Esperimento 3 — Il pendolo</h1>
+      <p>Due pendoli partono nello stesso istante. Che cosa fa cambiare il periodo di oscillazione: la massa, l'ampiezza o la lunghezza?</p>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Confronto</label>
+        <div class="btn-group" id="preset-group">
+          <button class="btn-control active" data-preset="massa">Massa diversa</button>
+          <button class="btn-control" data-preset="piccole">Ampiezze piccole</button>
+          <button class="btn-control" data-preset="grandi">Ampiezze grandi</button>
+          <button class="btn-control" data-preset="lunghezza">Lunghezza ×4</button>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="control-group">
+        <label style="color:#E0A040">A · lunghezza</label>
+        <input type="range" id="LA" min="25" max="200" value="100" step="5">
+        <span class="value-display" id="LA-val">1.00 m</span>
+      </div>
+      <div class="control-group">
+        <label style="color:#E0A040">A · ampiezza</label>
+        <input type="range" id="AA" min="2" max="85" value="20" step="1">
+        <span class="value-display" id="AA-val">20°</span>
+      </div>
+      <div class="control-group">
+        <label style="color:#E0A040">A · massa</label>
+        <select id="MA"><option value="1">sughero</option><option value="10" selected>piombo</option></select>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="control-group">
+        <label style="color:#50D2AA">B · lunghezza</label>
+        <input type="range" id="LB" min="25" max="200" value="100" step="5">
+        <span class="value-display" id="LB-val">1.00 m</span>
+      </div>
+      <div class="control-group">
+        <label style="color:#50D2AA">B · ampiezza</label>
+        <input type="range" id="AB" min="2" max="85" value="20" step="1">
+        <span class="value-display" id="AB-val">20°</span>
+      </div>
+      <div class="control-group">
+        <label style="color:#50D2AA">B · massa</label>
+        <select id="MB"><option value="1" selected>sughero</option><option value="10">piombo</option></select>
+      </div>
+      <div class="control-group">
+        <button class="btn-control btn-primary" id="restart-btn">Ricomincia</button>
+        <button class="btn-control" id="toggle-btn">Pausa</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="hud"></table>
+    </div>
+
+    <p class="anim-explain">
+      Il periodo <strong>misurato</strong> è calcolato dalla simulazione, che risolve l'equazione
+      esatta del pendolo. Il periodo <strong>di Galileo</strong> è quello della formula
+      T = 2π√(L/g), valida per piccole oscillazioni. Prova i confronti:
+      con <em>massa diversa</em> i pendoli restano sincronizzati; con <em>ampiezze piccole</em>
+      (5° e 20°) restano quasi sincronizzati; con <em>ampiezze grandi</em> (10° e 80°) si
+      sfasano dopo poche oscillazioni; con lunghezza <em>quattro volte</em> maggiore il periodo
+      raddoppia.
+    </p>
+
+    <div class="philo-box">
+      <strong>Il punto filosofico</strong>
+      Galileo afferma che il pendolo è isocrono per <em>qualsiasi</em> ampiezza. È un'esagerazione:
+      vale solo per oscillazioni piccole, e lo dimostrerà Huygens nel 1673. L'errore
+      però è istruttivo. Galileo cerca la legge semplice e ideale dietro i dati imprecisi, e
+      a volte va oltre ciò che le misure permettono di affermare. È lo stesso gesto di
+      astrazione che gli fa trascurare l'aria nella caduta dei gravi. La differenza è che
+      qui l'astrazione era troppo spinta. Dall'isocronismo nascerà comunque il primo
+      orologio a pendolo, progettato da Galileo nel 1641 e costruito da Huygens nel 1656.
+    </div>
+
+    <div class="anim-nav">
+      <a href="piano-inclinato.html">
+        <span>← Indietro</span>
+        Il piano inclinato
+      </a>
+      <a href="inerzia.html" class="next">
+        <span>Avanti →</span>
+        I due piani inclinati
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+new p5(function(p) {
+  const G = 9.81;
+  const COL = { A: [224, 160, 64], B: [80, 210, 170] };
+  const PRESETS = {
+    massa:     { LA: 100, AA: 20, MA: 10, LB: 100, AB: 20, MB: 1 },
+    piccole:   { LA: 100, AA: 5,  MA: 10, LB: 100, AB: 20, MB: 10 },
+    grandi:    { LA: 100, AA: 10, MA: 10, LB: 100, AB: 80, MB: 10 },
+    lunghezza: { LA: 50,  AA: 15, MA: 10, LB: 200, AB: 15, MB: 10 }
+  };
+  let running = true;
+  let t = 0;
+  let P = {};
+
+  function newPend(key) {
+    const L = parseInt(document.getElementById('L' + key).value) / 100;
+    const A = parseInt(document.getElementById('A' + key).value) * Math.PI / 180;
+    const m = parseInt(document.getElementById('M' + key).value);
+    return { key, L, A, m, th: A, w: 0, maxTimes: [], count: 0, prevW: 0, trail: [] };
+  }
+
+  function restart() {
+    P.A = newPend('A'); P.B = newPend('B'); t = 0;
+  }
+
+  function deriv(L, th, w) { return [w, -G / L * Math.sin(th)]; }
+
+  function rk4(pd, dt) {
+    const L = pd.L;
+    const [k1t, k1w] = deriv(L, pd.th, pd.w);
+    const [k2t, k2w] = deriv(L, pd.th + k1t * dt / 2, pd.w + k1w * dt / 2);
+    const [k3t, k3w] = deriv(L, pd.th + k2t * dt / 2, pd.w + k2w * dt / 2);
+    const [k4t, k4w] = deriv(L, pd.th + k3t * dt, pd.w + k3w * dt);
+    pd.prevW = pd.w;
+    pd.th += dt / 6 * (k1t + 2 * k2t + 2 * k3t + k4t);
+    pd.w  += dt / 6 * (k1w + 2 * k2w + 2 * k3w + k4w);
+    // a full period ends each time the bob returns to the starting side (ω crosses 0 going from + to −)
+    if (pd.prevW > 0 && pd.w <= 0) {
+      pd.maxTimes.push(t);
+      pd.count++;
+    }
+  }
+
+  function measured(pd) {
+    const n = pd.maxTimes.length;
+    if (n === 0) return null;
+    if (n === 1) return pd.maxTimes[0];          // started at a maximum at t = 0
+    return pd.maxTimes[n - 1] - pd.maxTimes[n - 2];
+  }
+
+  function syncLabels() {
+    ['A', 'B'].forEach(k => {
+      document.getElementById('L' + k + '-val').textContent = (document.getElementById('L' + k).value / 100).toFixed(2) + ' m';
+      document.getElementById('A' + k + '-val').textContent = document.getElementById('A' + k).value + '°';
+    });
+  }
+
+  function applyPreset(name) {
+    const pr = PRESETS[name];
+    for (const k in pr) document.getElementById(k).value = pr[k];
+    syncLabels(); restart();
+  }
+
+  function updateHud() {
+    let h = '<tr><th style="text-align:left">Pendolo</th><th>Lunghezza</th><th>Ampiezza</th><th>Massa</th><th>Oscillazioni</th><th>Periodo misurato</th><th>Periodo di Galileo</th><th>Scarto</th></tr>';
+    ['A', 'B'].forEach(k => {
+      const pd = P[k], Tm = measured(pd), T0 = 2 * Math.PI * Math.sqrt(pd.L / G);
+      h += '<tr><td style="text-align:left;color:rgb(' + COL[k].join(',') + ')">● ' + k + '</td>' +
+        '<td>' + pd.L.toFixed(2) + ' m</td><td>' + Math.round(pd.A * 180 / Math.PI) + '°</td>' +
+        '<td>' + (pd.m === 10 ? 'piombo' : 'sughero') + '</td>' +
+        '<td>' + pd.count + '</td>' +
+        '<td>' + (Tm ? Tm.toFixed(3) + ' s' : '…') + '</td>' +
+        '<td>' + T0.toFixed(3) + ' s</td>' +
+        '<td>' + (Tm ? ('+' + (100 * (Tm - T0) / T0).toFixed(1) + ' %') : '…') + '</td></tr>';
+    });
+    h += '<tr><td style="text-align:left">Tempo</td><td colspan="7">' + t.toFixed(1) + ' s</td></tr>';
+    document.getElementById('hud').innerHTML = h;
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('canvas-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), 420).parent('canvas-container');
+
+    ['LA', 'AA', 'LB', 'AB'].forEach(id => document.getElementById(id).addEventListener('input', () => {
+      syncLabels(); restart();
+      document.querySelectorAll('#preset-group button').forEach(b => b.classList.remove('active'));
+    }));
+    ['MA', 'MB'].forEach(id => document.getElementById(id).addEventListener('change', () => {
+      restart();
+      document.querySelectorAll('#preset-group button').forEach(b => b.classList.remove('active'));
+    }));
+    document.querySelectorAll('#preset-group button').forEach(btn => btn.addEventListener('click', function() {
+      document.querySelectorAll('#preset-group button').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+      applyPreset(this.dataset.preset);
+    }));
+    document.getElementById('restart-btn').addEventListener('click', restart);
+    document.getElementById('toggle-btn').addEventListener('click', function() {
+      running = !running; this.textContent = running ? 'Pausa' : 'Avvia';
+    });
+    applyPreset('massa');
+  };
+
+  let hudTick = 0;
+
+  p.draw = function() {
+    p.background('#0F1220');
+    p.stroke('#161D38'); p.strokeWeight(1);
+    for (let x = 0; x < p.width; x += 36) p.line(x, 0, x, p.height);
+    for (let y = 0; y < p.height; y += 36) p.line(0, y, p.width, y);
+
+    if (running) {
+      const dtF = Math.min(p.deltaTime / 1000, 0.05);
+      const n = 20, dt = dtF / n;
+      for (let i = 0; i < n; i++) { t += dt; rk4(P.A, dt); rk4(P.B, dt); }
+    }
+
+    const pivotY = 40;
+    const sc = Math.min((p.height - pivotY - 30) / 2.0, (p.width / 4 - 14) / 2.0 * 1.6);
+    // support beam
+    p.stroke('#3A4A80'); p.strokeWeight(3);
+    p.line(p.width * 0.08, pivotY, p.width * 0.92, pivotY);
+
+    ['A', 'B'].forEach((k, i) => {
+      const pd = P[k], c = COL[k];
+      const px = p.width * (i === 0 ? 0.27 : 0.73);
+      const bx = px + Math.sin(pd.th) * pd.L * sc;
+      const by = pivotY + Math.cos(pd.th) * pd.L * sc;
+
+      // amplitude arc (initial)
+      p.noFill(); p.stroke(c[0], c[1], c[2], 50); p.strokeWeight(1);
+      p.arc(px, pivotY, 2 * pd.L * sc, 2 * pd.L * sc, p.HALF_PI - pd.A, p.HALF_PI + pd.A);
+      p.drawingContext.setLineDash([3, 4]);
+      p.line(px, pivotY, px, pivotY + pd.L * sc + 10);
+      p.drawingContext.setLineDash([]);
+
+      // trail
+      pd.trail.push([bx, by]);
+      if (pd.trail.length > 30) pd.trail.shift();
+      for (let j = 1; j < pd.trail.length; j++) {
+        p.stroke(c[0], c[1], c[2], j * 4);
+        p.line(pd.trail[j - 1][0], pd.trail[j - 1][1], pd.trail[j][0], pd.trail[j][1]);
+      }
+
+      // string + bob
+      p.stroke('#8899CC'); p.strokeWeight(1.2);
+      p.line(px, pivotY, bx, by);
+      const r = pd.m === 10 ? 11 : 11;
+      p.noStroke();
+      if (pd.m === 10) { p.fill(150, 160, 182); } else { p.fill(217, 185, 138); }
+      p.ellipse(bx, by, r * 2, r * 2);
+      p.noFill(); p.stroke(c[0], c[1], c[2]); p.strokeWeight(2);
+      p.ellipse(bx, by, r * 2 + 4, r * 2 + 4);
+
+      p.noStroke(); p.fill(c[0], c[1], c[2]); p.textFont('IBM Plex Mono'); p.textSize(12); p.textAlign(p.CENTER);
+      p.text(k, px, pivotY - 12);
+      p.fill('#6878A8'); p.textSize(10);
+      p.text('oscillazioni: ' + pd.count, px, p.height - 12);
+    });
+
+    if (++hudTick % 6 === 0) updateHud();
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('canvas-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), 420);
+  };
+});
+</script>
+
+</body>
+</html>

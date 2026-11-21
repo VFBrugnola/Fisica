@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Il moto dei proiettili — Galileo — Fisica</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../index.html">Home</a></span>
+      <span><a href="index.html">Galileo Galilei</a></span>
+      <span>Proiettili</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Esperimento 6 — Il moto dei proiettili</h1>
+      <p>Il moto del proiettile è la somma di due moti indipendenti: uno orizzontale uniforme e uno verticale accelerato.</p>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="v-slider">Velocità iniziale</label>
+        <input type="range" id="v-slider" min="2" max="15" value="8" step="0.5">
+        <span class="value-display" id="v-val">8.0 m/s</span>
+      </div>
+      <div class="control-group">
+        <label for="a-slider">Angolo di tiro</label>
+        <input type="range" id="a-slider" min="0" max="80" value="0" step="1">
+        <span class="value-display" id="a-val">0°</span>
+      </div>
+      <div class="control-group">
+        <label for="h-slider">Altezza di lancio</label>
+        <input type="range" id="h-slider" min="0" max="5" value="2" step="0.5">
+        <span class="value-display" id="h-val">2.0 m</span>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="control-group">
+        <input type="checkbox" id="comp-chk" checked>
+        <label for="comp-chk">Mostra i due moti componenti</label>
+      </div>
+      <div class="control-group">
+        <input type="checkbox" id="slow-chk">
+        <label for="slow-chk">Rallentatore ×¼</label>
+      </div>
+      <div class="control-group">
+        <button class="btn-control btn-primary" id="go-btn">Lancia</button>
+        <button class="btn-control" id="clear-btn">Cancella traiettorie</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="hud"></table>
+    </div>
+
+    <p class="anim-explain">
+      I puntini segnano la posizione ogni <strong>0,1 s</strong>. Le loro «ombre» sul terreno
+      (in azzurro) sono <strong>equidistanti</strong>: il moto orizzontale è uniforme. Le ombre
+      sulla parete a sinistra (in arancio) si allontanano sempre di più: il moto
+      verticale è una caduta accelerata. Con angolo 0° compare una seconda sfera, lasciata
+      semplicemente cadere nello stesso istante: tocca terra <strong>insieme</strong> al
+      proiettile. Porta l'altezza a 0 m e prova diversi angoli: la gittata massima si ottiene a
+      <strong>45°</strong>, e angoli complementari (30° e 60°, 20° e 70°) danno la stessa gittata.
+    </p>
+
+    <div class="philo-box">
+      <strong>Il punto filosofico</strong>
+      Per la fisica aristotelica due moti non possono coesistere nello stesso corpo: il moto
+      «violento» impresso dal lanciatore deve esaurirsi prima che cominci quello «naturale»
+      verso il basso. Anche la teoria medievale dell'<em>impetus</em> disegnava traiettorie fatte
+      di un tratto rettilineo seguito da una caduta verticale. Galileo invece
+      <em>compone</em> i moti: ciascuno procede come se l'altro non ci fosse. È il passaggio
+      decisivo dalla fisica delle qualità e delle nature a una fisica in cui il moto è
+      descritto con la geometria. Che la traiettoria sia una parabola, una delle sezioni
+      coniche di Apollonio, mostra ancora una volta che il libro della natura è scritto in
+      lingua matematica.
+    </div>
+
+    <div class="anim-nav">
+      <a href="nave.html">
+        <span>← Indietro</span>
+        La nave di Galileo
+      </a>
+      <a href="index.html" class="next">
+        <span>↑ Su</span>
+        Galileo Galilei
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+new p5(function(p) {
+  const G = 9.81, STROBE = 0.1;
+  const COLS = [[255, 200, 90], [120, 190, 255], [120, 230, 160], [240, 120, 160], [190, 150, 255]];
+  let v0 = 8, angDeg = 0, h0 = 2;
+  let showComp = true, slow = false;
+  let shots = [];          // completed + current launches
+  let cur = null;          // current launch
+  let world = null;
+
+  function flight(v, a, h) {
+    const vx = v * Math.cos(a), vy = v * Math.sin(a);
+    const tf = (vy + Math.sqrt(vy * vy + 2 * G * h)) / G;
+    return { vx, vy, tf, range: vx * tf, ymax: h + (vy > 0 ? vy * vy / (2 * G) : 0) };
+  }
+
+  function computeWorld() {
+    let R = 0;
+    for (let d = 0; d <= 80; d++) R = Math.max(R, flight(v0, d * Math.PI / 180, h0).range);
+    world = { xmin: -2.2, xmax: R * 1.06 + 0.5, ymax: (h0 + v0 * v0 / (2 * G)) * 1.08 + 0.4 };
+  }
+
+  function pos(s, t) {
+    const tt = Math.min(t, s.f.tf);
+    return { x: s.f.vx * tt, y: Math.max(0, h0 + s.f.vy * tt - 0.5 * G * tt * tt) };
+  }
+
+  function launch() {
+    const a = angDeg * Math.PI / 180;
+    if (shots.length >= 5) shots.shift();
+    cur = { ang: angDeg, f: flight(v0, a, h0), t: 0, col: null };
+    shots.push(cur);
+    shots.forEach((s, i) => s.col = COLS[i % COLS.length]);
+    updateHud();
+  }
+
+  function clearAll() { shots = []; cur = null; computeWorld(); updateHud(); }
+
+  function updateHud() {
+    let h = '<tr><th style="text-align:left">Lancio</th><th>Angolo</th><th>Tempo di volo</th><th>Gittata</th><th>Altezza max</th></tr>';
+    shots.forEach((s, i) => {
+      const done = s.t >= s.f.tf;
+      h += '<tr style="color:rgb(' + s.col.join(',') + ')"><td style="text-align:left">● ' + (i + 1) + '</td><td>' + s.ang + '°</td>' +
+        '<td>' + (done ? s.f.tf.toFixed(2) + ' s' : '…') + '</td>' +
+        '<td>' + (done ? s.f.range.toFixed(2) + ' m' : '…') + '</td>' +
+        '<td>' + s.f.ymax.toFixed(2) + ' m</td></tr>';
+    });
+    if (!shots.length) h += '<tr><td colspan="5" style="text-align:left;color:#8C94AD">Premi «Lancia». Le traiettorie restano visibili finché non cambi velocità o altezza.</td></tr>';
+    document.getElementById('hud').innerHTML = h;
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('canvas-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), 440).parent('canvas-container');
+    document.getElementById('v-slider').addEventListener('input', function() {
+      v0 = parseFloat(this.value); document.getElementById('v-val').textContent = v0.toFixed(1) + ' m/s'; clearAll();
+    });
+    document.getElementById('h-slider').addEventListener('input', function() {
+      h0 = parseFloat(this.value); document.getElementById('h-val').textContent = h0.toFixed(1) + ' m'; clearAll();
+    });
+    document.getElementById('a-slider').addEventListener('input', function() {
+      angDeg = parseInt(this.value); document.getElementById('a-val').textContent = angDeg + '°';
+    });
+    document.getElementById('comp-chk').addEventListener('change', function() { showComp = this.checked; });
+    document.getElementById('slow-chk').addEventListener('change', function() { slow = this.checked; });
+    document.getElementById('go-btn').addEventListener('click', launch);
+    document.getElementById('clear-btn').addEventListener('click', clearAll);
+    computeWorld(); updateHud();
+  };
+
+  p.draw = function() {
+    p.background('#0F1220');
+    const padL = 10, padR = 16, padT = 20, padB = 34;
+    const sc = Math.min((p.width - padL - padR) / (world.xmax - world.xmin), (p.height - padT - padB) / world.ymax);
+    const groundY = p.height - padB;
+    const X = (x) => padL + (x - world.xmin) * sc;
+    const Y = (y) => groundY - y * sc;
+
+    // grid in metres
+    p.textFont('IBM Plex Mono'); p.textSize(9);
+    const stepM = sc > 40 ? 1 : sc > 15 ? 2 : 5;
+    for (let x = 0; x <= world.xmax; x += stepM) {
+      p.stroke('#161D38'); p.strokeWeight(1); p.line(X(x), padT, X(x), groundY);
+      p.noStroke(); p.fill('#3A4A80'); p.textAlign(p.CENTER); p.text(x + ' m', X(x), groundY + 14);
+    }
+    for (let y = stepM; y <= world.ymax; y += stepM) {
+      p.stroke('#161D38'); p.line(X(0), Y(y), p.width, Y(y));
+    }
+
+    // ground and wall
+    p.noStroke(); p.fill('#1A2238'); p.rect(0, groundY, p.width, p.height - groundY);
+    p.stroke('#3A4A80'); p.line(0, groundY, p.width, groundY);
+    const wallX = X(-1.2);
+    p.stroke('#2E3860'); p.strokeWeight(2); p.line(wallX, padT, wallX, groundY);
+
+    // launch platform
+    if (h0 > 0) {
+      p.noStroke(); p.fill('#2A3458');
+      p.rect(X(-0.8), Y(h0), X(0) - X(-0.8), h0 * sc);
+    }
+    // cannon direction
+    const a = angDeg * Math.PI / 180;
+    p.stroke('#8899CC'); p.strokeWeight(5);
+    p.line(X(0), Y(h0), X(0) + Math.cos(a) * 26, Y(h0) - Math.sin(a) * 26);
+    p.strokeWeight(1);
+
+    // advance current shot
+    if (cur && cur.t < cur.f.tf) {
+      cur.t = Math.min(cur.f.tf, cur.t + Math.min(p.deltaTime / 1000, 0.05) * (slow ? 0.25 : 1));
+      if (cur.t >= cur.f.tf) updateHud();
+    }
+
+    shots.forEach((s) => {
+      const c = s.col, isCur = s === cur;
+      // trajectory line so far
+      p.noFill(); p.stroke(c[0], c[1], c[2], isCur ? 200 : 90); p.strokeWeight(1.5);
+      p.beginShape();
+      const n = 80;
+      for (let i = 0; i <= n; i++) {
+        const q = pos(s, s.t * i / n);
+        p.vertex(X(q.x), Y(q.y));
+      }
+      p.endShape();
+      // strobe points + projections
+      for (let k = 1; k * STROBE <= s.t; k++) {
+        const q = pos(s, k * STROBE);
+        p.noStroke(); p.fill(c[0], c[1], c[2], isCur ? 220 : 80);
+        p.ellipse(X(q.x), Y(q.y), 5, 5);
+        if (showComp && isCur) {
+          p.fill(120, 190, 255, 200); p.ellipse(X(q.x), groundY + 3, 5, 5);      // horizontal shadow
+          p.fill(255, 170, 80, 200);  p.ellipse(wallX - 6, Y(q.y), 5, 5);       // vertical shadow
+          p.stroke(255, 255, 255, 18); p.strokeWeight(1);
+          p.line(X(q.x), Y(q.y), X(q.x), groundY);
+          p.line(X(q.x), Y(q.y), wallX, Y(q.y));
+        }
+      }
+      if (isCur && s.t < s.f.tf) {
+        const q = pos(s, s.t);
+        p.noStroke(); p.fill(c[0], c[1], c[2]); p.ellipse(X(q.x), Y(q.y), 12, 12);
+        if (showComp) {
+          p.fill(120, 190, 255); p.ellipse(X(q.x), groundY + 3, 8, 8);
+          p.fill(255, 170, 80);  p.ellipse(wallX - 6, Y(q.y), 8, 8);
+        }
+      }
+      // reference ball dropped at the same instant (only for horizontal launch)
+      if (isCur && s.ang === 0 && h0 > 0) {
+        const yd = Math.max(0, h0 - 0.5 * G * s.t * s.t);
+        p.noStroke(); p.fill(200, 200, 210, 160);
+        for (let k = 1; k * STROBE <= s.t; k++) {
+          const yk = Math.max(0, h0 - 0.5 * G * (k * STROBE) ** 2);
+          p.ellipse(X(-1.0), Y(yk), 4, 4);
+        }
+        p.fill(220); p.ellipse(X(-1.0), Y(yd) - (s.t >= s.f.tf ? 5 : 0), 10, 10);
+      }
+      // landing mark
+      if (s.t >= s.f.tf) {
+        p.stroke(c[0], c[1], c[2]); p.strokeWeight(2);
+        p.line(X(s.f.range), groundY - 5, X(s.f.range), groundY + 5);
+      }
+    });
+
+    // HUD
+    p.noStroke(); p.fill('#6878A8'); p.textSize(11); p.textAlign(p.RIGHT);
+    p.text('v₀ = ' + v0.toFixed(1) + ' m/s   α = ' + angDeg + '°   h = ' + h0.toFixed(1) + ' m', p.width - 14, 16);
+    if (showComp) {
+      p.textAlign(p.LEFT); p.textSize(9); p.fill(255, 170, 80);
+      p.text('moto verticale', wallX + 4, padT + 8);
+    }
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('canvas-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), 440);
+  };
+});
+</script>
+
+</body>
+</html>

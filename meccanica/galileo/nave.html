@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La nave di Galileo — Galileo — Fisica</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../index.html">Home</a></span>
+      <span><a href="index.html">Galileo Galilei</a></span>
+      <span>La nave</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Esperimento 5 — La nave di Galileo</h1>
+      <p>Un sasso viene lasciato cadere dalla cima dell'albero (20 m) di una nave che procede a velocità costante. Dove cade?</p>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Previsione</label>
+        <div class="btn-group" id="model-group">
+          <button class="btn-control" data-v="aristotele">Aristotelici</button>
+          <button class="btn-control active" data-v="galileo">Galileo</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <label>Punto di vista</label>
+        <div class="btn-group" id="view-group">
+          <button class="btn-control active" data-v="riva">Dalla riva</button>
+          <button class="btn-control" data-v="nave">Dalla nave</button>
+        </div>
+      </div>
+    </div>
+    <div class="controls">
+      <div class="control-group">
+        <label for="v-slider">Velocità nave</label>
+        <input type="range" id="v-slider" min="0" max="10" value="6" step="0.5">
+        <span class="value-display" id="v-val">6.0 m/s</span>
+      </div>
+      <div class="control-group">
+        <input type="checkbox" id="slow-chk">
+        <label for="slow-chk">Rallentatore ×¼</label>
+      </div>
+      <div class="control-group">
+        <button class="btn-control btn-primary" id="go-btn">Lascia cadere</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="hud"></table>
+    </div>
+
+    <p class="anim-explain">
+      Prova tutte e quattro le combinazioni. Secondo <strong>Galileo</strong> il sasso conserva
+      la velocità orizzontale della nave e cade <strong>ai piedi dell'albero</strong>. Chi lo guarda
+      dalla riva vede una parabola, chi sta sulla nave vede una caduta in verticale: lo stesso
+      moto ha traiettorie diverse a seconda del sistema di riferimento. Secondo gli
+      <strong>aristotelici</strong>, una volta lasciato il sasso cadrebbe «a piombo» rispetto
+      alla riva, e la nave gli scivolerebbe via da sotto: il sasso cadrebbe verso poppa.
+    </p>
+
+    <div class="philo-box">
+      <strong>Il punto filosofico</strong>
+      L'esperimento della nave serve a difendere Copernico. Se la Terra si muove, perché un
+      sasso cade ai piedi della torre e non più a ovest? Galileo risponde che sulla Terra in moto
+      succede quello che succede sulla nave: tutto ciò che sta sulla Terra ne condivide il moto,
+      e <em>nessun esperimento fatto all'interno</em> può rivelare un moto uniforme.
+      Il moto non è più una proprietà assoluta dei corpi ma una relazione tra
+      sistemi di riferimento. L'esperimento fu realizzato davvero da Pierre Gassendi
+      a Marsiglia nel 1640, con una galea in moto.
+    </div>
+
+    <div class="anim-nav">
+      <a href="inerzia.html">
+        <span>← Indietro</span>
+        I due piani inclinati
+      </a>
+      <a href="proiettile.html" class="next">
+        <span>Avanti →</span>
+        Il moto dei proiettili
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+new p5(function(p) {
+  const G = 9.81, DECK = 2, MAST = 22, T_DROP = 1.0, STERN = 15;
+  let vs = 6, model = 'galileo', view = 'riva', slow = false;
+  let t = 0, running = false;
+  let trail = [];
+
+  const shipX = (tt) => vs * tt;   // world x of the mast
+
+  // How long the stone falls and where it ends up (on deck or, if it misses the stern, in the sea)
+  function fall() {
+    const tDeck = Math.sqrt(2 * (MAST - DECK) / G);
+    if (model === 'galileo' || vs * tDeck < STERN - 0.5) return { tf: tDeck, onDeck: true, yEnd: DECK };
+    return { tf: Math.sqrt(2 * MAST / G), onDeck: false, yEnd: 0 };
+  }
+  const tEnd = () => T_DROP + fall().tf + 1.2;
+
+  function stone(tt) {
+    if (tt <= T_DROP) return { x: shipX(tt), y: MAST };
+    const f = fall();
+    const dt = Math.min(tt, T_DROP + f.tf) - T_DROP;
+    const y = MAST - 0.5 * G * dt * dt;
+    const x = model === 'galileo' ? shipX(T_DROP) + vs * dt : shipX(T_DROP);
+    if (tt > T_DROP + f.tf) {
+      // on deck it travels with the ship; in the sea it stays where it fell
+      return { x: f.onDeck ? x + vs * (tt - T_DROP - f.tf) : x, y: f.yEnd, landed: true, onDeck: f.onDeck };
+    }
+    return { x, y };
+  }
+
+  function reset(start) { t = 0; trail = []; running = !!start; }
+
+  function updateHud() {
+    const f = fall();
+    const land = stone(T_DROP + f.tf);
+    const off = land.x - shipX(T_DROP + f.tf);
+    let res = '…';
+    if (t >= T_DROP + f.tf) {
+      if (Math.abs(off) < 0.05) res = 'ai piedi dell\'albero';
+      else if (f.onDeck) res = 'sul ponte, ' + Math.abs(off).toFixed(1) + ' m dietro l\'albero (verso poppa)';
+      else res = 'in mare, ' + Math.abs(off).toFixed(1) + ' m dietro l\'albero';
+    }
+    let h = '<tr><th style="text-align:left">Grandezza</th><th>Valore</th></tr>' +
+      '<tr><td style="text-align:left">Tempo di caduta</td><td>' + f.tf.toFixed(2) + ' s</td></tr>' +
+      '<tr><td style="text-align:left">Spostamento della nave durante la caduta</td><td>' + (vs * f.tf).toFixed(1) + ' m</td></tr>' +
+      '<tr><td style="text-align:left">Dove cade il sasso</td><td>' + res + '</td></tr>';
+    document.getElementById('hud').innerHTML = h;
+  }
+
+  function group(id, cb) {
+    document.querySelectorAll('#' + id + ' button').forEach(btn => btn.addEventListener('click', function() {
+      document.querySelectorAll('#' + id + ' button').forEach(b => b.classList.remove('active'));
+      this.classList.add('active'); cb(this.dataset.v);
+    }));
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('canvas-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), 420).parent('canvas-container');
+    group('model-group', v => { model = v; reset(false); updateHud(); });
+    group('view-group', v => { view = v; });
+    document.getElementById('v-slider').addEventListener('input', function() {
+      vs = parseFloat(this.value);
+      document.getElementById('v-val').textContent = vs.toFixed(1) + ' m/s';
+      reset(false); updateHud();
+    });
+    document.getElementById('slow-chk').addEventListener('change', function() { slow = this.checked; });
+    document.getElementById('go-btn').addEventListener('click', () => reset(true));
+    updateHud();
+  };
+
+  function drawShip(X, Y, sc, mx) {
+    // hull
+    p.noStroke(); p.fill('#5A4030');
+    p.beginShape();
+    p.vertex(X(mx - STERN), Y(DECK + 0.6));
+    p.vertex(X(mx + 11), Y(DECK + 0.6));
+    p.vertex(X(mx + 8), Y(-1));
+    p.vertex(X(mx - 12), Y(-1));
+    p.endShape(p.CLOSE);
+    p.fill('#7A5840'); p.rect(X(mx - STERN), Y(DECK + 0.6), 26 * sc, 0.4 * sc);
+    // mast
+    p.stroke('#A08060'); p.strokeWeight(Math.max(2, 0.3 * sc));
+    p.line(X(mx), Y(DECK), X(mx), Y(MAST + 1));
+    // sail
+    p.noStroke(); p.fill(220, 210, 190, 200);
+    p.beginShape();
+    p.vertex(X(mx + 0.3), Y(MAST - 1));
+    p.vertex(X(mx + 0.3), Y(DECK + 4));
+    p.vertex(X(mx + 8), Y(DECK + 5));
+    p.endShape(p.CLOSE);
+    // foot of the mast marker
+    p.stroke(255, 200, 90); p.strokeWeight(1.5);
+    p.line(X(mx - 0.8), Y(DECK + 0.6) - 1, X(mx + 0.8), Y(DECK + 0.6) - 1);
+  }
+
+  p.draw = function() {
+    p.background('#0F1220');
+    if (running) {
+      t += Math.min(p.deltaTime / 1000, 0.05) * (slow ? 0.25 : 1);
+      if (t >= tEnd()) { t = tEnd(); running = false; }
+      const st = stone(t), tf = fall().tf;
+      if (t > T_DROP && !st.landed) trail.push({ x: st.x, y: st.y, mx: shipX(t) });
+      if (t >= T_DROP + tf && trail.length && !trail[trail.length - 1].final) {
+        const l = stone(T_DROP + tf);
+        trail.push({ x: l.x, y: l.y, mx: shipX(T_DROP + tf), final: true });
+      }
+    }
+
+    const sc = Math.min(p.width / 62, (p.height - 70) / (MAST + 4));
+    const seaY = p.height - 44;
+    const mx = shipX(t);
+    // camera: shore view = fixed world window; ship view = follows the mast
+    const camX = view === 'riva' ? -16 : mx - 24;
+    const X = (x) => (x - camX) * sc;
+    const Y = (y) => seaY - y * sc;
+
+    // sky grid (fixed to the frame of reference shown)
+    p.stroke('#161D38'); p.strokeWeight(1);
+    const gridOff = ((-camX * sc) % 36 + 36) % 36;
+    for (let x = gridOff; x < p.width; x += 36) p.line(x, 0, x, seaY);
+    for (let y = 0; y < seaY; y += 36) p.line(0, y, p.width, y);
+
+    // distant shore (fixed in the shore frame)
+    p.noStroke();
+    for (let k = -3; k < 20; k++) {
+      const wx = k * 12;
+      if (X(wx) < -60 || X(wx) > p.width + 60) continue;
+      p.fill('#1E2A40');
+      p.rect(X(wx), Y(4 + (k % 3)), 9 * sc, (4 + (k % 3)) * sc);
+      if (k % 4 === 0) { // lighthouse
+        p.fill('#2E3C5A'); p.rect(X(wx + 3), Y(12), 2 * sc, 12 * sc);
+        p.fill(255, 210, 120, 160); p.ellipse(X(wx + 4), Y(12.5), 1.6 * sc, 1.6 * sc);
+      }
+    }
+
+    // sea with waves fixed in the shore frame
+    p.fill('#13304A'); p.noStroke();
+    p.beginShape();
+    p.vertex(0, p.height);
+    for (let sx = 0; sx <= p.width; sx += 6) {
+      const wx = camX + sx / sc;
+      p.vertex(sx, seaY - Math.sin(wx * 0.9) * 2.5);
+    }
+    p.vertex(p.width, p.height);
+    p.endShape(p.CLOSE);
+
+    // release point line (shore frame)
+    if (t >= T_DROP) {
+      const rx = X(shipX(T_DROP));
+      p.stroke(255, 120, 120, 120); p.strokeWeight(1);
+      p.drawingContext.setLineDash([4, 5]);
+      p.line(rx, Y(MAST), rx, seaY);
+      p.drawingContext.setLineDash([]);
+      p.noStroke(); p.fill(255, 120, 120, 170); p.textFont('IBM Plex Mono'); p.textSize(9); p.textAlign(p.CENTER);
+      p.text('punto della riva', rx, Y(MAST) - 16);
+      p.text('sotto il rilascio', rx, Y(MAST) - 6);
+    }
+
+    drawShip(X, Y, sc, mx);
+
+    // trail, drawn in the frame being shown
+    p.noStroke();
+    for (const q of trail) {
+      const x = view === 'riva' ? q.x : q.x - q.mx + mx;
+      p.fill(120, 190, 255, 150);
+      p.ellipse(X(x), Y(q.y), 4, 4);
+    }
+
+    // stone
+    const st = stone(t);
+    p.fill('#C8CCD8'); p.stroke('#6A7088'); p.strokeWeight(1);
+    const yOff = st.landed ? (st.onDeck ? 0.6 * sc + 4 : -2) : 0;
+    p.ellipse(X(st.x), Y(st.y) - yOff, 10, 10);
+
+    // labels
+    p.noStroke(); p.fill('#A8B8D8'); p.textFont('IBM Plex Mono'); p.textSize(11); p.textAlign(p.LEFT);
+    p.text(view === 'riva' ? 'Sistema di riferimento: la riva (la nave si muove →)'
+                           : 'Sistema di riferimento: la nave (la riva si muove ←)', 12, 20);
+    p.fill(model === 'galileo' ? '#78E6A0' : '#FFB060');
+    p.text(model === 'galileo' ? 'Previsione di Galileo' : 'Previsione degli aristotelici', 12, 36);
+    if (!running && t === 0) { p.fill('#A8B8D8'); p.text('Premi «Lascia cadere»', 12, 54); }
+    if (t >= T_DROP + fall().tf) updateHud();
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('canvas-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), 420);
+  };
+});
+</script>
+
+</body>
+</html>

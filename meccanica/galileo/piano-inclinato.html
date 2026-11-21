@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Il piano inclinato — Galileo — Fisica</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../index.html">Home</a></span>
+      <span><a href="index.html">Galileo Galilei</a></span>
+      <span>Piano inclinato</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Esperimento 2 — Il piano inclinato</h1>
+      <p>Una sfera rotola lungo un piano lungo 6 m. Il tempo è diviso in cinque intervalli uguali, misurati con l'orologio ad acqua.</p>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="ang-slider">Inclinazione</label>
+        <input type="range" id="ang-slider" min="2" max="30" value="10" step="1">
+        <span class="value-display" id="ang-val">10°</span>
+      </div>
+      <div class="control-group">
+        <input type="checkbox" id="slow-chk">
+        <label for="slow-chk">Rallentatore ×¼</label>
+      </div>
+      <div class="control-group">
+        <button class="btn-control btn-primary" id="go-btn">Fai rotolare</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="tab"></table>
+    </div>
+
+    <p class="anim-explain">
+      Le tacche sul piano segnano la posizione della sfera alla fine di ogni intervallo
+      di tempo. Gli spazi percorsi <strong>in ciascun intervallo</strong> stanno come i numeri
+      dispari <strong>1 : 3 : 5 : 7 : 9</strong>, mentre gli spazi <strong>totali</strong> stanno
+      come i quadrati <strong>1 : 4 : 9 : 16 : 25</strong>. Cambia l'inclinazione: la sfera
+      va più veloce o più piano, ma <strong>i rapporti non cambiano</strong>. Galileo conclude
+      che lo stesso vale anche per il caso limite del piano verticale, cioè per la caduta libera.
+    </p>
+
+    <div class="philo-box">
+      <strong>Il punto filosofico</strong>
+      Galileo non studia la caduta dove avviene in natura, ma costruisce una situazione
+      artificiale (il piano inclinato) in cui il fenomeno diventa abbastanza lento
+      da essere misurato. L'esperimento non è più una semplice osservazione: è una
+      «domanda» posta alla natura in forma matematica, con un apparato costruito apposta.
+      Il tempo, poi, non è più quello vissuto ma una grandezza misurata: Galileo lo misura
+      in peso d'acqua, con una bilancia.
+      <br><small>Nota: la simulazione usa per la sfera l'accelerazione di rotolamento
+      a = 5/7 · g · sin θ, che Galileo non conosceva. I rapporti 1 : 3 : 5 : 7 non dipendono da questo fattore.</small>
+    </div>
+
+    <div class="anim-nav">
+      <a href="caduta-gravi.html">
+        <span>← Indietro</span>
+        La caduta dei gravi
+      </a>
+      <a href="pendolo.html" class="next">
+        <span>Avanti →</span>
+        Il pendolo
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+new p5(function(p) {
+  const G = 9.81, L = 6, N = 5;
+  const COLS = [[220, 80, 80], [230, 160, 40], [80, 200, 120], [60, 160, 230], [160, 80, 230]];
+  let theta = 10 * Math.PI / 180;
+  let t = 0, running = false, slow = false;
+
+  const acc = () => 5 / 7 * G * Math.sin(theta);
+  const Ttot = () => Math.sqrt(2 * L / acc());
+  const dT = () => Ttot() / N;
+  const sAt = (tt) => Math.min(L, 0.5 * acc() * tt * tt);
+
+  function buildTable() {
+    const d = dT(), s1 = sAt(d);
+    let h = '<tr><th>Intervallo</th><th>Tempo</th><th>Spazio totale</th><th>Totale / s₁</th><th>Spazio nell\'intervallo</th><th>Intervallo / s₁</th></tr>';
+    for (let n = 1; n <= N; n++) {
+      const sn = sAt(n * d), sp = sAt((n - 1) * d);
+      const shown = t >= n * d - 1e-9;
+      h += '<tr style="color:rgb(' + COLS[n - 1].join(',') + ')"><td>' + n + '</td><td>' + (n * d).toFixed(2) + ' s</td>' +
+        '<td>' + (shown ? sn.toFixed(2) + ' m' : '…') + '</td>' +
+        '<td>' + (shown ? (sn / s1).toFixed(1) : '…') + '</td>' +
+        '<td>' + (shown ? (sn - sp).toFixed(2) + ' m' : '…') + '</td>' +
+        '<td>' + (shown ? ((sn - sp) / s1).toFixed(1) : '…') + '</td></tr>';
+    }
+    h += '<tr><td colspan="6" style="text-align:left;color:#58627A">Accelerazione a = ' + acc().toFixed(2) +
+         ' m/s² · durata di un intervallo Δt = ' + d.toFixed(2) + ' s</td></tr>';
+    document.getElementById('tab').innerHTML = h;
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('canvas-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), 500).parent('canvas-container');
+    document.getElementById('ang-slider').addEventListener('input', function() {
+      theta = this.value * Math.PI / 180;
+      document.getElementById('ang-val').textContent = this.value + '°';
+      t = 0; running = false; buildTable();
+    });
+    document.getElementById('slow-chk').addEventListener('change', function() { slow = this.checked; });
+    document.getElementById('go-btn').addEventListener('click', () => { t = 0; running = true; });
+    buildTable();
+  };
+
+  let lastShown = -1;
+
+  p.draw = function() {
+    p.background('#0F1220');
+    p.stroke('#161D38'); p.strokeWeight(1);
+    for (let x = 0; x < p.width; x += 36) p.line(x, 0, x, p.height);
+    for (let y = 0; y < p.height; y += 36) p.line(0, y, p.width, y);
+
+    if (running) {
+      t += Math.min(p.deltaTime / 1000, 0.05) * (slow ? 0.25 : 1);
+      if (t >= Ttot()) { t = Ttot(); running = false; }
+    }
+    const shownNow = Math.floor(t / dT() + 1e-9);
+    if (shownNow !== lastShown) { lastShown = shownNow; buildTable(); }
+
+    // ── Inclined plane (upper region) ──
+    const x0 = 40, y0 = 46, maxW = p.width - 80, maxH = 250;
+    const sc = Math.min(maxW / (L * Math.cos(theta)), maxH / (L * Math.sin(theta)));
+    const dx = Math.cos(theta), dy = Math.sin(theta);
+    const nx = Math.sin(theta), ny = -Math.cos(theta);   // normal pointing up
+    const x1 = x0 + L * sc * dx, y1 = y0 + L * sc * dy;
+
+    p.noStroke(); p.fill('#1C2440');
+    p.triangle(x0, y0, x1, y1, x0, y1);
+    p.stroke('#5A70B0'); p.strokeWeight(2);
+    p.line(x0, y0, x1, y1);
+    p.stroke('#2E3860'); p.strokeWeight(1);
+    p.line(0, y1, p.width, y1);
+
+    // angle arc
+    p.noFill(); p.stroke('#4A5A90');
+    p.arc(x1, y1, 70, 70, p.PI, p.PI + theta);
+    p.noStroke(); p.fill('#6878A8'); p.textFont('IBM Plex Mono'); p.textSize(10); p.textAlign(p.RIGHT);
+    p.text(Math.round(theta * 180 / Math.PI) + '°', x1 - 44, y1 + 16);
+
+    // marks at equal time intervals
+    const d = dT(), s1 = sAt(d);
+    for (let n = 1; n <= N; n++) {
+      if (t < n * d - 1e-9) break;
+      const s = sAt(n * d), sp = sAt((n - 1) * d);
+      const mx = x0 + s * sc * dx, my = y0 + s * sc * dy;
+      const c = COLS[n - 1];
+      // segment highlight
+      p.stroke(c[0], c[1], c[2]); p.strokeWeight(4);
+      p.line(x0 + sp * sc * dx, y0 + sp * sc * dy, mx, my);
+      // tick
+      p.strokeWeight(1.5);
+      p.line(mx + nx * 6, my + ny * 6, mx - nx * 6, my - ny * 6);
+      // label: interval ratio
+      const midS = (s + sp) / 2;
+      const lx = x0 + midS * sc * dx - nx * 18, ly = y0 + midS * sc * dy - ny * 18;
+      p.noStroke(); p.fill(c[0], c[1], c[2]); p.textAlign(p.CENTER); p.textSize(12);
+      p.text(Math.round((s - sp) / s1), lx, ly + 4);
+    }
+
+    // ball
+    const s = sAt(t), rpx = 9;
+    const bx = x0 + s * sc * dx + nx * rpx, by = y0 + s * sc * dy + ny * rpx;
+    p.noStroke(); p.fill('#D8B060'); p.ellipse(bx, by, rpx * 2, rpx * 2);
+    const rot = s * sc / rpx;
+    p.stroke('#6A4A10'); p.strokeWeight(1.5);
+    p.line(bx, by, bx + Math.cos(rot + theta) * rpx, by + Math.sin(rot + theta) * rpx);
+
+    // ── Bottom strip: water clock + s(t) graph ──
+    const stripTop = 330, stripBot = p.height - 24;
+    p.stroke('#2A3458'); p.strokeWeight(1); p.line(0, stripTop - 14, p.width, stripTop - 14);
+
+    // water clock
+    const wcx = 60;
+    p.noStroke(); p.fill('#2E3860');
+    p.rect(wcx - 30, stripTop, 60, 50, 3);            // bucket
+    const lvl = 1 - t / (Ttot() * 1.6);
+    p.fill(70, 130, 220, 160);
+    p.rect(wcx - 28, stripTop + 50 - 46 * lvl, 56, 46 * lvl, 2);
+    if (running) { p.stroke(90, 150, 240); p.strokeWeight(2); p.line(wcx, stripTop + 50, wcx, stripBot - 46 * (t / (Ttot() * 1.1)) - 2); }
+    p.noStroke(); p.fill('#2E3860');
+    p.rect(wcx - 22, stripBot - 50, 44, 50, 2);        // cup on the scale
+    p.fill(70, 130, 220, 200);
+    const cupH = 46 * (t / (Ttot() * 1.1));
+    p.rect(wcx - 20, stripBot - cupH - 2, 40, cupH, 1);
+    p.fill('#6878A8'); p.textSize(9); p.textAlign(p.CENTER);
+    p.text('acqua raccolta ∝ t', wcx, stripBot + 14);
+
+    // graph s(t)
+    const gx0 = 140, gx1 = p.width - 30, gy0 = stripBot, gy1 = stripTop;
+    p.stroke('#3A4A80'); p.strokeWeight(1);
+    p.line(gx0, gy0, gx1, gy0); p.line(gx0, gy0, gx0, gy1);
+    p.noStroke(); p.fill('#6878A8'); p.textSize(10); p.textAlign(p.LEFT);
+    p.text('s', gx0 - 14, gy1 + 8);
+    p.textAlign(p.RIGHT); p.text('t', gx1, gy0 - 6);
+    const T = Ttot();
+    const gx = (tt) => gx0 + (gx1 - gx0) * tt / T;
+    const gy = (ss) => gy0 - (gy0 - gy1) * ss / L;
+    // light grid at each Δt
+    for (let n = 1; n <= N; n++) {
+      p.stroke('#1E2848'); p.line(gx(n * d), gy0, gx(n * d), gy1);
+      p.noStroke(); p.fill('#4A5A90'); p.textAlign(p.CENTER); p.text(n + 'Δt', gx(n * d), gy0 + 12);
+    }
+    // curve so far
+    p.noFill(); p.stroke(216, 176, 96); p.strokeWeight(2);
+    p.beginShape();
+    for (let i = 0; i <= 100; i++) {
+      const tt = t * i / 100;
+      p.vertex(gx(tt), gy(sAt(tt)));
+    }
+    p.endShape();
+    for (let n = 1; n <= N; n++) {
+      if (t < n * d - 1e-9) break;
+      const c = COLS[n - 1];
+      p.noStroke(); p.fill(c[0], c[1], c[2]);
+      p.ellipse(gx(n * d), gy(sAt(n * d)), 7, 7);
+    }
+
+    // HUD
+    p.noStroke(); p.fill('#6878A8'); p.textSize(11); p.textAlign(p.RIGHT);
+    p.text('t = ' + t.toFixed(2) + ' s   s = ' + s.toFixed(2) + ' m', p.width - 14, 22);
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('canvas-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), 500);
+  };
+});
+</script>
+
+</body>
+</html>

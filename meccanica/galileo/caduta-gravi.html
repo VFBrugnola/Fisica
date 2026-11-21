@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>La caduta dei gravi — Galileo — Fisica</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../index.html">Home</a></span>
+      <span><a href="index.html">Galileo Galilei</a></span>
+      <span>Caduta dei gravi</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Esperimento 1 — La caduta dei gravi</h1>
+      <p>Una sfera di piombo e una di legno, della stessa grandezza, lasciate cadere da 56 m (l'altezza della Torre di Pisa).</p>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label>Modello</label>
+        <div class="btn-group" id="mode-group">
+          <button class="btn-control" data-mode="aristotele">Aristotele</button>
+          <button class="btn-control" data-mode="aria">Galileo · con aria</button>
+          <button class="btn-control active" data-mode="vuoto">Galileo · nel vuoto</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="light-sel">Corpo leggero</label>
+        <select id="light-sel">
+          <option value="700">legno (700 kg/m³)</option>
+          <option value="240">sughero (240 kg/m³)</option>
+          <option value="30">polistirolo (30 kg/m³)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <input type="checkbox" id="combo-chk">
+        <label for="combo-chk">Corpi legati insieme</label>
+      </div>
+      <div class="control-group">
+        <input type="checkbox" id="slow-chk">
+        <label for="slow-chk">Rallentatore ×¼</label>
+      </div>
+      <div class="control-group">
+        <button class="btn-control btn-primary" id="drop-btn">Lascia cadere</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="hud"></table>
+    </div>
+
+    <p class="anim-explain">
+      I puntini lasciati dalle sfere sono le loro posizioni ogni <strong>0,2 s</strong>,
+      come in una fotografia stroboscopica. Nel modello di Galileo i puntini si
+      allontanano sempre di più: il moto è <strong>accelerato</strong>. Nel modello di
+      Aristotele restano equidistanti, perché ogni corpo cade a velocità costante,
+      proporzionale al suo peso. Prova anche l'opzione <em>«Corpi legati insieme»</em>.
+    </p>
+
+    <div class="philo-box">
+      <strong>Il punto filosofico</strong>
+      Galileo non ha bisogno di salire sulla torre per confutare Aristotele: gli basta un
+      <em>esperimento mentale</em>. Se il corpo leggero, più lento, frena quello pesante,
+      il composto dovrebbe cadere <em>più lentamente</em> del pesante da solo; ma il composto
+      pesa più del pesante, e quindi dovrebbe cadere <em>più velocemente</em>. Una teoria che
+      porta a due previsioni contraddittorie non può essere vera.
+      L'aria, invece, spiega le piccole differenze reali: la vera domanda è come cadono i corpi
+      quando il mezzo non c'è. Il racconto della Torre di Pisa viene da Viviani e
+      probabilmente è una leggenda.
+    </div>
+
+    <div class="anim-nav">
+      <a href="index.html">
+        <span>← Indietro</span>
+        Galileo Galilei
+      </a>
+      <a href="piano-inclinato.html" class="next">
+        <span>Avanti →</span>
+        Il piano inclinato
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+new p5(function(p) {
+  const G = 9.81, H = 56, RHO_AIR = 1.2, CD = 0.47, R = 0.05;
+  const AREA = Math.PI * R * R, VOL = 4 / 3 * Math.PI * R * R * R;
+  const RHO_LEAD = 11340;
+  const STROBE = 0.2;
+
+  let mode = 'vuoto';
+  let rhoLight = 700;
+  let combo = false;
+  let slow = false;
+  let t = 0, running = false;
+  let bodies = [];
+  let hudTick = 0;
+
+  function makeBodies() {
+    const mH = RHO_LEAD * VOL, mL = rhoLight * VOL;
+    const lightName = { 700: 'Legno', 240: 'Sughero', 30: 'Polistirolo' }[rhoLight];
+    const tAr = Math.sqrt(2 * H / G);         // Aristotle: heavy body lands at the "right" time…
+    const vH = H / tAr;                        // …with constant speed proportional to weight
+    let list = [
+      { name: 'Piombo', m: mH, area: AREA, col: [150, 160, 182], kind: 'single', vAr: vH },
+      { name: lightName, m: mL, area: AREA, col: [210, 150, 90], kind: 'single', vAr: vH * mL / mH }
+    ];
+    if (combo) {
+      list.push({ name: 'Legati', m: mH + mL, area: 2 * AREA, col: [120, 190, 255], kind: 'combo',
+                  vAr: vH * (mH + mL) / mH, note: 'più pesante → più veloce' });
+      if (mode === 'aristotele') {
+        list.push({ name: 'Legati (bis)', m: mH + mL, area: 2 * AREA, col: [255, 120, 120], kind: 'combo',
+                    vAr: (vH + vH * mL / mH) / 2, note: 'il leggero frena il pesante → più lento' });
+      }
+    }
+    list.forEach(b => { b.y = 0; b.v = 0; b.tLand = null; b.strobe = []; });
+    return list;
+  }
+
+  function reset(start) {
+    bodies = makeBodies();
+    t = 0;
+    running = !!start;
+  }
+
+  function step(dt) {
+    t += dt;
+    for (const b of bodies) {
+      if (b.tLand !== null) continue;
+      if (mode === 'aristotele') {
+        b.v = b.vAr;
+      } else {
+        let a = G;
+        if (mode === 'aria') a -= 0.5 * RHO_AIR * CD * b.area * b.v * b.v / b.m;
+        b.v += a * dt;
+      }
+      b.y += b.v * dt;
+      if (b.y >= H) { b.y = H; b.tLand = t; }
+    }
+    const k = Math.floor(t / STROBE);
+    for (const b of bodies) {
+      if (b.strobe.length < k && b.tLand === null) b.strobe.push(b.y);
+    }
+  }
+
+  function updateHud() {
+    let html = '<tr><th style="text-align:left">Corpo</th><th>Massa</th><th>Velocità</th><th>Altezza</th><th>Arrivo a terra</th></tr>';
+    for (const b of bodies) {
+      html += '<tr><td style="text-align:left;color:rgb(' + b.col.join(',') + ')">● ' + b.name +
+        (b.note && mode === 'aristotele' ? ' <small style="color:#8C94AD">(' + b.note + ')</small>' : '') + '</td>' +
+        '<td>' + b.m.toFixed(2) + ' kg</td>' +
+        '<td>' + b.v.toFixed(1) + ' m/s</td>' +
+        '<td>' + (H - b.y).toFixed(1) + ' m</td>' +
+        '<td>' + (b.tLand !== null ? b.tLand.toFixed(2) + ' s' : '—') + '</td></tr>';
+    }
+    html += '<tr><td style="text-align:left">Tempo</td><td colspan="4">' + t.toFixed(2) + ' s</td></tr>';
+    document.getElementById('hud').innerHTML = html;
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('canvas-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), 460).parent('canvas-container');
+
+    document.querySelectorAll('#mode-group button').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('#mode-group button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        mode = this.dataset.mode;
+        reset(false);
+      });
+    });
+    document.getElementById('light-sel').addEventListener('change', function() {
+      rhoLight = parseInt(this.value); reset(false);
+    });
+    document.getElementById('combo-chk').addEventListener('change', function() {
+      combo = this.checked; reset(false);
+    });
+    document.getElementById('slow-chk').addEventListener('change', function() { slow = this.checked; });
+    document.getElementById('drop-btn').addEventListener('click', () => reset(true));
+    reset(false);
+  };
+
+  p.draw = function() {
+    p.background('#0F1220');
+    const top = 64, ground = p.height - 34;
+    const sc = (ground - top) / H;
+
+    // Sky grid
+    p.stroke('#161D38'); p.strokeWeight(1);
+    for (let x = 0; x < p.width; x += 36) p.line(x, 0, x, p.height);
+    for (let y = 0; y < p.height; y += 36) p.line(0, y, p.width, y);
+
+    // Ground
+    p.noStroke(); p.fill('#1A2238');
+    p.rect(0, ground, p.width, p.height - ground);
+    p.stroke('#3A4A80'); p.line(0, ground, p.width, ground);
+
+    // Tower (stylized, with loggias)
+    const tw = Math.max(40, p.width * 0.09), tx = p.width * 0.04;
+    p.noStroke(); p.fill('#232B48');
+    p.rect(tx, top, tw, ground - top);
+    p.fill('#2E3860');
+    const floors = 8;
+    for (let i = 0; i < floors; i++) {
+      const fy = top + i * (ground - top) / floors;
+      p.rect(tx - 3, fy, tw + 6, 3);
+      for (let j = 0; j < 3; j++) {
+        p.fill('#161B30');
+        p.arc(tx + tw * (0.2 + j * 0.3), fy + (ground - top) / floors * 0.55, tw * 0.16, (ground - top) / floors * 0.6, p.PI, p.TWO_PI);
+        p.rect(tx + tw * (0.2 + j * 0.3) - tw * 0.08, fy + (ground - top) / floors * 0.55, tw * 0.16, (ground - top) / floors * 0.3);
+        p.fill('#2E3860');
+      }
+    }
+
+    // Height scale
+    p.fill('#4A5A90'); p.noStroke();
+    p.textFont('IBM Plex Mono'); p.textSize(10); p.textAlign(p.RIGHT);
+    for (let h = 0; h <= H; h += 10) {
+      const y = ground - h * sc;
+      p.text(h + ' m', p.width - 8, y + 3);
+      p.stroke('#1E2848'); p.line(tx + tw + 10, y, p.width - 46, y); p.noStroke();
+    }
+
+    // Balls
+    const x0 = tx + tw + 30;
+    const gap = Math.min(90, (p.width - x0 - 70) / Math.max(2, bodies.length));
+    const rpx = 8;
+    bodies.forEach((b, i) => {
+      const x = x0 + i * gap + gap / 2;
+      // strobe
+      p.noStroke();
+      for (const sy of b.strobe) {
+        p.fill(b.col[0], b.col[1], b.col[2], 90);
+        p.ellipse(x, top + sy * sc, 5, 5);
+      }
+      const y = Math.min(top + b.y * sc, ground - rpx);
+      p.fill(b.col[0], b.col[1], b.col[2]);
+      if (b.kind === 'combo') {
+        p.stroke(220); p.strokeWeight(1.5);
+        p.line(x - rpx, y, x + rpx, y);
+        p.noStroke();
+        p.fill(150, 160, 182); p.ellipse(x - rpx, y, rpx * 2, rpx * 2);
+        p.fill(210, 150, 90);  p.ellipse(x + rpx, y, rpx * 2, rpx * 2);
+        p.noFill(); p.stroke(b.col[0], b.col[1], b.col[2]); p.strokeWeight(1.5);
+        p.ellipse(x, y, rpx * 5, rpx * 3);
+        p.noStroke();
+      } else {
+        p.ellipse(x, y, rpx * 2, rpx * 2);
+      }
+      p.fill('#8899CC'); p.textAlign(p.CENTER); p.textSize(10);
+      p.text(b.name, x, ground + 16);
+    });
+
+    // Title tag for mode
+    p.noStroke(); p.fill('#6878A8'); p.textAlign(p.LEFT); p.textSize(11);
+    const label = { aristotele: 'Modello di Aristotele: v ∝ peso', aria: 'Galileo: caduta con resistenza dell\'aria', vuoto: 'Galileo: caduta nel vuoto' }[mode];
+    p.text(label, x0, 20);
+
+    if (running) {
+      const dtFrame = Math.min(p.deltaTime / 1000, 0.05) * (slow ? 0.25 : 1);
+      const n = 10;
+      for (let i = 0; i < n; i++) step(dtFrame / n);
+      const allLanded = bodies.every(b => b.tLand !== null);
+      if (allLanded || (mode === 'aristotele' && t > 8)) running = false;
+    }
+
+    if (!running && t > 0 && mode === 'aristotele' && bodies.some(b => b.tLand === null)) {
+      const b = bodies[1];
+      p.fill('#FFB060'); p.textAlign(p.LEFT); p.textSize(11);
+      p.text('Secondo Aristotele, dopo 8 s il corpo leggero è ancora a ' + (H - b.y).toFixed(0) + ' m da terra…', x0, 38);
+    }
+    if (t === 0 && !running) {
+      p.fill('#A8B8D8'); p.textAlign(p.LEFT); p.textSize(12);
+      p.text('Premi «Lascia cadere»', x0, 40);
+    }
+
+    if (++hudTick % 4 === 0 || !running) updateHud();
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('canvas-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), 460);
+  };
+});
+</script>
+
+</body>
+</html>
