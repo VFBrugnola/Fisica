@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aristotele: moti terrestri e celesti — Fisica antica — Fisica</title>
+  <link rel="stylesheet" href="../../assets/css/style.css?v=20261121">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../index.html">Home</a></span>
+      <span>Fisica antica</span>
+      <span>Aristotele</span>
+      <span>Moti terrestri e celesti</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Aristotele: moti terrestri e moti celesti</h1>
+      <p>Aristotele di Stagira (384 – 322 a.C.) · <em>Fisica</em>, <em>Sul cielo</em>, <em>Sulla generazione e la corruzione</em></p>
+    </div>
+
+    <div class="page-content" style="padding:0 0 8px">
+      <p>
+        Per Aristotele il cosmo è diviso in due regioni con leggi diverse. <strong>Sotto la
+        Luna</strong> ci sono i quattro elementi, tutto nasce e muore, e i corpi si muovono in linea
+        retta: verso il basso o verso l'alto, finché raggiungono il loro <strong>luogo
+        naturale</strong> e lì si fermano. <strong>Sopra la Luna</strong> c'è un quinto elemento,
+        l'<strong>etere</strong>, che si muove solo in cerchio, sempre allo stesso modo, per
+        l'eternità. È una fisica che nasce dall'osservazione quotidiana e che resterà il modello
+        dominante per quasi duemila anni, fino a Galileo.
+      </p>
+    </div>
+
+    <div class="root-legend">
+      <span><i style="background:rgb(176,122,69)"></i>Terra: pesante</span>
+      <span><i style="background:rgb(47,111,224)"></i>Acqua: relativamente pesante</span>
+      <span><i style="background:rgb(143,211,255)"></i>Aria: relativamente leggera</span>
+      <span><i style="background:rgb(224,74,58)"></i>Fuoco: leggero</span>
+      <span><i style="background:rgb(240,226,170)"></i>Etere: né pesante né leggero</span>
+    </div>
+
+    <!-- ── Simulation 1: the cosmos and the natural places ── -->
+    <h2 class="section-title" style="font-family:'IBM Plex Serif',serif;font-size:1.25rem;margin:8px 0 14px">
+      1 · Il cosmo: luoghi naturali e moto circolare
+    </h2>
+
+    <div class="canvas-wrapper" id="cosmos-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="elem-sel">Corpo da collocare</label>
+        <select id="elem-sel">
+          <option value="0">Terra</option>
+          <option value="1">Acqua</option>
+          <option value="2">Aria</option>
+          <option value="3">Fuoco</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <button class="btn-control btn-primary" id="mix-btn">Rimescola tutto</button>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      All'inizio gli elementi sono mescolati in tutta la regione sotto la Luna. Ognuno si muove
+      in <strong>linea retta</strong> verso il suo luogo naturale: la terra verso il centro del
+      cosmo, il fuoco verso la sfera della Luna, l'acqua e l'aria nelle zone intermedie. Arrivato al suo luogo,
+      il corpo si <strong>ferma</strong>: il moto naturale ha un punto di arrivo, e accelera man
+      mano che si avvicina. Tocca il disegno per collocare un corpo dove vuoi. Sopra la Luna
+      invece la Luna, il Sole e le stelle girano in cerchio senza mai fermarsi.
+    </p>
+    <p class="anim-explain" style="margin-top:10px">
+      <em>Attenzione:</em> come per i presocratici, è un <strong>modello visivo</strong>. Le
+      proporzioni tra le sfere sono scelte per leggibilità, e la disposizione dei corpi celesti
+      sarà il tema della prossima pagina sul sistema aristotelico-tolemaico.
+    </p>
+
+    <!-- ── Simulation 2: speed, resistance, void ── -->
+    <h2 class="section-title" style="font-family:'IBM Plex Serif',serif;font-size:1.25rem;margin:40px 0 14px">
+      2 · Pesante e leggero, denso e rado: perché il vuoto non può esistere
+    </h2>
+
+    <div class="canvas-wrapper" id="fall-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="heavy">Il corpo pesante pesa</label>
+        <input type="range" id="heavy" min="2" max="5" value="2" step="1">
+        <span class="value-display" id="heavy-val">× 2</span>
+      </div>
+      <div class="control-group">
+        <button class="btn-control btn-primary" id="drop-btn">Lascia cadere</button>
+        <button class="btn-control" id="drop-reset">Ricomincia</button>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="fall-table"></table>
+    </div>
+
+    <p class="anim-explain">
+      In ogni tubo cadono due corpi della stessa forma: uno leggero e uno più pesante. Secondo
+      Aristotele la velocità è <strong>proporzionale al peso</strong> e <strong>inversamente
+      proporzionale alla resistenza del mezzo</strong>: il corpo che pesa il doppio cade in metà
+      tempo, e nell'acqua si va più piano che nell'aria. Guarda l'ultimo tubo: nel vuoto la resistenza
+      è zero, quindi la velocità sarebbe infinita e il corpo arriverebbe in un istante. Per
+      Aristotele è un assurdo, quindi <strong>il vuoto non esiste</strong>. È la risposta agli
+      atomisti.
+    </p>
+    <p class="anim-explain" style="margin-top:10px">
+      <em>Attenzione:</em> i valori della resistenza sono illustrativi, Aristotele non dà numeri.
+      Le previsioni della tabella sono quelle della teoria aristotelica, non quelle reali: per
+      vedere come cadono davvero i corpi, prova la
+      <a href="../../meccanica/galileo/caduta-gravi.html">caduta dei gravi di Galileo</a>.
+    </p>
+
+    <!-- ── Simulation 3: violent motion ── -->
+    <h2 class="section-title" style="font-family:'IBM Plex Serif',serif;font-size:1.25rem;margin:40px 0 14px">
+      3 · Il moto violento: tutto ciò che si muove è mosso da altro
+    </h2>
+
+    <div class="canvas-wrapper" id="violent-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <div class="btn-group">
+          <button class="btn-control active" id="mode-cart">Il carretto</button>
+          <button class="btn-control" id="mode-stone">La pietra lanciata</button>
+        </div>
+      </div>
+      <div class="control-group" id="cart-ctrl">
+        <button class="btn-control btn-primary" id="push-btn">Spingi (tieni premuto)</button>
+      </div>
+      <div class="control-group" id="stone-ctrl" style="display:none">
+        <button class="btn-control btn-primary" id="throw-btn">Lancia</button>
+        <label><input type="checkbox" id="parab"> mostra la traiettoria di Galileo</label>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      <strong>Il carretto.</strong> Un moto contro natura, o <em>violento</em>, ha bisogno di un
+      motore in contatto con il corpo. Finché qualcuno spinge, il carretto avanza; quando la
+      spinta cessa, si ferma. È ciò che vediamo tutti i giorni. Nella corsia di sotto lo stesso
+      carretto secondo Galileo e Newton, con pochissimo attrito: una volta spinto, continua
+      a muoversi da solo (vedi <a href="../../meccanica/galileo/inerzia.html">i due piani
+      inclinati</a>).
+    </p>
+    <p class="anim-explain" style="margin-top:10px">
+      <strong>La pietra lanciata.</strong> Qui la teoria è in difficoltà: dopo il lancio la mano
+      non tocca più la pietra, eppure la pietra continua a muoversi. Per Aristotele chi lancia
+      mette in moto anche l'<strong>aria</strong>, e le dà la capacità di spingere: ogni strato
+      d'aria spinge la pietra e lo strato successivo, con forza sempre minore. Quando la spinta
+      si esaurisce, prevale il moto naturale e la pietra cade dritta verso il basso. La
+      traiettoria in tre tratti (violento, misto, naturale) è quella che disegnavano i
+      commentatori medievali e rinascimentali applicando i principi di Aristotele. Galileo
+      dimostrerà che è una <a href="../../meccanica/galileo/proiettile.html">parabola</a>.
+    </p>
+
+    <div class="page-content" style="padding-top:36px">
+
+      <div class="law ant">
+        <div class="law-number">1 · Che cos'è il movimento</div>
+        <h2>Il passaggio dalla potenza all'atto.</h2>
+        <blockquote class="quote ant">
+          Il movimento è l'atto di ciò che è in potenza, in quanto è in potenza.
+          <cite>— <em>Fisica</em> III 1, 201a (traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          Per Aristotele «movimento» (<em>kínesis</em>) significa ogni cambiamento: di
+          <strong>luogo</strong> (il moto locale), di <strong>qualità</strong> (una foglia che
+          ingiallisce), di <strong>quantità</strong> (un bambino che cresce), e in senso più ampio
+          la nascita e la morte di una <strong>sostanza</strong>. Il cambiamento è sempre il
+          realizzarsi di una possibilità: l'acqua fredda è calda «in potenza», e scaldandosi lo
+          diventa «in atto». Contro Parmenide, il divenire non viene dal nulla, ma da ciò che è
+          già, in potenza. La fisica è la scienza delle cose che hanno in sé il principio del
+          proprio movimento e della propria quiete (<em>Fisica</em> II 1).
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">2 · Due regioni del cosmo</div>
+        <h2>Sotto la Luna tutto cambia, sopra la Luna nulla.</h2>
+        <p>
+          Il cosmo è una sfera finita, con la Terra immobile al centro. La sfera della Luna lo
+          divide in due regioni.
+        </p>
+        <p>
+          Nel mondo <strong>sublunare</strong> ci sono i quattro elementi di Empedocle, ma a
+          differenza di Empedocle si trasformano l'uno nell'altro, perché sono fatti di coppie di
+          qualità contrarie: caldo e freddo, secco e umido (<em>Sulla generazione e la
+          corruzione</em> II 3). Il fuoco è caldo e secco, l'aria calda e umida, l'acqua fredda e
+          umida, la terra fredda e secca. Dove ci sono i contrari c'è cambiamento: qui le cose
+          nascono, si alterano e muoiono.
+        </p>
+        <p>
+          Il mondo <strong>sopralunare</strong> è fatto di <strong>etere</strong>, il «primo
+          corpo». Il suo moto naturale è circolare, e il cerchio non ha un contrario: per questo
+          l'etere non nasce, non muore e non cambia (<em>Sul cielo</em> I 2 – 3). Il cielo è sempre
+          uguale a sé stesso, come mostrano secoli di osservazioni.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">3 · I luoghi naturali</div>
+        <h2>Ogni elemento tende verso il suo posto.</h2>
+        <p>
+          I moti semplici sono tre: verso il centro del cosmo, dal centro verso l'esterno, e intorno
+          al centro. La <strong>terra</strong> è pesante in assoluto e va verso il centro; il
+          <strong>fuoco</strong> è leggero in assoluto e sale verso la sfera della Luna;
+          l'<strong>acqua</strong> e l'<strong>aria</strong> stanno in mezzo. Peso e leggerezza
+          non sono quantità ma <em>tendenze</em> verso un luogo. Quando un corpo raggiunge il
+          suo luogo naturale si ferma: la quiete è lo stato naturale, il movimento serve a
+          raggiungerla. Per questo il moto naturale diventa più veloce man mano che il corpo si
+          avvicina alla sua meta (<em>Sul cielo</em> I 8).
+        </p>
+        <p>
+          È qui, e non in Empedocle, che gli elementi si dispongono a strati. Confronta la
+          simulazione con la Contesa di <a href="../pluralisti/empedocle.html">Empedocle</a>, che
+          raccoglie il simile con il simile senza un alto e un basso.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">4 · Moto naturale e moto violento</div>
+        <h2>Senza un motore, niente movimento.</h2>
+        <blockquote class="quote ant">
+          Tutto ciò che si muove è necessariamente mosso da qualcosa.
+          <cite>— <em>Fisica</em> VII 1, 241b (traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          Il moto <strong>naturale</strong> ha la sua causa nella natura stessa del corpo. Il moto
+          <strong>violento</strong>, contro natura, come una pietra lanciata verso l'alto, richiede
+          una causa esterna che agisca per contatto; se la causa smette di agire, il moto
+          violento cessa. Il caso del proiettile resta il punto debole della teoria (<em>Fisica</em>
+          VIII 10). Già nel VI secolo Giovanni Filopono obietterà che, se fosse l'aria a spingere,
+          basterebbe agitare l'aria per lanciare una pietra. Dirà invece che chi lancia imprime
+          alla pietra una forza. È l'idea dell'<em>impetus</em>, sviluppata nel Trecento da
+          Giovanni Buridano, che prepara la strada al principio d'inerzia.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">5 · Velocità, resistenza e vuoto</div>
+        <h2>Più peso, più velocità; più resistenza, meno velocità.</h2>
+        <p>
+          Nei capitoli 8 del libro IV della <em>Fisica</em> e 6 del libro I di <em>Sul cielo</em>
+          Aristotele lega la velocità di caduta al peso del corpo e alla densità del mezzo che
+          attraversa. In linguaggio moderno:
+        </p>
+        <div class="math-block" style="font-family:'IBM Plex Serif',serif;font-size:1.35rem">
+          <i>v</i> ∝ <i>P</i> / <i>R</i>
+        </div>
+        <div class="legend">
+          <div class="legend-title">Che cosa significano i simboli</div>
+          <p class="legend-row"><span class="sym"><b>v</b></span> — Velocità del corpo che cade (o che sale, se è leggero).</p>
+          <p class="legend-row"><span class="sym"><b>P</b></span> — Peso del corpo: per Aristotele, la sua tendenza a raggiungere il luogo naturale. A parità di forma, il doppio del peso dà il doppio della velocità.</p>
+          <p class="legend-row"><span class="sym"><b>R</b></span> — Resistenza del mezzo attraversato (aria, acqua…): cresce con la sua densità. Il doppio della resistenza dà metà della velocità.</p>
+          <p class="legend-row"><span class="sym"><b>∝</b></span> — «È proporzionale a». Aristotele parla di rapporti tra grandezze, non scrive formule né usa unità di misura.</p>
+        </div>
+        <p>
+          Da qui l'argomento contro il <strong>vuoto</strong>: nel vuoto la resistenza è nulla,
+          il rapporto non ha senso e il moto avverrebbe in un tempo nullo, il che è impossibile.
+          Aristotele aggiunge un altro argomento, che oggi suona sorprendente: nel vuoto
+          non ci sarebbe un motivo per cui un corpo in movimento si fermi in un punto piuttosto
+          che in un altro, quindi <em>o resterebbe fermo, o continuerebbe a muoversi all'infinito</em>
+          (<em>Fisica</em> IV 8, 215a). Per lui è un'altra prova che il vuoto è assurdo. Per
+          Newton sarà la prima legge del moto.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">6 · Il motore immobile</div>
+        <h2>Che cosa fa girare il cielo?</h2>
+        <p>
+          Se tutto ciò che si muove è mosso da altro, la catena dei motori non può andare
+          all'infinito. Deve esistere un <strong>primo motore</strong> che muove senza essere
+          mosso. Non spinge i cieli, perché non è un corpo: li muove «come ciò che è amato»
+          (<em>Metafisica</em> Λ 7, 1072b), come oggetto di desiderio. Il cielo delle stelle
+          fisse, imitando la sua perfezione, ruota in eterno; e il suo moto si trasmette alle
+          sfere sottostanti. Come sono disposte queste sfere, e come spiegano il moto dei pianeti,
+          sarà il tema della prossima pagina: il sistema aristotelico-tolemaico.
+        </p>
+      </div>
+
+      <div class="philo-box">
+        <strong>Il punto filosofico</strong>
+        La fisica di Aristotele è <em>qualitativa</em> e <em>finalistica</em>. Non misura, ma
+        classifica i movimenti secondo la natura dei corpi, e spiega il moto con il fine verso
+        cui tende: il luogo naturale. Non è una fisica ingenua: descrive bene l'esperienza di
+        tutti i giorni. I carretti si fermano se nessuno li spinge, le pietre cadono più veloci
+        delle piume, il cielo non cambia mai. Per questo è durata quasi duemila anni. Galileo non
+        la smentirà con esperienze nuove, ma rileggendo le stesse esperienze in un altro modo:
+        separando l'effetto dell'attrito e dell'aria e immaginando condizioni ideali che nessuno
+        aveva mai visto. Le pagine su <a href="../../meccanica/galileo/index.html">Galileo</a>
+        riprendono una per una le tesi di questa pagina.
+      </div>
+
+      <div class="info-box">
+        <strong>La vita.</strong> Nato a Stagira, nella penisola Calcidica, Aristotele studiò
+        per vent'anni all'Accademia di Platone, ad Atene. Fu precettore del giovane Alessandro
+        Magno e nel 335 a.C. fondò ad Atene una propria scuola, il Liceo. I suoi scritti di
+        fisica (<em>Fisica</em>, <em>Sul cielo</em>, <em>Sulla generazione e la corruzione</em>,
+        <em>Meteorologica</em>) sono appunti per le lezioni. Morì a Calcide nel 322 a.C.
+      </div>
+
+    </div>
+
+    <div class="anim-nav">
+      <a href="../pluralisti/democrito.html">
+        <span>← Indietro</span>
+        Democrito
+      </a>
+      <a href="../../index.html" class="next" style="pointer-events:none;opacity:.55">
+        <span>Prossimamente →</span>
+        Il sistema aristotelico-tolemaico
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const ELEM = [
+  { name: 'Terra', col: [176, 122, 69],  band: [0.00, 0.30] },
+  { name: 'Acqua', col: [47, 111, 224],  band: [0.30, 0.50] },
+  { name: 'Aria',  col: [143, 211, 255], band: [0.50, 0.75] },
+  { name: 'Fuoco', col: [224, 74, 58],   band: [0.75, 0.97] }
+];
+const ETHER = [240, 226, 170];
+
+function hudBox(p, lines, w) {
+  p.noStroke(); p.fill(15, 18, 32, 215); p.rect(8, 8, w, 14 + lines.length * 16, 3);
+  p.textFont('IBM Plex Mono'); p.textAlign(p.LEFT); p.textSize(11);
+  lines.forEach((l, i) => { p.fill(l[1] || '#A8B8D8'); p.text(l[0], 16, 26 + i * 16); });
+}
+const inCanvas = (p) => p.mouseX >= 0 && p.mouseX <= p.width && p.mouseY >= 0 && p.mouseY <= p.height;
+
+// ── Simulation 1: the cosmos ──
+new p5(function(p) {
+  const chFor = (w) => (w < 600 ? 440 : 540);
+  let parts = [], stars = [], time = 0, msg = '', msgT = 0;
+  let cx, cy, Rm;
+
+  function layout() { cx = p.width / 2; cy = p.height / 2 + 14; Rm = Math.min(p.width / 2 - 10, p.height / 2 - 24) / 1.5; }
+
+  function addPart(k, r, th) {
+    const b = ELEM[k].band;
+    const rt = Math.sqrt(b[0] * b[0] + Math.random() * (b[1] * b[1] - b[0] * b[0]));
+    parts.push({ k, r, r0: r, rt, th, done: Math.abs(rt - r) < 0.005, tDone: -10 });
+    if (parts.length > 420) parts.shift();
+  }
+  function mix() {
+    parts = [];
+    for (let i = 0; i < 240; i++) addPart(i % 4, Math.sqrt(Math.random()) * 0.97, Math.random() * Math.PI * 2);
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('cosmos-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), chFor(w)).parent('cosmos-container');
+    layout();
+    for (let i = 0; i < 70; i++) stars.push({ a: Math.random() * Math.PI * 2, r: 1.40 + Math.random() * 0.08, s: 1 + Math.random() * 1.8 });
+    document.getElementById('mix-btn').addEventListener('click', mix);
+    mix();
+  };
+
+  p.mousePressed = function() {
+    if (!inCanvas(p)) return;
+    const dx = (p.mouseX - cx) / Rm, dy = (p.mouseY - cy) / Rm, r = Math.hypot(dx, dy);
+    if (r < 0.98) addPart(parseInt(document.getElementById('elem-sel').value), r, Math.atan2(dy, dx));
+    else { msg = r < 1.55 ? 'Sopra la Luna non ci sono i quattro elementi: solo etere' : ''; msgT = 2.5; }
+  };
+
+  p.draw = function() {
+    const dt = Math.min(p.deltaTime / 1000, 0.05);
+    time += dt; msgT -= dt;
+    p.background('#0F1220');
+
+    // natural places (faint bands), outermost first
+    p.noStroke();
+    for (let k = 3; k >= 0; k--) {
+      const c = ELEM[k].col;
+      p.fill(c[0], c[1], c[2], 26);
+      p.ellipse(cx, cy, 2 * ELEM[k].band[1] * Rm, 2 * ELEM[k].band[1] * Rm);
+    }
+    // sphere of the Moon
+    p.noFill(); p.stroke(ETHER[0], ETHER[1], ETHER[2], 150); p.strokeWeight(1.4);
+    p.ellipse(cx, cy, 2 * Rm, 2 * Rm);
+    // celestial paths
+    p.stroke(ETHER[0], ETHER[1], ETHER[2], 40); p.strokeWeight(1);
+    p.drawingContext.setLineDash([3, 6]);
+    p.ellipse(cx, cy, 2 * 1.09 * Rm, 2 * 1.09 * Rm);
+    p.ellipse(cx, cy, 2 * 1.25 * Rm, 2 * 1.25 * Rm);
+    p.drawingContext.setLineDash([]);
+
+    // the elements: straight motion towards the natural place, faster near the end
+    for (const a of parts) {
+      if (!a.done) {
+        const total = Math.abs(a.rt - a.r0) || 1e-6, prog = 1 - Math.abs(a.rt - a.r) / total;
+        const v = 0.16 * (0.4 + 1.8 * prog);
+        const dir = Math.sign(a.rt - a.r);
+        a.r += dir * v * dt;
+        if ((a.rt - a.r) * dir <= 0) { a.r = a.rt; a.done = true; a.tDone = time; }
+      }
+      const fade = a.done ? Math.max(0, 1 - (time - a.tDone) / 1.5) : 1;
+      if (fade > 0 && Math.abs(a.r - a.r0) > 0.01) {
+        const c = ELEM[a.k].col, co = Math.cos(a.th), si = Math.sin(a.th);
+        p.stroke(c[0], c[1], c[2], 110 * fade); p.strokeWeight(1);
+        p.line(cx + co * a.r0 * Rm, cy + si * a.r0 * Rm, cx + co * a.r * Rm, cy + si * a.r * Rm);
+      }
+    }
+    p.noStroke();
+    for (const a of parts) {
+      const c = ELEM[a.k].col;
+      p.fill(c[0], c[1], c[2]);
+      p.ellipse(cx + Math.cos(a.th) * a.r * Rm, cy + Math.sin(a.th) * a.r * Rm, 6, 6);
+    }
+
+    // ether: uniform circular motion, forever
+    for (const s of stars) {
+      const a = s.a + time * 0.05;
+      p.fill(ETHER[0], ETHER[1], ETHER[2], 200);
+      p.ellipse(cx + Math.cos(a) * s.r * Rm, cy + Math.sin(a) * s.r * Rm, s.s * 2, s.s * 2);
+    }
+    const am = -time * 0.45, as = -time * 0.16;
+    p.fill(225, 228, 236); p.ellipse(cx + Math.cos(am) * 1.09 * Rm, cy + Math.sin(am) * 1.09 * Rm, 14, 14);
+    p.fill(15, 18, 32); p.ellipse(cx + Math.cos(am) * 1.09 * Rm + 4, cy + Math.sin(am) * 1.09 * Rm - 2, 11, 11);
+    p.fill(255, 205, 80); p.ellipse(cx + Math.cos(as) * 1.25 * Rm, cy + Math.sin(as) * 1.25 * Rm, 20, 20);
+
+    // labels
+    p.textFont('IBM Plex Mono'); p.textSize(10); p.textAlign(p.CENTER);
+    p.fill(ETHER[0], ETHER[1], ETHER[2], 190);
+    p.text('sfera della Luna', cx, cy + Rm + 14);
+    p.text('ETERE', cx, cy - 1.33 * Rm);
+    const ninMoto = parts.filter(a => !a.done).length;
+    hudBox(p, [
+      ['Sotto la Luna: moto rettilineo, poi quiete', '#D9DEEA'],
+      ['in moto: ' + ninMoto + '   ·   giunti al loro luogo: ' + (parts.length - ninMoto), '#8899CC'],
+      ['Sopra la Luna: moto circolare, eterno', '#F0E2AA']
+    ], Math.min(p.width - 16, 330));
+    if (msgT > 0 && msg) {
+      p.fill(15, 18, 32, 220); p.rect(8, p.height - 34, p.width - 16, 26, 3);
+      p.fill('#F2B27A'); p.textAlign(p.CENTER); p.textSize(11); p.text(msg, p.width / 2, p.height - 17);
+    }
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('cosmos-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), chFor(w)); layout();
+  };
+});
+
+// ── Simulation 2: v ∝ P / R ──
+new p5(function(p) {
+  const CH = 400, T_REF = 1.2;      // light body in air takes T_REF seconds
+  const MEDIA = [
+    { name: 'Aria',  R: 1, col: [143, 211, 255, 22] },
+    { name: 'Acqua', R: 3, col: [47, 111, 224, 70] },
+    { name: 'Miele', R: 8, col: [214, 150, 40, 90] },
+    { name: 'Vuoto', R: 0, col: null }
+  ];
+  let heavy = 2, t = 0, dropped = false;
+
+  const fmt = (x) => x.toFixed(1).replace('.', ',') + ' s';
+  function table() {
+    let h = '<tr><th style="text-align:left">Mezzo</th><th>Resistenza R</th><th>Tempo del leggero (P = 1)</th><th>Tempo del pesante (P = ' + heavy + ')</th></tr>';
+    for (const m of MEDIA) {
+      if (m.R === 0) h += '<tr><td style="text-align:left">Vuoto</td><td>0</td><td colspan="2">0 s: velocità infinita, impossibile</td></tr>';
+      else h += '<tr><td style="text-align:left">' + m.name + '</td><td>' + m.R + '</td><td>' + fmt(T_REF * m.R) + '</td><td>' + fmt(T_REF * m.R / heavy) + '</td></tr>';
+    }
+    document.getElementById('fall-table').innerHTML = h;
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('fall-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), CH).parent('fall-container');
+    document.getElementById('heavy').addEventListener('input', function() {
+      heavy = parseInt(this.value); document.getElementById('heavy-val').textContent = '× ' + heavy;
+      table(); t = 0; dropped = false;
+    });
+    document.getElementById('drop-btn').addEventListener('click', () => { t = 0; dropped = true; });
+    document.getElementById('drop-reset').addEventListener('click', () => { t = 0; dropped = false; });
+    table();
+  };
+
+  p.draw = function() {
+    const dt = Math.min(p.deltaTime / 1000, 0.05);
+    if (dropped) t += dt;
+    p.background('#0F1220');
+    const n = MEDIA.length, slot = p.width / n, tw = Math.min(120, slot - 22);
+    const top = 64, bot = p.height - 36, h = bot - top - 30;
+    p.textFont('IBM Plex Mono'); p.textAlign(p.CENTER);
+    MEDIA.forEach((m, i) => {
+      const x = slot * (i + 0.5);
+      // tube
+      if (m.col) { p.noStroke(); p.fill(m.col[0], m.col[1], m.col[2], m.col[3]); p.rect(x - tw / 2, top, tw, bot - top); }
+      p.noFill(); p.stroke('#3A4468'); p.strokeWeight(1.2);
+      if (!m.col) p.drawingContext.setLineDash([4, 5]);
+      p.rect(x - tw / 2, top, tw, bot - top);
+      p.drawingContext.setLineDash([]);
+      p.noStroke(); p.fill('#D9DEEA'); p.textSize(12); p.text(m.name, x, top - 26);
+      p.fill('#6878A8'); p.textSize(10); p.text('R = ' + m.R, x, top - 10);
+      // bodies: light (left) and heavy (right)
+      const bodies = [{ P: 1, dx: -tw * 0.22, d: 14, c: [200, 205, 220] }, { P: heavy, dx: tw * 0.22, d: 14, c: [150, 110, 80] }];
+      for (const b of bodies) {
+        const bx = x + b.dx, y0 = top + 18;
+        if (m.R === 0 && dropped && t > 0) {
+          // in the void the body would be everywhere at once
+          for (let y = y0; y <= y0 + h; y += 16) { p.fill(b.c[0], b.c[1], b.c[2], 60); p.ellipse(bx, y, b.d, b.d); }
+          p.fill(b.c[0], b.c[1], b.c[2]); p.ellipse(bx, y0 + h, b.d, b.d);
+          continue;
+        }
+        const T = T_REF * m.R / b.P, y = y0 + h * Math.min(1, dropped ? t / T : 0);
+        p.fill(b.c[0], b.c[1], b.c[2]); p.ellipse(bx, y, b.d, b.d);
+      }
+      if (m.R === 0 && dropped && t > 0) {
+        p.fill('#F2B27A'); p.textSize(22); p.textFont('IBM Plex Serif'); p.text('∞', x, top + h / 2 + 8);
+        p.textFont('IBM Plex Mono'); p.textSize(10); p.text('assurdo!', x, top + h / 2 + 26);
+      }
+    });
+    p.fill('#8899CC'); p.textSize(10); p.textAlign(p.LEFT);
+    p.text('● leggero (P = 1)', 12, p.height - 12);
+    p.fill(150, 110, 80); p.text('● pesante (P = ' + heavy + ')', 140, p.height - 12);
+    p.fill('#6878A8'); p.textAlign(p.RIGHT); p.text('t = ' + t.toFixed(1).replace('.', ',') + ' s', p.width - 12, p.height - 12);
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('fall-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), CH);
+  };
+});
+
+// ── Simulation 3: violent motion ──
+new p5(function(p) {
+  const CH = 380;
+  let mode = 'cart', pushing = false;
+  let ca = { x: 60, v: 0 }, cg = { x: 60, v: 0 };   // Aristotle's cart, Galileo's cart
+  let stone = null, gal = null, showParab = false;
+
+  function sc() { return Math.min(1, Math.max(0.5, p.width / 700)); }
+  function resetStone() { stone = null; gal = null; }
+
+  function throwStone() {
+    const s = sc(), ang = 40 * Math.PI / 180;
+    stone = { x: 30 + 20 * s, y: p.height - 40, t: 0, path: [], marks: {}, dir: [Math.cos(ang), -Math.sin(ang)], v0: 330 * s, vf: 260 * s, end: false };
+    stone.path.push([stone.x, stone.y]);
+    gal = { x0: stone.x, y0: stone.y, vx: 330 * s * Math.cos(ang), vy: -330 * s * Math.sin(ang), g: 350 * s, t: 0, end: false, path: [[stone.x, stone.y]] };
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('violent-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), CH).parent('violent-container');
+    const pb = document.getElementById('push-btn');
+    const on = (e) => { pushing = true; if (e.cancelable) e.preventDefault(); }, off = () => { pushing = false; };
+    pb.addEventListener('mousedown', on); pb.addEventListener('touchstart', on, { passive: false });
+    ['mouseup', 'mouseleave', 'touchend', 'touchcancel'].forEach(ev => pb.addEventListener(ev, off));
+    window.addEventListener('mouseup', off);
+    const setMode = (m) => {
+      mode = m; pushing = false;
+      document.getElementById('mode-cart').classList.toggle('active', m === 'cart');
+      document.getElementById('mode-stone').classList.toggle('active', m === 'stone');
+      document.getElementById('cart-ctrl').style.display = m === 'cart' ? '' : 'none';
+      document.getElementById('stone-ctrl').style.display = m === 'stone' ? '' : 'none';
+      ca = { x: 60, v: 0 }; cg = { x: 60, v: 0 }; resetStone();
+    };
+    document.getElementById('mode-cart').addEventListener('click', () => setMode('cart'));
+    document.getElementById('mode-stone').addEventListener('click', () => setMode('stone'));
+    document.getElementById('throw-btn').addEventListener('click', throwStone);
+    document.getElementById('parab').addEventListener('change', function() { showParab = this.checked; });
+  };
+
+  function cart(x, y, col) {
+    const W = p.width, xs = ((x % W) + W) % W;
+    for (const off of [0, -W, W]) {
+      const X = xs + off;
+      if (X < -90 || X > W + 90) continue;
+      p.noStroke(); p.fill(col); p.rect(X - 36, y - 34, 72, 24, 3);
+      p.fill('#2A3150'); p.ellipse(X - 22, y - 8, 16, 16); p.ellipse(X + 22, y - 8, 16, 16);
+      if (pushing) {
+        p.stroke('#F2B27A'); p.strokeWeight(3);
+        p.line(X - 80, y - 22, X - 42, y - 22);
+        p.noStroke(); p.fill('#F2B27A'); p.triangle(X - 40, y - 22, X - 50, y - 28, X - 50, y - 16);
+      }
+    }
+  }
+
+  p.draw = function() {
+    const dt = Math.min(p.deltaTime / 1000, 0.05), s = sc();
+    p.background('#0F1220');
+    p.textFont('IBM Plex Mono');
+
+    if (mode === 'cart') {
+      // Aristotle: speed only while the mover acts (v = F / R), stops at once otherwise
+      ca.v = pushing ? 120 * s : 0; ca.x += ca.v * dt;
+      // Galileo–Newton: the push changes the speed; a little friction slows it down slowly
+      if (pushing) cg.v += 220 * s * dt;
+      else cg.v = Math.max(0, cg.v - 12 * s * dt);
+      cg.v = Math.min(cg.v, 420 * s); cg.x += cg.v * dt;
+      const lanes = [[150, 'Aristotele: senza spinta, niente moto', ca, [176, 122, 69]], [320, 'Galileo e Newton: il moto continua da solo', cg, [110, 170, 140]]];
+      for (const [y, label, c, col] of lanes) {
+        p.stroke('#2A3150'); p.strokeWeight(2); p.line(0, y, p.width, y);
+        p.noStroke(); p.fill('#2A3150');
+        for (let x = 0; x < p.width; x += 40) p.rect(x, y + 4, 2, 6);
+        cart(c.x, y, p.color(col[0], col[1], col[2]));
+        p.fill('#A8B8D8'); p.textSize(11); p.textAlign(p.LEFT); p.text(label, 12, y - 60);
+        p.fill('#6878A8'); p.textSize(10);
+        p.text('velocità: ' + Math.round(c.v / s) + (c === ca && !pushing ? ' (fermo: nessuno spinge)' : ''), 12, y - 44);
+      }
+      p.fill(pushing ? '#F2B27A' : '#6878A8'); p.textAlign(p.RIGHT); p.textSize(11);
+      p.text(pushing ? 'qualcuno spinge' : 'nessuno spinge', p.width - 12, 24);
+    } else {
+      const ground = p.height - 40;
+      p.stroke('#2A3150'); p.strokeWeight(2); p.line(0, ground, p.width, ground);
+      // the thrower's hand
+      p.noStroke(); p.fill('#A8B8D8'); p.ellipse(30 + 20 * s, ground, 10, 10);
+      if (!stone) {
+        p.fill('#8899CC'); p.textAlign(p.LEFT); p.textSize(11);
+        p.text('Premi «Lancia»', 12, 24);
+      }
+      if (gal && showParab) {
+        if (!gal.end) {
+          gal.t += dt;
+          const x = gal.x0 + gal.vx * gal.t, y = gal.y0 + gal.vy * gal.t + 0.5 * gal.g * gal.t * gal.t;
+          if (y >= ground && gal.t > 0.2) gal.end = true; else gal.path.push([x, y]);
+        }
+        p.noFill(); p.stroke(127, 209, 174, 170); p.strokeWeight(1.5);
+        p.drawingContext.setLineDash([5, 5]);
+        p.beginShape(); for (const q of gal.path) p.vertex(q[0], q[1]); p.endShape();
+        p.drawingContext.setLineDash([]);
+        const last = gal.path[gal.path.length - 1];
+        p.noStroke(); p.fill(127, 209, 174); p.ellipse(last[0], last[1], 10, 10);
+      } else if (gal && !gal.end) {
+        // keep Galileo's stone running in the background, so the checkbox can show it any time
+        gal.t += dt;
+        const x = gal.x0 + gal.vx * gal.t, y = gal.y0 + gal.vy * gal.t + 0.5 * gal.g * gal.t * gal.t;
+        if (y >= ground && gal.t > 0.2) gal.end = true; else gal.path.push([x, y]);
+      }
+      if (stone) {
+        let sv = 0;
+        if (!stone.end) {
+          stone.t += dt;
+          // strength of the push of the air: full at first, then it fades away
+          sv = stone.t < 0.8 ? 1 : Math.max(0, 1 - (stone.t - 0.8) / 1.0);
+          const vx = sv * stone.v0 * stone.dir[0], vy = sv * stone.v0 * stone.dir[1] + (1 - sv) * stone.vf;
+          stone.x += vx * dt; stone.y += vy * dt;
+          if (stone.y >= ground) { stone.y = ground; stone.end = true; }
+          stone.path.push([stone.x, stone.y]);
+          if (!stone.marks.v && stone.t > 0.45) stone.marks.v = [stone.x, stone.y];
+          if (!stone.marks.m && sv < 0.5) stone.marks.m = [stone.x, stone.y];
+          if (!stone.marks.n && sv === 0 && stone.y > stone.marks.m[1] + 40 * s) stone.marks.n = [stone.x, stone.y];
+        }
+        p.noFill(); p.stroke(217, 222, 234, 150); p.strokeWeight(1.5);
+        p.beginShape(); for (const q of stone.path) p.vertex(q[0], q[1]); p.endShape();
+        // the air pushing from behind
+        if (sv > 0) {
+          for (let j = 1; j <= 3; j++) {
+            const bx = stone.x - stone.dir[0] * (10 + j * 9), by = stone.y - stone.dir[1] * (10 + j * 9);
+            p.stroke(143, 211, 255, 200 * sv); p.strokeWeight(1.5); p.noFill();
+            p.arc(bx, by, 10, 14, -Math.PI / 2 + 0.7, Math.PI / 2 - 0.7 + Math.PI * 0, p.OPEN);
+          }
+        }
+        p.noStroke(); p.fill(176, 122, 69); p.ellipse(stone.x, stone.y, 12, 12);
+        p.textSize(10); p.textAlign(p.LEFT);
+        const lab = [['v', 'moto violento: l\'aria spinge', '#8FD3FF'], ['m', 'moto misto', '#A8B8D8'], ['n', 'moto naturale: cade dritta', '#F2B27A']];
+        for (const [k, t, c] of lab) if (stone.marks[k]) {
+          const [mx, my] = stone.marks[k], left = k === 'n' && mx > p.width * 0.55;
+          p.fill(c); p.textAlign(left ? p.RIGHT : p.LEFT);
+          p.text(t, mx + (left ? -10 : 10), my + (k === 'v' ? 14 : 4));
+        }
+        p.textAlign(p.LEFT);
+        p.fill('#8899CC'); p.textSize(11);
+        p.text(sv > 0 ? 'Spinta dell\'aria: ' + Math.round(sv * 100) + '%' : (stone.end ? 'La pietra è arrivata al suo luogo naturale' : 'Spinta esaurita: prevale il moto naturale'), 12, 24);
+        if (showParab) { p.fill(127, 209, 174); p.text('- - - Galileo: una parabola', 12, 42); }
+      }
+    }
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('violent-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), CH);
+  };
+});
+</script>
+
+</body>
+</html>
