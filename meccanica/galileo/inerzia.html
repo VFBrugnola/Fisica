@@ -139,7 +139,7 @@ new p5(function(p) {
       '<tr><td style="text-align:left">Altezza massima raggiunta sul 2° piano</td><td>' +
         (th2 === 0 ? '0 m (piano orizzontale)' : maxH.toFixed(2) + ' m') + '</td></tr>';
     if (th2 > 0) {
-      html += '<tr><td style="text-align:left">Strada prevista senza attrito (h / sin θ)</td><td>' + (H0 / Math.sin(th2)).toFixed(2) + ' m</td></tr>';
+      html += '<tr><td style="text-align:left">Strada prevista senza attrito (h / sin θ: altezza di partenza diviso il seno dell\'inclinazione)</td><td>' + (H0 / Math.sin(th2)).toFixed(2) + ' m</td></tr>';
     }
     document.getElementById('hud').innerHTML = html;
   }

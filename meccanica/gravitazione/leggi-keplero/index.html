@@ -57,10 +57,27 @@
       <div class="math-block">
         $$r = \frac{a(1 - e^2)}{1 + e\cos\theta}$$
       </div>
+      <dl class="legend">
+        <div class="legend-title">Che cosa significano i simboli</div>
+        <dt>$r$</dt>
+        <dd>Distanza tra il pianeta e il Sole in un certo punto dell'orbita. Cambia mentre il pianeta si muove. <span class="unit">m oppure UA</span></dd>
+        <dt>$a$</dt>
+        <dd><strong>Semiasse maggiore</strong>: metà del diametro più lungo dell'ellisse. Indica quanto è grande l'orbita ed è la distanza media del pianeta dal Sole. <span class="unit">m oppure UA</span></dd>
+        <dt>$e$</dt>
+        <dd><strong>Eccentricità</strong>: un numero puro tra 0 e 1 che dice quanto l'ellisse è «schiacciata». Con $e = 0$ l'orbita è un cerchio; più $e$ si avvicina a 1, più l'orbita è allungata. Per la Terra $e \approx 0{,}017$, quasi un cerchio. <span class="unit">senza unità</span></dd>
+        <dt>$\theta$</dt>
+        <dd><strong>Anomalia vera</strong>: l'angolo, misurato dal Sole, tra la direzione del perielio e la direzione in cui si trova il pianeta. Vale 0° al perielio e 180° all'afelio. <span class="unit">gradi o radianti</span></dd>
+        <dt>$\cos\theta$</dt>
+        <dd>Coseno dell'angolo: vale 1 al perielio (dove $r$ è minima) e −1 all'afelio (dove $r$ è massima).</dd>
+      </dl>
       <p>
-        Dove $\theta$ è l'anomalia vera (angolo misurato dal perielio) e
-        $p = a(1 - e^2)$ è il semi-latus rectum.
-        Le distanze agli estremi: $r_{\min} = a(1-e)$ al perielio, $r_{\max} = a(1+e)$ all'afelio.
+        <em>Un'unità astronomica (UA) è la distanza media Terra–Sole, circa 150 milioni di km.</em>
+      </p>
+      <p>
+        Le distanze agli estremi si ottengono ponendo $\theta = 0°$ e $\theta = 180°$:
+        $r_{\min} = a(1-e)$ al perielio e $r_{\max} = a(1+e)$ all'afelio.
+        Il numeratore $a(1 - e^2)$ si chiama <em>semi-latus rectum</em> ed è la distanza
+        Sole–pianeta quando il pianeta si trova a 90° dal perielio.
       </p>
       <a href="prima-legge.html" class="law-link">→ Simulazione interattiva</a>
     </div>
@@ -82,9 +99,23 @@
       <div class="math-block">
         $$\frac{dA}{dt} = \frac{L}{2m} = \text{costante}$$
       </div>
+      <dl class="legend">
+        <div class="legend-title">Che cosa significano i simboli</div>
+        <dt>$A$</dt>
+        <dd>Area spazzata dal raggio vettore, cioè la superficie del «settore» compreso tra il Sole e il tratto di orbita percorso. <span class="unit">m²</span></dd>
+        <dt>$t$</dt>
+        <dd>Tempo. <span class="unit">s</span></dd>
+        <dt>$\dfrac{dA}{dt}$</dt>
+        <dd><strong>Velocità areolare</strong>: quanta area il raggio vettore spazza in ogni istante (area spazzata in un intervallo di tempo piccolissimo, divisa per quell'intervallo). La seconda legge dice che questa grandezza è sempre la stessa. <span class="unit">m²/s</span></dd>
+        <dt>$L$</dt>
+        <dd><strong>Momento angolare</strong> del pianeta rispetto al Sole: misura la «quantità di rotazione» intorno al Sole e dipende dalla massa del pianeta, dalla sua velocità e dalla sua distanza dal Sole. <span class="unit">kg·m²/s</span></dd>
+        <dt>$m$</dt>
+        <dd>Massa del pianeta. <span class="unit">kg</span></dd>
+      </dl>
       <p>
-        Dove $L$ è il momento angolare del pianeta di massa $m$ rispetto al Sole.
-        Poiché non agiscono forze tangenziali (la forza gravitazionale è centrale), $L$ si conserva.
+        La gravità del Sole tira il pianeta sempre verso il Sole stesso (è una forza
+        <em>centrale</em>) e non lo spinge mai «di lato»: per questo $L$ non cambia,
+        e con esso la velocità areolare.
       </p>
       <a href="seconda-legge.html" class="law-link">→ Simulazione interattiva</a>
     </div>
@@ -100,6 +131,23 @@
       <div class="math-block">
         $$\frac{T^2}{a^3} = \frac{4\pi^2}{GM_\odot}$$
       </div>
+      <dl class="legend">
+        <div class="legend-title">Che cosa significano i simboli</div>
+        <dt>$T$</dt>
+        <dd><strong>Periodo di rivoluzione</strong>: il tempo che il pianeta impiega a compiere un giro completo intorno al Sole (per la Terra, un anno). <span class="unit">s oppure anni</span></dd>
+        <dt>$a$</dt>
+        <dd><strong>Semiasse maggiore</strong> dell'orbita: la distanza media del pianeta dal Sole. <span class="unit">m oppure UA</span></dd>
+        <dt>$G$</dt>
+        <dd><strong>Costante di gravitazione universale</strong>: è la stessa ovunque nell'universo e vale circa $6{,}67 \times 10^{-11}$. <span class="unit">N·m²/kg²</span></dd>
+        <dt>$M_\odot$</dt>
+        <dd>Massa del Sole (il simbolo ☉ indica il Sole), circa $2 \times 10^{30}$ kg. <span class="unit">kg</span></dd>
+        <dt>$\pi$</dt>
+        <dd>Il numero pi greco (≈ 3,14). Compare perché il pianeta percorre un giro completo. <span class="unit">senza unità</span></dd>
+      </dl>
+      <p>
+        Il secondo membro non contiene nulla che riguardi il singolo pianeta: per questo
+        il rapporto $T^2/a^3$ è uguale per tutti i pianeti.
+      </p>
       <p>
         In unità pratiche (periodo in anni, semiasse in UA):
       </p>
