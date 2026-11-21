@@ -837,7 +837,7 @@ canvas {
   font-size: 0.82rem;
 }
 
-.letters div {
+.letters > div {
   background: var(--surface);
   padding: 12px;
   color: var(--text-secondary);
@@ -853,7 +853,7 @@ canvas {
   margin-bottom: 4px;
 }
 
-.letters b {
+.letters .lb {
   display: block;
   font-family: 'IBM Plex Mono', monospace;
   font-size: 0.7rem;
