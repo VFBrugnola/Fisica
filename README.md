@@ -62,10 +62,10 @@ Fisica/
 
 ## Licenza
 
-Questo lavoro è distribuito con licenza [Creative Commons Attribuzione 4.0 Internazionale (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/deed.it). Il testo completo è nel file [LICENSE](LICENSE).
+Questo lavoro è distribuito con licenza [Creative Commons Attribuzione – Non commerciale 4.0 Internazionale (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/deed.it). Il testo completo è nel file [LICENSE](LICENSE).
 
-Puoi usare, copiare, modificare e ridistribuire i materiali, anche a scopo commerciale, **a condizione di citare l'autore**, indicare un link alla licenza e segnalare se hai apportato modifiche. Per esempio:
+Puoi usare, copiare, modificare e ridistribuire i materiali, per esempio in classe, **a condizione di citare l'autore**, indicare un link alla licenza e segnalare se hai apportato modifiche. **Non è consentito l'uso a scopo commerciale.** Esempio di citazione:
 
-> «Fisica per la filosofia» di VFBrugnola, https://github.com/VFBrugnola/Fisica, licenza CC BY 4.0.
+> «Fisica per la filosofia» di VFBrugnola, https://github.com/VFBrugnola/Fisica, licenza CC BY-NC 4.0.
 
 Le librerie p5.js (LGPL 2.1) e KaTeX (MIT) restano soggette alle rispettive licenze. Le traduzioni dei frammenti antichi sono adattate e vanno confrontate con un'edizione di riferimento.
