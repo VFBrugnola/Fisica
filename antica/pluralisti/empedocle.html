@@ -72,7 +72,7 @@
       Sposta il cursore. Con il solo <strong>Amore</strong> le radici si fondono in un'unica
       sfera in cui ogni particella sta accanto a particelle diverse: è lo <strong>Sfero</strong>.
       Con la sola <strong>Contesa</strong> ogni radice si raccoglie con le sue simili e i quattro
-      elementi si dispongono a strati: la terra in basso, poi l'acqua, l'aria e in alto il fuoco.
+      quattro radici si separano in <strong>quattro masse distinte</strong>, lontane tra loro.
       Nelle posizioni intermedie si formano mescolanze parziali: è il mondo in cui viviamo, fatto
       di cose che nascono e muoiono. L'<strong>indice di mescolanza</strong> misura quante delle
       particelle vicine sono di una radice diversa (100% = mescolanza perfetta).
@@ -150,7 +150,16 @@
           con il fuoco, tutta l'acqua con l'acqua.
         </p>
         <p>
-          Aristotele nota che Empedocle fu il primo a distinguere la materia (le radici) dalle
+          Quando domina la Contesa, quindi, le radici non si disperdono: si raccolgono in quattro
+          masse. Lo testimonia Aristotele: quando il tutto si separa negli elementi per opera della
+          Contesa, «il fuoco si raccoglie in uno, e così ciascuno degli altri elementi»
+          (<em>Metafisica</em> A 4). Come siano disposte queste masse, i frammenti non lo dicono.
+          Per questo nella simulazione stanno semplicemente in quattro angoli, senza un «sopra»
+          e un «sotto»: l'idea che ogni elemento abbia un suo luogo naturale (la terra in basso,
+          il fuoco in alto) è di Aristotele, non di Empedocle.
+        </p>
+        <p>
+          Aristotele nota anche che Empedocle fu il primo a distinguere la materia (le radici) dalle
           cause del movimento (le due forze), e il primo a porre due cause motrici opposte
           (<em>Metafisica</em>, libro A).
         </p>
@@ -162,7 +171,7 @@
         <div class="cycle-steps">
           <div><b>1 · Sfero</b>Domina l'Amore: le radici sono perfettamente mescolate in una sfera immobile e omogenea.</div>
           <div><b>2 · Cresce la Contesa</b>Le radici cominciano a separarsi: si formano mescolanze parziali, le cose mortali.</div>
-          <div><b>3 · Domina la Contesa</b>Le radici sono del tutto separate, ciascuna raccolta con le sue simili.</div>
+          <div><b>3 · Domina la Contesa</b>Le radici sono del tutto separate in quattro masse, ciascuna raccolta con le sue simili.</div>
           <div><b>4 · Torna l'Amore</b>Le radici si rimescolano: nascono di nuovo le cose mortali, fino a un nuovo Sfero.</div>
         </div>
         <blockquote class="quote ant">
@@ -214,12 +223,13 @@
 
 <script>
 new p5(function(p) {
-  // Kinds: 0 fire, 1 air, 2 water, 3 earth. "layer" = height (fraction of canvas) where Strife gathers it.
+  // Kinds: 0 fire, 1 air, 2 water, 3 earth. (tx, ty) = corner of a square around the centre where Strife gathers it.
+  // No up/down ordering: sorting the elements by weight is Aristotle's doctrine, not Empedocles'.
   const KINDS = [
-    { name: 'Fuoco', col: [224, 74, 58],   layer: 0.16 },
-    { name: 'Aria',  col: [143, 211, 255], layer: 0.38 },
-    { name: 'Acqua', col: [47, 111, 224],  layer: 0.60 },
-    { name: 'Terra', col: [176, 122, 69],  layer: 0.83 }
+    { name: 'Fuoco', col: [224, 74, 58],   tx: -1, ty: -1 },
+    { name: 'Aria',  col: [143, 211, 255], tx: 1, ty: -1 },
+    { name: 'Acqua', col: [47, 111, 224],  tx: -1, ty: 1 },
+    { name: 'Terra', col: [176, 122, 69],  tx: 1, ty: 1 }
   ];
   const PER_KIND = 90, R = 5, RN = 26, CYCLE_T = 40;
   let parts = [];
@@ -281,9 +291,11 @@ new p5(function(p) {
         const pull = (dist - sphereR * 0.55) * 0.004 * L;
         a.fx -= dx / dist * pull; a.fy -= dy / dist * pull;
       }
-      // Strife: each root goes to its own layer
-      const ty = KINDS[a.k].layer * p.height;
-      a.fy += (ty - a.y) * 0.004 * S * S;
+      // Strife: each root gathers in its own mass, far from the others
+      const kd = KINDS[a.k];
+      const off = p.height * 0.24;
+      a.fx += (cx + kd.tx * off - a.x) * 0.004 * S * S;
+      a.fy += (cy + kd.ty * off - a.y) * 0.004 * S * S;
       // thermal jitter
       a.fx += (Math.random() - 0.5) * 0.25;
       a.fy += (Math.random() - 0.5) * 0.25;
@@ -349,15 +361,6 @@ new p5(function(p) {
       p.noFill(); p.stroke(255, 150, 190, 90 * (L - 0.3) / 0.7); p.strokeWeight(1.5);
       p.ellipse(p.width / 2, p.height / 2, Math.min(p.width, p.height) * 0.62, Math.min(p.width, p.height) * 0.62);
     }
-    // faint layer guides when Strife prevails
-    if (s > 0.3) {
-      p.noStroke(); p.textFont('IBM Plex Mono'); p.textSize(10); p.textAlign(p.RIGHT);
-      KINDS.forEach(k => {
-        p.fill(k.col[0], k.col[1], k.col[2], 160 * (s - 0.3) / 0.7);
-        p.text(k.name.toLowerCase(), p.width - 10, k.layer * p.height + 4);
-      });
-    }
-
     // particles
     p.noStroke();
     for (const a of parts) {
