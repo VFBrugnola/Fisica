@@ -503,49 +503,45 @@ canvas {
 
 /* ── Equation legend ── */
 .legend {
-  display: grid;
-  grid-template-columns: max-content 1fr;
-  gap: 0;
   margin: -6px 0 16px;
+  padding: 6px 14px 8px;
   border: 1px solid var(--border);
   border-top: none;
   background: var(--surface);
-  font-size: 0.88rem;
 }
 
 .legend-title {
-  grid-column: 1 / -1;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
   color: var(--text-muted);
-  padding: 8px 14px 4px;
+  margin-bottom: 4px;
 }
 
-.legend dt {
-  padding: 7px 14px;
-  border-top: 1px solid var(--bg);
-  color: var(--text-primary);
-  text-align: center;
-  min-width: 64px;
-}
-
-.legend dd {
-  padding: 7px 14px 7px 4px;
-  border-top: 1px solid var(--bg);
+.law .legend p.legend-row,
+.legend p.legend-row {
+  font-size: 0.82rem;
+  line-height: 1.5;
   color: var(--text-secondary);
-  line-height: 1.55;
+  margin: 0;
+  padding: 4px 0;
+  border-top: 1px solid var(--bg);
+}
+
+.legend .sym {
+  color: var(--text-primary);
+  margin-right: 2px;
 }
 
 .legend .unit {
   display: inline-block;
-  margin-left: 6px;
+  margin-left: 4px;
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   color: var(--accent-mec);
   background: var(--accent-mec-light);
-  padding: 0 6px;
+  padding: 0 5px;
   border-radius: var(--radius);
   white-space: nowrap;
 }
