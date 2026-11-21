@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Il sistema aristotelico-tolemaico — Fisica antica — Fisica</title>
+  <link rel="stylesheet" href="../../assets/css/style.css?v=20261121">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../index.html">Home</a></span>
+      <span>Fisica antica</span>
+      <span>Aristotele</span>
+      <span>Il sistema aristotelico-tolemaico</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Il sistema aristotelico-tolemaico</h1>
+      <p>Eudosso di Cnido (IV sec. a.C.) · Aristotele, <em>Metafisica</em> Λ 8 · Claudio Tolomeo, <em>Almagesto</em> (II sec. d.C.)</p>
+    </div>
+
+    <div class="page-content" style="padding:0 0 8px">
+      <p>
+        Per Aristotele il cielo è fatto di etere e si muove solo in cerchio, sempre con la stessa
+        velocità. Ma chi guarda il cielo per qualche mese vede altro: i <strong>pianeti</strong>
+        (in greco <em>planētes</em>, «erranti») avanzano tra le stelle, a volte rallentano, si
+        fermano, tornano indietro e poi ripartono. Inoltre cambiano luminosità. Il compito
+        dell'astronomia antica è spiegare questi movimenti irregolari usando soltanto moti
+        circolari e uniformi. In greco si diceva <strong>«salvare i fenomeni»</strong>. Questa
+        pagina mostra le due grandi soluzioni: le sfere omocentriche di Eudosso e di Aristotele,
+        e gli epicicli di Tolomeo.
+      </p>
+    </div>
+
+    <!-- ── Simulation 1: Eudoxus' homocentric spheres ── -->
+    <h2 class="section-title" style="font-family:'IBM Plex Serif',serif;font-size:1.25rem;margin:8px 0 14px">
+      1 · Le sfere omocentriche di Eudosso: l'ippopede
+    </h2>
+
+    <div class="root-legend">
+      <span><i style="background:rgb(240,226,170)"></i>Sfera dello zodiaco (eclittica)</span>
+      <span><i style="background:rgb(242,178,122)"></i>3ª sfera: poli sull'eclittica</span>
+      <span><i style="background:rgb(127,209,174)"></i>4ª sfera: inclinata, porta il pianeta</span>
+      <span><i style="background:rgb(224,74,58)"></i>Pianeta</span>
+    </div>
+
+    <div class="canvas-wrapper" id="eudoxus-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="incl">Inclinazione della 4ª sfera</label>
+        <input type="range" id="incl" min="5" max="60" value="30" step="1">
+        <span class="value-display" id="incl-val">30°</span>
+      </div>
+      <div class="control-group">
+        <label for="zod">Velocità lungo lo zodiaco</label>
+        <input type="range" id="zod" min="0" max="80" value="30" step="1">
+        <span class="value-display" id="zod-val">30%</span>
+      </div>
+      <div class="control-group">
+        <button class="btn-control" id="eu-pause">Pausa</button>
+        <button class="btn-control" id="eu-clear">Cancella traccia</button>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      Eudosso assegna a ogni pianeta <strong>quattro sfere</strong> concentriche, una dentro
+      l'altra, tutte con al centro la Terra. La prima ruota in un giorno e produce il moto
+      quotidiano del cielo: qui la togliamo e guardiamo il pianeta rispetto alle stelle fisse.
+      La seconda è la <strong>sfera dello zodiaco</strong>: porta il pianeta verso est lungo
+      l'eclittica. La terza ha i poli sull'eclittica; la quarta è attaccata alla terza con
+      l'asse <strong>inclinato</strong> e ruota in senso opposto, alla stessa velocità. Il
+      pianeta sta sull'equatore della quarta sfera. A sinistra vedi il risultato delle sole
+      sfere 3 e 4: una figura a otto chiamata <strong>ippopede</strong> («pastoia del cavallo»).
+      A destra c'è il cielo visto dalla Terra, dove l'otto si somma al moto lungo lo zodiaco.
+    </p>
+    <p class="anim-explain" style="margin-top:10px">
+      <strong>Cosa osservare.</strong> Con la sfera dello zodiaco ferma (0%) il pianeta va
+      avanti e indietro sull'otto. Aumentando la velocità, il pianeta avanza quasi sempre, ma
+      ogni tanto si ferma e torna indietro: è il <strong>moto retrogrado</strong> (in arancione).
+      Se la sfera dello zodiaco è troppo veloce rispetto all'otto, il retrogrado sparisce; con
+      un'inclinazione maggiore ritorna. Una cosa invece non cambia mai: la
+      <strong>distanza</strong> del pianeta dalla Terra, perché tutte le sfere hanno lo stesso
+      centro.
+    </p>
+    <p class="anim-explain" style="margin-top:10px">
+      <em>Attenzione:</em> nel cielo a destra la latitudine (l'altezza sopra o sotto
+      l'eclittica) è ingrandita, altrimenti l'otto sarebbe una linea quasi piatta. Eudosso non
+      ci ha lasciato numeri: il modello è la ricostruzione di Giovanni Schiaparelli (1875).
+    </p>
+
+    <!-- ── Simulation 2: epicycle and deferent ── -->
+    <h2 class="section-title" style="font-family:'IBM Plex Serif',serif;font-size:1.25rem;margin:40px 0 14px">
+      2 · Epiciclo e deferente: cerchi su cerchi
+    </h2>
+
+    <div class="canvas-wrapper" id="epi-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <div class="btn-group">
+          <button class="btn-control active" id="pl-mars">Marte</button>
+          <button class="btn-control" id="pl-jup">Giove</button>
+          <button class="btn-control" id="pl-sat">Saturno</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="epi-r">Raggio dell'epiciclo</label>
+        <input type="range" id="epi-r" min="5" max="80" value="66" step="1">
+        <span class="value-display" id="epi-r-val">0,66</span>
+      </div>
+      <div class="control-group">
+        <label><input type="checkbox" id="show-sun"> mostra il Sole</label>
+        <button class="btn-control" id="epi-pause">Pausa</button>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      La Terra è al centro. Il pianeta non sta su un grande cerchio, il
+      <strong>deferente</strong>, ma su un cerchio più piccolo, l'<strong>epiciclo</strong>, il
+      cui centro percorre il deferente. Entrambi i moti sono circolari e uniformi. Dalla Terra
+      vediamo solo la <strong>direzione</strong> del pianeta, cioè il punto dello zodiaco
+      (l'anello esterno) davanti a cui si trova. Quando il pianeta percorre la parte interna
+      dell'epiciclo, il suo moto sull'epiciclo è opposto a quello del deferente, e visto dalla
+      Terra il pianeta torna indietro: gli archi arancioni sull'anello sono i tratti di moto
+      retrogrado. In quei momenti il pianeta è anche <strong>più vicino</strong> alla Terra, e
+      quindi più luminoso (il pallino si ingrandisce). È proprio quello che si osserva: Marte è
+      più brillante quando è retrogrado. Le sfere di Eudosso non potevano spiegarlo.
+    </p>
+    <p class="anim-explain" style="margin-top:10px">
+      <strong>Mostra il Sole.</strong> Il Sole gira attorno alla Terra in un anno. Per Marte,
+      Giove e Saturno il raggio dell'epiciclo (il segmento giallo) resta sempre
+      <strong>parallelo</strong> alla direzione Terra–Sole, e il pianeta è retrogrado quando
+      è opposto al Sole. Tolomeo lo prende come un dato e non lo spiega. Copernico lo spiegherà:
+      è il riflesso del moto della Terra intorno al Sole.
+    </p>
+    <p class="anim-explain" style="margin-top:10px">
+      <em>Attenzione:</em> i rapporti tra epiciclo e deferente e i periodi sono quelli di
+      Tolomeo per Marte (0,66), Giove (0,19) e Saturno (0,11); il deferente qui è centrato sulla
+      Terra, senza eccentrico né equante (li vedi nella simulazione 3). La distanza del Sole non
+      è in scala.
+    </p>
+
+    <!-- ── Simulation 3: eccentric and equant ── -->
+    <h2 class="section-title" style="font-family:'IBM Plex Serif',serif;font-size:1.25rem;margin:40px 0 14px">
+      3 · L'eccentrico e l'equante: uniforme, ma visto da dove?
+    </h2>
+
+    <div class="canvas-wrapper" id="equant-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <div class="btn-group">
+          <button class="btn-control" id="md-conc">Concentrico</button>
+          <button class="btn-control" id="md-ecc">Eccentrico</button>
+          <button class="btn-control active" id="md-eq">Equante</button>
+        </div>
+      </div>
+      <div class="control-group">
+        <label for="ecc">Eccentricità</label>
+        <input type="range" id="ecc" min="0" max="30" value="20" step="1">
+        <span class="value-display" id="ecc-val">0,20</span>
+      </div>
+      <div class="control-group">
+        <label><input type="checkbox" id="marks" checked> 12 posizioni a tempi uguali</label>
+      </div>
+    </div>
+
+    <div class="table-scroll">
+      <table class="data-table" id="eq-table"></table>
+    </div>
+
+    <p class="anim-explain">
+      Il pallino giallo è il centro dell'epiciclo che percorre il deferente (l'epiciclo qui è
+      omesso). Nel modello <strong>concentrico</strong> la Terra è al centro del cerchio, e il
+      moto appare uniforme. Ma il Sole e i pianeti non si muovono con velocità costante nello
+      zodiaco: le stagioni, per esempio, non durano tutte lo stesso numero di giorni. Nel modello
+      <strong>eccentrico</strong> (Ipparco) la Terra è spostata dal centro: il moto è uniforme
+      attorno al centro, ma visto dalla Terra sembra più lento all'<em>apogeo</em> (il punto più
+      lontano) e più veloce al <em>perigeo</em>. Con l'<strong>equante</strong> Tolomeo fa un passo
+      in più. Il punto equante sta dall'altra parte del centro, alla stessa distanza della Terra.
+      Il moto non è più uniforme attorno al centro del cerchio, ma solo <strong>visto
+      dall'equante</strong>: la linea arancione spazza angoli uguali in tempi uguali.
+    </p>
+    <p class="anim-explain" style="margin-top:10px">
+      <strong>Cosa osservare.</strong> Con le 12 posizioni a tempi uguali, nel modello equante i
+      pallini sono più fitti in alto, vicino all'apogeo, e più radi in basso: il centro
+      dell'epiciclo percorre il cerchio a velocità variabile. La tabella mostra da quale punto il
+      moto sembra davvero uniforme. È qui la mossa che Copernico non accetterà: il cerchio
+      ruota uniformemente rispetto a un punto che non è il suo centro.
+    </p>
+
+    <div class="page-content" style="padding-top:36px">
+
+      <div class="law ant">
+        <div class="law-number">1 · Il problema</div>
+        <h2>Salvare i fenomeni.</h2>
+        <blockquote class="quote ant">
+          Platone pose questo problema a chi si occupava di astronomia: quali movimenti circolari,
+          uniformi e ordinati bisogna supporre per salvare i fenomeni dei pianeti?
+          <cite>— Simplicio, <em>Commento al «Sul cielo» di Aristotele</em>, II 12, che riprende Sosigene ed Eudemo (traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          I fenomeni sono quelli che chiunque può osservare a occhio nudo. Le
+          <strong>stelle fisse</strong> girano tutte insieme in un giorno, senza mai cambiare
+          posizione l'una rispetto all'altra. Il <strong>Sole</strong>, la <strong>Luna</strong> e i
+          cinque pianeti visibili (Mercurio, Venere, Marte, Giove, Saturno) si spostano invece
+          lentamente verso est tra le stelle, lungo una fascia del cielo: lo
+          <strong>zodiaco</strong>, che ha al centro l'eclittica, il cammino annuale del Sole. I
+          pianeti però non procedono con regolarità: si fermano (<em>stazioni</em>), tornano
+          indietro per alcune settimane (<em>retrogradazioni</em>) e ripartono; e la loro
+          luminosità cambia. Il problema è ricondurre queste irregolarità a combinazioni di moti
+          circolari uniformi, gli unici adatti, secondo Platone e Aristotele, a corpi divini ed
+          eterni.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">2 · Eudosso di Cnido</div>
+        <h2>Una sfera dentro l'altra, tutte attorno alla Terra.</h2>
+        <p>
+          La prima risposta è di <strong>Eudosso</strong> (IV secolo a.C.), matematico che
+          frequentò l'Accademia di Platone. Ogni corpo celeste è portato da un gruppo di sfere
+          <strong>omocentriche</strong>, cioè con lo stesso centro, la Terra: una sfera per le
+          stelle fisse, tre per il Sole, tre per la Luna e quattro per ciascun pianeta, in tutto
+          <strong>27 sfere</strong>. Ogni sfera ruota uniformemente attorno al proprio asse, ma
+          gli assi sono fissati alla sfera esterna e inclinati tra loro, così i moti si compongono.
+          Per i pianeti, due sfere che ruotano in senso opposto producono l'ippopede, e la sua
+          somma con il moto lungo lo zodiaco dà le retrogradazioni (simulazione 1). Callippo di
+          Cizico aggiunse sette sfere per migliorare l'accordo con le osservazioni (34 in tutto).
+        </p>
+        <p>
+          Il sistema ha due limiti, già noti nell'antichità. Il primo: per Marte, nella
+          ricostruzione di Schiaparelli, non si trovano valori che producano il retrogrado
+          osservato. Il secondo, più grave: se le sfere hanno tutte il centro nella Terra, ogni
+          pianeta resta sempre <strong>alla stessa distanza</strong>, e non si capisce perché la
+          sua luminosità cambi così tanto. L'obiezione, riferita da Simplicio, aprirà la strada
+          agli epicicli.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">3 · Aristotele</div>
+        <h2>Da modello matematico a macchina del cosmo.</h2>
+        <p>
+          Per Eudosso le sfere erano probabilmente costruzioni geometriche. Aristotele le
+          trasforma in <strong>corpi reali</strong> di etere, incastrati l'uno nell'altro
+          (<em>Metafisica</em> Λ 8, 1073b – 1074a). Questo crea un problema meccanico: se le sfere
+          sono a contatto, ognuna trascina quelle che contiene, e il moto di Saturno si
+          trasmetterebbe a Giove, a Marte e così via fino alla Luna. Aristotele inserisce allora,
+          sotto le sfere di ogni pianeta, delle sfere <strong>«che ruotano all'indietro»</strong>
+          e annullano i moti di quelle sopra, tranne il moto quotidiano. Il totale sale a
+          <strong>55 sfere</strong> (o 47, secondo un calcolo alternativo che lui stesso propone).
+        </p>
+        <p>
+          Ogni sfera ha un proprio motore immobile, che la muove come oggetto di desiderio:
+          ci sono quindi tante sostanze immobili quante sono le sfere. Aristotele precisa che il
+          numero esatto va lasciato agli astronomi. Così la fisica (che cosa sono i cieli e perché
+          si muovono) e l'astronomia (come si muovono) si saldano in un unico sistema: è il ponte
+          con il <a href="moti.html">motore immobile</a> della pagina precedente.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">4 · Epicicli e deferenti</div>
+        <h2>Cerchi che girano su altri cerchi.</h2>
+        <p>
+          La seconda soluzione nasce con <strong>Apollonio di Perga</strong> (III – II secolo
+          a.C.), è sviluppata da <strong>Ipparco di Nicea</strong> (II secolo a.C.) e raggiunge la
+          forma definitiva con <strong>Claudio Tolomeo</strong>, ad Alessandria, intorno al 150
+          d.C. Il pianeta si muove su un epiciclo, il cui centro percorre il deferente. In
+          linguaggio moderno, con il deferente centrato sulla Terra:
+        </p>
+        <div class="math-block" style="font-family:'IBM Plex Serif',serif;font-size:1.2rem">
+          <b>P</b> = <i>R</i> (cos <i>ω</i><sub>d</sub><i>t</i>, sin <i>ω</i><sub>d</sub><i>t</i>) + <i>r</i> (cos <i>ω</i><sub>e</sub><i>t</i>, sin <i>ω</i><sub>e</sub><i>t</i>)
+        </div>
+        <div class="legend">
+          <div class="legend-title">Che cosa significano i simboli</div>
+          <p class="legend-row"><span class="sym"><b>P</b></span> — Posizione del pianeta, data dalle sue due coordinate nel piano dell'eclittica, con la Terra nell'origine.</p>
+          <p class="legend-row"><span class="sym"><b>R</b></span> — Raggio del deferente. Gli antichi lo ponevano uguale a 60 parti, e misuravano gli altri raggi in queste parti.</p>
+          <p class="legend-row"><span class="sym"><b>r</b></span> — Raggio dell'epiciclo. Per Marte Tolomeo usa 39;30 parti su 60 (circa 0,66 R).</p>
+          <p class="legend-row"><span class="sym"><b>ω<sub>d</sub></b></span> — Velocità angolare del deferente: un giro nel periodo del pianeta lungo lo zodiaco (Marte circa 1,9 anni, Giove 11,9, Saturno 29,5).</p>
+          <p class="legend-row"><span class="sym"><b>ω<sub>e</sub></b></span> — Velocità angolare con cui ruota il raggio dell'epiciclo. Per i pianeti esterni un giro all'anno: il raggio resta parallelo alla direzione Terra–Sole.</p>
+          <p class="legend-row"><span class="sym"><b>t</b></span> — Tempo. Le due parti si sommano come due frecce: la prima porta al centro dell'epiciclo, la seconda da lì al pianeta.</p>
+        </div>
+        <p>
+          Gli epicicli risolvono entrambi i problemi di Eudosso: producono le retrogradazioni e
+          fanno variare la distanza del pianeta dalla Terra. Restava però una coincidenza
+          inspiegata. Gli epicicli di Marte, Giove e Saturno sono tutti sincronizzati con il Sole,
+          mentre il centro degli epicicli di Mercurio e Venere è sempre allineato con il Sole (per
+          questo i due pianeti non si allontanano mai molto da esso). Perché sette moti
+          indipendenti dovrebbero dipendere tutti dal Sole? Nel sistema di Copernico questa
+          coincidenza diventa una conseguenza: gli epicicli sono il riflesso del moto della Terra.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">5 · L'equante</div>
+        <h2>Un moto uniforme, ma visto da un altro punto.</h2>
+        <p>
+          Per far coincidere i calcoli con le osservazioni, Tolomeo sposta la Terra dal centro del
+          deferente (l'<strong>eccentrico</strong>, già usato da Ipparco per il Sole) e introduce
+          un nuovo punto, l'<strong>equante</strong>, simmetrico alla Terra rispetto al centro.
+          Il centro dell'epiciclo percorre il deferente, ma la sua velocità angolare è costante solo
+          se misurata dall'equante (simulazione 3). Funziona molto bene: le previsioni
+          dell'<em>Almagesto</em> sbagliano di pochi gradi al massimo, a occhio nudo un risultato
+          eccellente.
+        </p>
+        <p>
+          Ma è una violazione del principio da cui si era partiti, il moto circolare uniforme
+          attorno al proprio centro. Ibn al-Haytham, nei <em>Dubbi su Tolomeo</em> (XI secolo),
+          la denuncia come incompatibile con sfere fisiche reali; gli astronomi di Maragha, in
+          Persia, come Nasir al-Din al-Tusi (XIII secolo), costruiscono modelli alternativi senza
+          equante. Copernico parte da qui:
+        </p>
+        <blockquote class="quote ant">
+          Il pianeta non si muove con velocità uniforme né sul suo deferente né attorno al centro
+          del suo epiciclo. Perciò un sistema di questo genere non mi sembrava abbastanza perfetto,
+          né abbastanza gradito alla mente.
+          <cite>— Copernico, <em>Commentariolus</em> (ca. 1510, traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          La storia ha un seguito inatteso. Nelle <a href="../../meccanica/gravitazione/leggi-keplero/index.html">leggi
+          di Keplero</a> il pianeta percorre un'ellisse e, visto dal <strong>fuoco vuoto</strong>
+          (quello dove non c'è il Sole), sembra girare quasi uniformemente: il fuoco vuoto fa la
+          parte dell'equante. L'equante di Tolomeo era un'ottima approssimazione della
+          <a href="../../meccanica/gravitazione/leggi-keplero/seconda-legge.html">seconda legge</a>.
+          Keplero costruì per Marte un modello con l'equante che sbagliava al massimo di otto
+          minuti d'arco rispetto alle osservazioni di Tycho Brahe. Non li trascurò: da quegli otto
+          minuti, scrisse, nacque la riforma di tutta l'astronomia.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">6 · Un cosmo per quattordici secoli</div>
+        <h2>Il modello che durò fino a Copernico.</h2>
+        <p>
+          Il nome «sistema aristotelico-tolemaico» unisce due cose che non stanno bene insieme. Le
+          sfere di Aristotele hanno tutte il centro nella Terra; gli epicicli e gli eccentrici di
+          Tolomeo no. Già Tolomeo, nelle <em>Ipotesi sui pianeti</em>, cercò un compromesso: ogni
+          pianeta ha un guscio sferico spesso, centrato sulla Terra, e dentro lo spessore del
+          guscio trovano posto l'eccentrico e l'epiciclo. I gusci sono incastrati l'uno nell'altro
+          senza vuoti, nell'ordine: Luna, Mercurio, Venere, Sole, Marte, Giove, Saturno, stelle
+          fisse. Così calcolò anche le dimensioni del cosmo, circa 20 000 raggi terrestri fino
+          alle stelle.
+        </p>
+        <p>
+          Questo è il cosmo del Medioevo, latino e arabo. L'<em>Almagesto</em> fu tradotto in
+          latino nel XII secolo, a Toledo, da Gerardo da Cremona; nelle università si studiava sul
+          <em>Trattato della sfera</em> di Giovanni di Sacrobosco (XIII secolo). Ai cieli si
+          aggiungono il <strong>Primo Mobile</strong>, che trasmette il moto quotidiano a tutte le
+          sfere, e l'<strong>Empireo</strong>, sede di Dio: è il cosmo che Dante attraversa nel
+          <em>Paradiso</em>.
+        </p>
+      </div>
+
+      <div class="philo-box">
+        <strong>Il punto filosofico</strong>
+        Gli epicicli esistono davvero, o sono solo strumenti di calcolo? La domanda accompagna
+        tutta la storia del sistema tolemaico. Per Aristotele le sfere sono corpi reali; per molti
+        astronomi i modelli servono solo a <em>salvare i fenomeni</em>, cioè a prevedere dove
+        si vedrà un pianeta. Tommaso d'Aquino lo dice chiaramente: l'ipotesi degli eccentrici e
+        degli epicicli spiega le apparenze, ma non è una prova sufficiente, «perché forse si
+        potrebbero salvare anche con un'altra ipotesi» (<em>Somma teologica</em> I, q. 32, a. 1,
+        ad 2). Nel 1543 la prefazione anonima di Andreas Osiander al libro di Copernico applica la
+        stessa idea all'eliocentrismo: «non è necessario che queste ipotesi siano vere, e neppure
+        verosimili: basta che diano un calcolo che concordi con le osservazioni». È il dibattito
+        tra <strong>strumentalismo</strong> e <strong>realismo</strong>, che il fisico e storico
+        Pierre Duhem ricostruirà nel 1908 con il titolo <em>Salvare i fenomeni</em>. Lo stesso
+        dibattito sarà al centro della vicenda di <a href="../../meccanica/galileo/index.html">Galileo</a>:
+        il cardinale Bellarmino accetta Copernico come ipotesi matematica, Galileo sostiene che
+        descrive come è fatto davvero il mondo.
+      </div>
+
+      <div class="info-box">
+        <strong>La vita.</strong> Di Claudio Tolomeo si sa pochissimo: visse ad Alessandria
+        d'Egitto, all'incirca tra il 100 e il 170 d.C., e fece osservazioni tra il 127 e il 141. Il
+        suo trattato di astronomia si intitolava <em>Composizione matematica</em>; il nome
+        <em>Almagesto</em> viene dall'arabo <em>al-majisṭī</em>, «la grandissima». Scrisse anche
+        un trattato di astrologia (<em>Tetrabiblos</em>), una <em>Geografia</em> e un'<em>Ottica</em>.
+        L'<em>Almagesto</em> rimase il testo di riferimento dell'astronomia per circa quattordici
+        secoli.
+      </div>
+
+    </div>
+
+    <div class="anim-nav">
+      <a href="moti.html">
+        <span>← Indietro</span>
+        Aristotele: moti terrestri e celesti
+      </a>
+      <a href="../../index.html" class="next" style="pointer-events:none;opacity:.55">
+        <span>Prossimamente →</span>
+        Copernico
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const ETHER = [240, 226, 170], ORANGE = [242, 178, 122], GREEN = [127, 209, 174], PLANET = [224, 74, 58];
+const TAU = Math.PI * 2;
+const wrapPi = (a) => { a = (a + Math.PI) % TAU; if (a < 0) a += TAU; return a - Math.PI; };
+const wrap2Pi = (a) => { a %= TAU; return a < 0 ? a + TAU : a; };
+const deg = (a) => a * 180 / Math.PI;
+const num = (x, d) => x.toFixed(d).replace('.', ',');
+
+function hudBox(p, x, y, lines, w) {
+  p.noStroke(); p.fill(15, 18, 32, 215); p.rect(x, y, w, 14 + lines.length * 16, 3);
+  p.textFont('IBM Plex Mono'); p.textAlign(p.LEFT); p.textSize(11);
+  lines.forEach((l, i) => { p.fill(l[1] || '#A8B8D8'); p.text(l[0], x + 8, y + 18 + i * 16); });
+}
+
+// ── Simulation 1: Eudoxus ──
+new p5(function(p) {
+  const SYN = 6;                       // seconds for one full figure-of-eight
+  let inc = 30 * Math.PI / 180, k = 0.30, phi = 0, Lam = Math.PI, paused = false;
+  let trailLocal = [], sky = [], prevLon = null, retro = false, nRetro = 0, stars = [];
+  let wide = true, A, B;               // A = 3D panel, B = sky panel: {x, y, w, h}
+
+  function layout() {
+    wide = p.width >= 680;
+    if (wide) { A = { x: 0, y: 0, w: Math.round(p.width * 0.42), h: p.height }; B = { x: A.w, y: 0, w: p.width - A.w, h: p.height }; }
+    else { A = { x: 0, y: 0, w: p.width, h: 290 }; B = { x: 0, y: 290, w: p.width, h: p.height - 290 }; }
+  }
+  const chFor = (w) => (w >= 680 ? 400 : 510);
+
+  // local frame: x' = ecliptic pole, y' = centre of the eight, z' = axis of the 3rd sphere (in the ecliptic, towards east)
+  function toWorld(v, L) {
+    const c = Math.cos(L), s = Math.sin(L);
+    return [v[1] * c - v[2] * s, v[1] * s + v[2] * c, v[0]];
+  }
+  const rotZ = (v, a) => [v[0] * Math.cos(a) - v[1] * Math.sin(a), v[0] * Math.sin(a) + v[1] * Math.cos(a), v[2]];
+  const rotY = (v, a) => [v[0] * Math.cos(a) + v[2] * Math.sin(a), v[1], -v[0] * Math.sin(a) + v[2] * Math.cos(a)];
+  const planetLocal = (ph) => rotZ(rotY(rotZ([0, 1, 0], -ph), inc), ph);
+
+  function clearAll() { trailLocal = []; sky = []; prevLon = null; retro = false; nRetro = 0; }
+
+  p.setup = function() {
+    let w = document.getElementById('eudoxus-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), chFor(w)).parent('eudoxus-container');
+    layout();
+    for (let i = 0; i < 90; i++) stars.push({ lon: Math.random() * 360, lat: (Math.random() * 2 - 1), s: 1 + Math.random() * 1.5 });
+    document.getElementById('incl').addEventListener('input', function() {
+      inc = parseInt(this.value) * Math.PI / 180; document.getElementById('incl-val').textContent = this.value + '°'; clearAll();
+    });
+    document.getElementById('zod').addEventListener('input', function() {
+      k = parseInt(this.value) / 100; document.getElementById('zod-val').textContent = k === 0 ? 'ferma' : this.value + '%'; sky = []; prevLon = null; nRetro = 0;
+    });
+    document.getElementById('eu-pause').addEventListener('click', function() { paused = !paused; this.textContent = paused ? 'Riprendi' : 'Pausa'; });
+    document.getElementById('eu-clear').addEventListener('click', clearAll);
+  };
+
+  p.draw = function() {
+    const dt = paused ? 0 : Math.min(p.deltaTime / 1000, 0.05);
+    const om = TAU / SYN;
+    phi += om * dt; Lam += k * om * dt;
+    p.background('#0F1220');
+
+    const PL = planetLocal(phi);
+    if (dt > 0) { trailLocal.push(PL); if (trailLocal.length > 420) trailLocal.shift(); }
+    const PW = toWorld(PL, Lam);
+    const lon = Math.atan2(PW[1], PW[0]), lat = Math.asin(Math.max(-1, Math.min(1, PW[2])));
+    if (dt > 0) {
+      let r = retro;
+      if (prevLon !== null) { const d = wrapPi(lon - prevLon); r = d < 0; }
+      if (r && !retro) nRetro++;
+      retro = r; prevLon = lon;
+      sky.push({ lon: wrap2Pi(lon), lat, retro: r });
+      if (sky.length > 1500) sky.shift();
+    }
+
+    // ── panel A: the spheres ──
+    const cx = A.x + A.w / 2, cy = A.y + A.h / 2 + 8, Rs = Math.min(A.w, A.h) / 2 - 34;
+    const az = Lam - 0.55, el = 0.38;
+    const u = [-Math.sin(az), Math.cos(az), 0];
+    const wv = [-Math.sin(el) * Math.cos(az), -Math.sin(el) * Math.sin(az), Math.cos(el)];
+    const vc = [Math.cos(el) * Math.cos(az), Math.cos(el) * Math.sin(az), Math.sin(el)];
+    const dot = (a, b) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
+    const proj = (v) => [cx + Rs * dot(v, u), cy - Rs * dot(v, wv), dot(v, vc)];
+
+    p.noFill(); p.stroke('#2A3150'); p.strokeWeight(1); p.ellipse(cx, cy, 2 * Rs, 2 * Rs);
+    function circle3(fn, col, wt) {
+      let prev = null;
+      for (let j = 0; j <= 96; j++) {
+        const q = proj(fn(j / 96 * TAU));
+        if (prev) { p.stroke(col[0], col[1], col[2], q[2] >= 0 ? 230 : 70); p.strokeWeight(q[2] >= 0 ? wt : 1); p.line(prev[0], prev[1], q[0], q[1]); }
+        prev = q;
+      }
+    }
+    function axis3(v, col) {
+      const a = proj([v[0] * 1.22, v[1] * 1.22, v[2] * 1.22]), b = proj([-v[0] * 1.22, -v[1] * 1.22, -v[2] * 1.22]);
+      p.stroke(col[0], col[1], col[2], 150); p.strokeWeight(1); p.drawingContext.setLineDash([4, 4]);
+      p.line(a[0], a[1], b[0], b[1]); p.drawingContext.setLineDash([]);
+      p.noStroke(); p.fill(col[0], col[1], col[2]); p.ellipse(a[0], a[1], 5, 5); p.ellipse(b[0], b[1], 5, 5);
+    }
+    // ecliptic with 12 ticks (they turn with the sphere of the zodiac)
+    circle3((a) => [Math.cos(a), Math.sin(a), 0], ETHER, 1.6);
+    for (let j = 0; j < 12; j++) {
+      const a = j * TAU / 12, q1 = proj([Math.cos(a), Math.sin(a), 0]), q2 = proj([1.07 * Math.cos(a), 1.07 * Math.sin(a), 0]);
+      p.stroke(ETHER[0], ETHER[1], ETHER[2], q1[2] >= 0 ? 200 : 60); p.strokeWeight(1.4); p.line(q1[0], q1[1], q2[0], q2[1]);
+    }
+    axis3([0, 0, 1], ETHER);
+    // 3rd sphere: axis in the ecliptic, equator through the pole and the centre of the eight
+    axis3(toWorld([0, 0, 1], Lam), ORANGE);
+    circle3((a) => toWorld([Math.cos(a), Math.sin(a), 0], Lam), ORANGE, 1.4);
+    // 4th sphere: axis tilted by inc, turning with the 3rd sphere
+    axis3(toWorld(rotZ(rotY([0, 0, 1], inc), phi), Lam), GREEN);
+    circle3((a) => toWorld(rotZ(rotY([Math.cos(a), Math.sin(a), 0], inc), phi), Lam), GREEN, 1.4);
+    // the eight traced so far
+    p.noFill(); p.strokeWeight(2);
+    for (let j = 1; j < trailLocal.length; j++) {
+      const a = proj(toWorld(trailLocal[j - 1], Lam)), b = proj(toWorld(trailLocal[j], Lam));
+      p.stroke(255, 255, 255, (b[2] >= 0 ? 200 : 70) * j / trailLocal.length); p.line(a[0], a[1], b[0], b[1]);
+    }
+    // Earth and planet
+    p.noStroke(); p.fill(70, 130, 220); p.ellipse(cx, cy, 10, 10);
+    const pp = proj(PW);
+    p.fill(PLANET[0], PLANET[1], PLANET[2], pp[2] >= 0 ? 255 : 120); p.ellipse(pp[0], pp[1], 11, 11);
+    p.textFont('IBM Plex Mono'); p.textSize(10); p.textAlign(p.CENTER); p.fill('#8899CC');
+    p.text('Terra', cx, cy + 20);
+    p.fill('#D9DEEA'); p.textSize(11); p.textAlign(p.LEFT);
+    p.text('Le sfere (vista dall\'esterno)', A.x + 12, A.y + 22);
+    p.fill('#6878A8'); p.textSize(10);
+    p.text('traccia bianca: l\'ippopede', A.x + 12, A.y + 38);
+
+    // ── panel B: the sky seen from the Earth ──
+    p.noStroke(); p.fill('#121629'); p.rect(B.x + 6, B.y + 6, B.w - 12, B.h - 12, 4);
+    const pad = 18, x0 = B.x + pad, x1 = B.x + B.w - pad, ymid = B.y + B.h / 2 + 10;
+    const latMax = Math.max(3, deg((1 - Math.cos(inc)) / 2) * 3);
+    const vs = (B.h / 2 - 46) / latMax, hs = (x1 - x0) / 360;
+    const X = (lo) => x0 + deg(lo) * hs, Y = (la) => ymid - deg(la) * vs;
+    for (const s of stars) { p.fill(200, 210, 235, 110); p.ellipse(x0 + s.lon * hs, ymid - s.lat * (B.h / 2 - 30), s.s, s.s); }
+    p.stroke(ETHER[0], ETHER[1], ETHER[2], 120); p.strokeWeight(1); p.drawingContext.setLineDash([4, 5]);
+    p.line(x0, ymid, x1, ymid); p.drawingContext.setLineDash([]);
+    p.textSize(9); p.textAlign(p.CENTER);
+    for (let j = 0; j <= 12; j++) {
+      const x = x0 + j * 30 * hs;
+      p.stroke(ETHER[0], ETHER[1], ETHER[2], 90); p.line(x, ymid - 4, x, ymid + 4);
+      if (j % 3 === 0) { p.noStroke(); p.fill('#6878A8'); p.text(j * 30 + '°', x, B.y + B.h - 14); }
+    }
+    p.strokeWeight(2);
+    for (let j = 1; j < sky.length; j++) {
+      const a = sky[j - 1], b = sky[j];
+      if (Math.abs(b.lon - a.lon) > Math.PI) continue;
+      const age = j / sky.length;
+      if (b.retro && k > 0) p.stroke(242, 178, 122, 120 + 135 * age); else p.stroke(217, 222, 234, 60 + 150 * age);
+      p.line(X(a.lon), Y(a.lat), X(b.lon), Y(b.lat));
+    }
+    p.noStroke(); p.fill(PLANET[0], PLANET[1], PLANET[2]); p.ellipse(X(wrap2Pi(lon)), Y(lat), 10, 10);
+    p.fill('#6878A8'); p.textSize(10); p.textAlign(p.RIGHT);
+    p.text('verso est →', x1, B.y + B.h - 28);
+    p.textAlign(p.LEFT);
+    p.text('latitudine ingrandita × ' + Math.round(vs / hs), x0, B.y + B.h - 28);
+    hudBox(p, B.x + 12, B.y + 12, [
+      ['Il cielo visto dalla Terra', '#D9DEEA'],
+      [k === 0 ? 'zodiaco fermo: solo l\'otto' : (retro ? 'moto RETROGRADO (verso ovest)' : 'moto diretto (verso est)'), retro && k > 0 ? '#F2B27A' : '#A8B8D8'],
+      [k === 0 ? 'avanti e indietro sull\'otto' : 'retrogradazioni: ' + nRetro, '#8899CC']
+    ], Math.min(B.w - 24, 270));
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('eudoxus-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), chFor(w)); layout();
+  };
+});
+
+// ── Simulation 2: epicycle and deferent ──
+new p5(function(p) {
+  const PLANETS = {
+    mars: { name: 'Marte',   r: 0.66, T: 1.881 },
+    jup:  { name: 'Giove',   r: 0.19, T: 11.86 },
+    sat:  { name: 'Saturno', r: 0.11, T: 29.46 }
+  };
+  const YPS = 0.3;                     // years per second
+  let pl = PLANETS.mars, r = 0.66, tY = 0, paused = false, showSun = false;
+  let trail = [], arcs = [], cur = null, prevLon = null, state = 'diretto', nRetro = 0;
+  const chFor = (w) => (w < 600 ? 440 : 520);
+
+  function reset() { tY = 0; trail = []; arcs = []; cur = null; prevLon = null; state = 'diretto'; nRetro = 0; }
+  function pos(t) {
+    const td = TAU * t / pl.T, ts = TAU * t;
+    return { D: [Math.cos(td), Math.sin(td)], P: [Math.cos(td) + r * Math.cos(ts), Math.sin(td) + r * Math.sin(ts)], ts };
+  }
+  function choose(key, id) {
+    pl = PLANETS[key]; r = pl.r;
+    ['pl-mars', 'pl-jup', 'pl-sat'].forEach(b => document.getElementById(b).classList.toggle('active', b === id));
+    document.getElementById('epi-r').value = Math.round(r * 100);
+    document.getElementById('epi-r-val').textContent = num(r, 2);
+    reset();
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('epi-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), chFor(w)).parent('epi-container');
+    document.getElementById('pl-mars').addEventListener('click', () => choose('mars', 'pl-mars'));
+    document.getElementById('pl-jup').addEventListener('click', () => choose('jup', 'pl-jup'));
+    document.getElementById('pl-sat').addEventListener('click', () => choose('sat', 'pl-sat'));
+    document.getElementById('epi-r').addEventListener('input', function() {
+      r = parseInt(this.value) / 100; document.getElementById('epi-r-val').textContent = num(r, 2); reset();
+    });
+    document.getElementById('show-sun').addEventListener('change', function() { showSun = this.checked; });
+    document.getElementById('epi-pause').addEventListener('click', function() { paused = !paused; this.textContent = paused ? 'Riprendi' : 'Pausa'; });
+  };
+
+  p.draw = function() {
+    const dt = paused ? 0 : Math.min(p.deltaTime / 1000, 0.05);
+    tY += dt * YPS;
+    p.background('#0F1220');
+    const cx = p.width / 2, cy = p.height / 2;
+    const ring = Math.min(p.width, p.height) / 2 - 16, Rd = (ring - 22) / (1 + r);
+    const S = (v) => [cx + v[0] * Rd, cy - v[1] * Rd];
+
+    const { D, P, ts } = pos(tY);
+    const lon = Math.atan2(P[1], P[0]), dist = Math.hypot(P[0], P[1]);
+    if (dt > 0) {
+      trail.push(P); if (trail.length > 2600) trail.shift();
+      if (prevLon !== null) {
+        const rate = wrapPi(lon - prevLon) / (dt * YPS), mean = TAU / pl.T;
+        const ns = rate < -0.06 * mean ? 'retrogrado' : (rate < 0.06 * mean ? 'stazionario' : 'diretto');
+        if (ns === 'retrogrado' && state !== 'retrogrado') { nRetro++; cur = [lon, lon]; arcs.push(cur); if (arcs.length > 10) arcs.shift(); }
+        if (ns === 'retrogrado' && cur) cur[0] = lon;
+        state = ns;
+      }
+      prevLon = lon;
+    }
+
+    // zodiac ring
+    p.noFill(); p.stroke(ETHER[0], ETHER[1], ETHER[2], 90); p.strokeWeight(1); p.ellipse(cx, cy, 2 * ring, 2 * ring);
+    for (let j = 0; j < 12; j++) {
+      const a = j * TAU / 12;
+      p.line(cx + Math.cos(a) * (ring - 6), cy - Math.sin(a) * (ring - 6), cx + Math.cos(a) * (ring + 6), cy - Math.sin(a) * (ring + 6));
+    }
+    // retrograde arcs on the zodiac
+    p.stroke(242, 178, 122); p.strokeWeight(5); p.noFill();
+    for (const a of arcs) {
+      // arc from a[0] (west end) to a[1] (east end), drawn counter-clockwise in math coords
+      let span = wrap2Pi(a[1] - a[0]); if (span > Math.PI) span = 0;
+      p.arc(cx, cy, 2 * ring, 2 * ring, -a[0] - span, -a[0] + 0.0001);
+    }
+    p.noStroke(); p.fill('#6878A8'); p.textFont('IBM Plex Mono'); p.textSize(10); p.textAlign(p.CENTER);
+    p.text('zodiaco', cx, cy - ring - 4 < 10 ? 12 : cy - ring - 4);
+
+    // deferent and trail
+    p.noFill(); p.stroke('#3A4468'); p.strokeWeight(1); p.ellipse(cx, cy, 2 * Rd, 2 * Rd);
+    p.strokeWeight(1.3);
+    for (let j = 1; j < trail.length; j++) {
+      const a = S(trail[j - 1]), b = S(trail[j]);
+      p.stroke(217, 222, 234, 30 + 110 * j / trail.length); p.line(a[0], a[1], b[0], b[1]);
+    }
+    // line of sight
+    const sp = S(P), far = [cx + Math.cos(lon) * ring, cy - Math.sin(lon) * ring];
+    p.stroke(143, 211, 255, 110); p.strokeWeight(1); p.drawingContext.setLineDash([3, 5]);
+    p.line(cx, cy, far[0], far[1]); p.drawingContext.setLineDash([]);
+    p.noStroke(); p.fill(143, 211, 255); p.ellipse(far[0], far[1], 7, 7);
+    // epicycle
+    const sd = S(D);
+    p.noFill(); p.stroke(127, 209, 174, 200); p.strokeWeight(1.3); p.ellipse(sd[0], sd[1], 2 * r * Rd, 2 * r * Rd);
+    p.stroke('#3A4468'); p.line(cx, cy, sd[0], sd[1]);
+    p.stroke(showSun ? p.color(255, 205, 80) : p.color(127, 209, 174)); p.strokeWeight(showSun ? 2.2 : 1.3); p.line(sd[0], sd[1], sp[0], sp[1]);
+    p.noStroke(); p.fill(127, 209, 174); p.ellipse(sd[0], sd[1], 5, 5);
+    // Sun (distance not to scale)
+    if (showSun) {
+      const sr = 0.55 * (1 - r) * Rd, sx = cx + Math.cos(ts) * sr, sy = cy - Math.sin(ts) * sr;
+      p.stroke(255, 205, 80, 90); p.strokeWeight(1); p.noFill(); p.ellipse(cx, cy, 2 * sr, 2 * sr);
+      p.stroke(255, 205, 80); p.strokeWeight(2.2); p.line(cx, cy, sx, sy);
+      p.noStroke(); p.fill(255, 205, 80); p.ellipse(sx, sy, 16, 16);
+    }
+    // planet: bigger when closer to the Earth
+    const near = 1 - r, farD = 1 + r;
+    const lum = (1 / dist - 1 / farD) / (1 / near - 1 / farD);
+    const dsz = 6 + 12 * lum;
+    p.fill(PLANET[0], PLANET[1], PLANET[2], 60 * lum); p.ellipse(sp[0], sp[1], dsz * 2, dsz * 2);
+    p.fill(PLANET[0], PLANET[1], PLANET[2]); p.ellipse(sp[0], sp[1], dsz, dsz);
+    // Earth
+    p.fill(70, 130, 220); p.ellipse(cx, cy, 12, 12);
+
+    const col = state === 'retrogrado' ? '#F2B27A' : (state === 'stazionario' ? '#F0E2AA' : '#A8B8D8');
+    const lines = [
+      [pl.name + ' · anno ' + num(tY, 1), '#D9DEEA'],
+      ['longitudine: ' + Math.round(deg(wrap2Pi(lon))) + '°', '#A8B8D8'],
+      ['moto: ' + state, col],
+      ['distanza dalla Terra: ' + num(dist, 2) + ' R', '#8899CC'],
+      ['retrogradazioni: ' + nRetro, '#8899CC']
+    ];
+    if (showSun) lines.push(['raggio dell\'epiciclo ∥ Terra–Sole', '#FFCD50']);
+    hudBox(p, 8, 8, lines, Math.min(p.width - 16, 262));
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('epi-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), chFor(w));
+  };
+});
+
+// ── Simulation 3: eccentric and equant ──
+new p5(function(p) {
+  const PER = 10;                      // seconds per revolution
+  let model = 'eq', e = 0.20, showMarks = true, th = Math.PI / 2;
+  const chFor = (w) => (w < 600 ? 440 : 500);
+
+  // math coords, circle of radius 1 centred in C; apogee at the top
+  function pts() {
+    const C = [0, 0];
+    if (model === 'conc') return { C, E: [0, 0], Q: [0, 0], U: [0, 0] };
+    if (model === 'ecc')  return { C, E: [0, -e], Q: null, U: [0, 0] };
+    return { C, E: [0, -e], Q: [0, e], U: [0, e] };
+  }
+  function onCircle(U, a) {             // point of the circle seen from U in direction a
+    const u = [Math.cos(a), Math.sin(a)], b = U[0] * u[0] + U[1] * u[1];
+    const s = -b + Math.sqrt(b * b - (U[0] * U[0] + U[1] * U[1]) + 1);
+    return [U[0] + s * u[0], U[1] + s * u[1]];
+  }
+  function ratios(X) {                  // min and max angular speed seen from X, relative to the mean
+    const { U } = pts(), N = 720, h = TAU / N;
+    let mn = Infinity, mx = -Infinity;
+    for (let j = 0; j < N; j++) {
+      const a = j * h, D1 = onCircle(U, a), D2 = onCircle(U, a + h);
+      const d = wrapPi(Math.atan2(D2[1] - X[1], D2[0] - X[0]) - Math.atan2(D1[1] - X[1], D1[0] - X[0])) / h;
+      mn = Math.min(mn, d); mx = Math.max(mx, d);
+    }
+    return [mn, mx];
+  }
+  function table() {
+    const P = pts(), rows = [['Terra', P.E], ['Centro del cerchio', P.C], ['Equante', P.Q]];
+    let h = '<tr><th style="text-align:left">Visto da…</th><th>velocità angolare minima</th><th>massima</th><th>moto uniforme?</th></tr>';
+    for (const [name, X] of rows) {
+      if (!X || (model !== 'eq' && name === 'Equante')) { h += '<tr><td style="text-align:left">' + name + '</td><td colspan="3">— (non c\'è in questo modello)</td></tr>'; continue; }
+      const [mn, mx] = ratios(X), uni = mx - mn < 0.01;
+      h += '<tr><td style="text-align:left">' + name + '</td><td>' + num(mn, 2) + ' × media</td><td>' + num(mx, 2) + ' × media</td><td>' + (uni ? '<b>sì</b>' : 'no') + '</td></tr>';
+    }
+    document.getElementById('eq-table').innerHTML = h;
+  }
+  function setModel(m) {
+    model = m;
+    [['conc', 'md-conc'], ['ecc', 'md-ecc'], ['eq', 'md-eq']].forEach(([k, id]) => document.getElementById(id).classList.toggle('active', k === m));
+    table();
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('equant-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), chFor(w)).parent('equant-container');
+    document.getElementById('md-conc').addEventListener('click', () => setModel('conc'));
+    document.getElementById('md-ecc').addEventListener('click', () => setModel('ecc'));
+    document.getElementById('md-eq').addEventListener('click', () => setModel('eq'));
+    document.getElementById('ecc').addEventListener('input', function() {
+      e = parseInt(this.value) / 100; document.getElementById('ecc-val').textContent = num(e, 2); table();
+    });
+    document.getElementById('marks').addEventListener('change', function() { showMarks = this.checked; });
+    table();
+  };
+
+  p.draw = function() {
+    const dt = Math.min(p.deltaTime / 1000, 0.05);
+    th += TAU / PER * dt;
+    p.background('#0F1220');
+    const cx = p.width / 2, cy = p.height / 2 + 6, R = Math.min(p.width, p.height) / 2 - 44;
+    const S = (v) => [cx + v[0] * R, cy - v[1] * R];
+    const P = pts();
+
+    p.noFill(); p.stroke('#3A4468'); p.strokeWeight(1.4); p.ellipse(cx, cy, 2 * R, 2 * R);
+    // apsidal line
+    p.stroke('#2A3150'); p.strokeWeight(1); p.drawingContext.setLineDash([4, 5]);
+    p.line(cx, cy - R - 10, cx, cy + R + 10); p.drawingContext.setLineDash([]);
+    p.noStroke(); p.fill('#6878A8'); p.textFont('IBM Plex Mono'); p.textSize(10); p.textAlign(p.CENTER);
+    if (model !== 'conc' && e > 0) { p.text('apogeo', cx, cy - R - 14); p.text('perigeo', cx, cy + R + 22); }
+
+    const U = S(P.U);
+    if (showMarks) {
+      for (let j = 0; j < 12; j++) {
+        const M = S(onCircle(P.U, Math.PI / 2 + j * TAU / 12));
+        p.stroke(242, 178, 122, 55); p.strokeWeight(1); p.line(U[0], U[1], M[0], M[1]);
+        p.noStroke(); p.fill(240, 226, 170, 170); p.ellipse(M[0], M[1], 7, 7);
+      }
+    }
+    const Dm = onCircle(P.U, th), D = S(Dm), E = S(P.E);
+    p.stroke(242, 178, 122); p.strokeWeight(2); p.line(U[0], U[1], D[0], D[1]);
+    p.stroke(143, 211, 255, 200); p.strokeWeight(1.5); p.line(E[0], E[1], D[0], D[1]);
+    p.noStroke(); p.fill(240, 226, 170); p.ellipse(D[0], D[1], 13, 13);
+
+    // points
+    const C = S(P.C);
+    p.stroke('#D9DEEA'); p.strokeWeight(1.5); p.line(C[0] - 6, C[1], C[0] + 6, C[1]); p.line(C[0], C[1] - 6, C[0], C[1] + 6);
+    p.noStroke(); p.textSize(10); p.textAlign(p.LEFT);
+    p.fill(70, 130, 220); p.ellipse(E[0], E[1], 12, 12);
+    p.fill('#8FD3FF'); p.text('Terra', E[0] + 10, E[1] + 4);
+    if (model !== 'conc') { p.fill('#D9DEEA'); p.text('centro', C[0] + 10, C[1] + 4); }
+    if (P.Q) { p.fill(242, 178, 122); p.ellipse(S(P.Q)[0], S(P.Q)[1], 9, 9); p.text('equante', S(P.Q)[0] + 10, S(P.Q)[1] + 4); }
+
+    // apparent angular speed seen from the Earth, relative to the mean
+    const h = 0.002, D2 = onCircle(P.U, th + h);
+    const vE = wrapPi(Math.atan2(D2[1] - P.E[1], D2[0] - P.E[0]) - Math.atan2(Dm[1] - P.E[1], Dm[0] - P.E[0])) / h;
+    const names = { conc: 'Concentrico', ecc: 'Eccentrico (Ipparco)', eq: 'Equante (Tolomeo)' };
+    hudBox(p, 8, 8, [
+      [names[model], '#D9DEEA'],
+      ['uniforme visto da: ' + (model === 'eq' ? 'equante' : model === 'ecc' ? 'centro' : 'Terra = centro'), '#F2B27A'],
+      ['visto dalla Terra: ' + num(vE, 2) + ' × la media', '#8FD3FF']
+    ], Math.min(p.width - 16, 270));
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('equant-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), chFor(w));
+  };
+});
+</script>
+
+</body>
+</html>

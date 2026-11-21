@@ -24,8 +24,9 @@ Le simulazioni dei presocratici sono **modelli visivi** delle loro teorie, non r
 | [**Anassagora**: i semi e il Nous](https://vfbrugnola.github.io/Fisica/antica/pluralisti/anassagora.html) | Lente a zoom senza fine (divisibilità infinita, «tutto in tutto»); vortice del Nous |
 | [**Democrito**: atomi e vuoto](https://vfbrugnola.github.io/Fisica/antica/pluralisti/democrito.html) | Il coltello che si ferma all'atomo; atomi che si aggregano nel vuoto; il clinamen di Epicuro |
 | [**Aristotele**: moti terrestri e moti celesti](https://vfbrugnola.github.io/Fisica/antica/aristotele/moti.html) | Luoghi naturali e moto circolare dell'etere; v ∝ P/R e l'impossibilità del vuoto; moto violento (carretto e pietra lanciata) |
+| [**Il sistema aristotelico-tolemaico**](https://vfbrugnola.github.io/Fisica/antica/aristotele/tolemaico.html) | Sfere omocentriche di Eudosso (ippopede e retrogradazioni); epiciclo e deferente (Marte, Giove, Saturno); eccentrico ed equante |
 
-*In arrivo:* monisti, Parmenide e Zenone, il sistema aristotelico-tolemaico.
+*In arrivo:* monisti, Parmenide e Zenone.
 
 ### 01 · Meccanica
 | Pagina | Simulazioni |
@@ -50,7 +51,7 @@ Fisica/
 ├── index.html                 home con i moduli
 ├── assets/css/style.css       stile unico per tutte le pagine
 ├── antica/pluralisti/         Empedocle, Anassagora, Democrito
-├── antica/aristotele/         moti terrestri e celesti
+├── antica/aristotele/         moti terrestri e celesti, sistema aristotelico-tolemaico
 └── meccanica/
     ├── galileo/               teoria + 6 esperimenti
     └── gravitazione/leggi-keplero/
