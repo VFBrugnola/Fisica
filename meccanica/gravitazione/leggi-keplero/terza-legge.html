@@ -53,7 +53,8 @@
     <p class="anim-explain">
       I due pianeti orbitano attorno allo stesso Sole con semiassi maggiori diversi.
       Il rapporto <strong>T² / a³</strong> (mostrato in tempo reale) è identico per entrambi —
-      dimostrando la Terza Legge. In unità astronomiche e anni, questo rapporto vale 1.
+      come vuole la Terza Legge. In unità astronomiche e anni, questo rapporto vale 1.
+      Osserva i tempi: il pianeta interno compie più giri mentre quello esterno ne completa uno.
       Sposta i cursori per cambiare le orbite e verifica che la costante rimanga invariata.
     </p>
 
@@ -100,8 +101,7 @@ new p5(function(p) {
   function period(a) { return Math.pow(a, 1.5); }
 
   // All positions in ABSOLUTE canvas coordinates.
-  // Ellipse center at (cx, cy).
-  // Sun (left focus) at (cx - a*e*scale, cy).
+  // Ellipse center at (cx, cy); the Sun sits at its RIGHT focus (cx + a*e*scale, cy).
   // Planet: x = cx + a*cos(E)*scale,  y = cy - b*sin(E)*scale
   function getPlanetCanvas(t_now, a, ecc, scale, cx, cy) {
     let T = period(a);
@@ -119,7 +119,6 @@ new p5(function(p) {
     p.noFill();
     p.stroke(col[0], col[1], col[2], 55);
     p.strokeWeight(1.2);
-    // Ellipse center at (cx, cy) — Sun is at focus (cx - a*e*scale, cy)
     p.ellipse(cx, cy, 2 * a * scale, 2 * b * scale);
   }
 
@@ -141,7 +140,7 @@ new p5(function(p) {
     document.getElementById('a1-slider').addEventListener('input', function() {
       a1 = this.value / 100;
       document.getElementById('a1-val').textContent = a1.toFixed(2);
-      trail1 = []; t = 0;
+      trail1 = []; trail2 = []; t = 0;
       if (a1 >= a2 - 0.08) {
         a2 = Math.min(0.95, a1 + 0.15);
         document.getElementById('a2-slider').value = Math.round(a2 * 100);
@@ -151,7 +150,7 @@ new p5(function(p) {
     document.getElementById('a2-slider').addEventListener('input', function() {
       a2 = this.value / 100;
       document.getElementById('a2-val').textContent = a2.toFixed(2);
-      trail2 = []; t = 0;
+      trail1 = []; trail2 = []; t = 0;
       if (a2 <= a1 + 0.08) {
         a1 = Math.max(0.20, a2 - 0.15);
         document.getElementById('a1-slider').value = Math.round(a1 * 100);
@@ -177,18 +176,8 @@ new p5(function(p) {
     let cx = p.width * 0.52;
     let cy = p.height * 0.50;
 
-    // Sun is at the shared focus of both ellipses.
-    // Both ellipses are centered at cx,cy but their foci are at different x positions
-    // (cx - a1*e1*scale and cx - a2*e2*scale).
-    // For the Sun to be at a common focus, we'd need a*e to be the same for both,
-    // which they're not. In this simplified model each orbit has the Sun at ITS focus —
-    // visually we place the Sun at cx,cy for simplicity and let orbits share center.
-    // A cleaner approach: place Sun at (cx, cy) and shift ellipse centers accordingly.
-    //
-    // Sun at (cx, cy). Ellipse center shifts right by a*e for each planet.
-    // Planet1 center: (cx + a1*e1*scale, cy)
-    // Planet2 center: (cx + a2*e2*scale, cy)
-    // Ellipse centers shifted LEFT of Sun so Sun is at right focus → E=0 = perihelion ✓
+    // Sun fixed at (cx, cy), the common focus of both orbits.
+    // Each ellipse center is shifted LEFT by a*e, so the Sun is the right focus → E=0 = perihelion.
     let c1x = cx - a1 * e1 * scale;
     let c2x = cx - a2 * e2 * scale;
     let sunX = cx;

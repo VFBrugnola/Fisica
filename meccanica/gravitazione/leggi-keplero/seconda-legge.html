@@ -50,9 +50,12 @@
 
     <p class="anim-explain">
       L'orbita è divisa in <em>N</em> intervalli di tempo uguali.
-      In ciascun intervallo il raggio vettore spazza una <strong>settore di colore diverso</strong>.
-      Tutte le aree sono identiche — per questo il pianeta accelera vicino al Sole
-      (settori sottili e allungati) e rallenta all'afelio (settori larghi e arrotondati).
+      In ciascun intervallo il raggio vettore spazza un <strong>settore di colore diverso</strong>.
+      Le aree, misurate in tempo reale nel riquadro in alto a sinistra, sono tutte uguali.
+      Vicino al Sole il raggio vettore è corto, quindi per spazzare la stessa area il pianeta
+      deve percorrere un arco più lungo: va <strong>più veloce</strong> (settori corti e larghi).
+      All'afelio il raggio è lungo e basta un arco breve: il pianeta <strong>rallenta</strong>
+      (settori lunghi e stretti).
     </p>
 
     <div class="anim-nav">
@@ -101,7 +104,7 @@ new p5(function(p) {
 
   // All positions in ABSOLUTE canvas coordinates.
   // Ellipse center: (cx, cy)
-  // Sun (left focus): (cx - a*e*scale, cy)
+  // Sun (right focus): (cx + a*e*scale, cy) → E=0 is perihelion
   // Planet at eccentric anomaly E:
   //   x = cx + a*cos(E)*scale
   //   y = cy - b*sin(E)*scale   (y-flipped for canvas)
@@ -131,6 +134,23 @@ new p5(function(p) {
       p.vertex(pos.x, pos.y);
     }
     p.endShape(p.CLOSE);
+  }
+
+  // Area of a sector (Sun + orbital arc M_start→M_end), shoelace formula, in units of a².
+  function sectorArea(M_start, M_end, ecc) {
+    let b = Math.sqrt(1 - ecc * ecc);
+    let pts = [[ecc, 0]];
+    let steps = 200;
+    for (let i = 0; i <= steps; i++) {
+      let E = solveKepler(M_start + (M_end - M_start) * i / steps, ecc);
+      pts.push([Math.cos(E), b * Math.sin(E)]);
+    }
+    let A = 0;
+    for (let i = 0; i < pts.length; i++) {
+      let [x1, y1] = pts[i], [x2, y2] = pts[(i + 1) % pts.length];
+      A += x1 * y2 - x2 * y1;
+    }
+    return Math.abs(A) / 2;
   }
 
   p.setup = function() {
@@ -264,9 +284,20 @@ new p5(function(p) {
     p.text('e = ' + e.toFixed(2), 14, 22);
     p.text('N = ' + numSectors + ' settori', 14, 38);
 
-    // Show area of each sector (should be equal = π*a*b / N)
-    let area_each = (Math.PI * a * b) / numSectors;
-    p.text('A/settore = ' + (area_each * scale * scale / 1e4).toFixed(3) + ' ×10⁴ px²', 14, 54);
+    // Measured area of each completed sector, as % of the whole ellipse (πab)
+    let total = Math.PI * a * b;
+    p.text("Aree misurate (% dell'ellisse):", 14, 58);
+    for (let s = 0; s < numSectors; s++) {
+      let col = PALETTES[s % PALETTES.length];
+      let y = 76 + s * 16;
+      p.fill(col[0], col[1], col[2]);
+      p.rect(14, y - 9, 9, 9);
+      p.fill('#8899CC');
+      let txt = s < currentSector
+        ? (100 * sectorArea(s * dM, (s + 1) * dM, e) / total).toFixed(2) + ' %'
+        : '…';
+      p.text(txt, 30, y);
+    }
 
     // Reset on full orbit
     if (M_now < 0.05 && t > 0.5) t = 0;

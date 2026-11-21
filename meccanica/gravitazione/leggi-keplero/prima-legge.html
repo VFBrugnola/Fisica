@@ -85,8 +85,9 @@ new p5(function(p) {
 
   // Planet canvas position.
   // Ellipse center: (cx, cy). Semi-major: a. Scale: pixels per UA.
-  // Left focus (Sun): (cx - a*e*scale, cy)
+  // Sun at RIGHT focus: (cx + a*e*scale, cy) → E=0 is perihelion
   // Planet: (cx + a*cos(E)*scale, cy - b*sin(E)*scale)
+  // Distance Sun–planet: r = a(1 − e·cos E)
   function getPlanet(M, a, ecc, scale, cx, cy) {
     let E = solveKepler(M, ecc);
     let b = a * Math.sqrt(1 - ecc * ecc);
