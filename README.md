@@ -66,6 +66,6 @@ Questo lavoro è distribuito con licenza [Creative Commons Attribuzione – Non 
 
 Puoi usare, copiare, modificare e ridistribuire i materiali, per esempio in classe, **a condizione di citare l'autore**, indicare un link alla licenza e segnalare se hai apportato modifiche. **Non è consentito l'uso a scopo commerciale.** Esempio di citazione:
 
-> «Fisica per la filosofia» di VFBrugnola, https://github.com/VFBrugnola/Fisica, licenza CC BY-NC 4.0.
+> «Fisica per la filosofia» di Fabrizio Brugnola (VFBrugnola), https://github.com/VFBrugnola/Fisica, licenza CC BY-NC 4.0.
 
 Le librerie p5.js (LGPL 2.1) e KaTeX (MIT) restano soggette alle rispettive licenze. Le traduzioni dei frammenti antichi sono adattate e vanno confrontate con un'edizione di riferimento.
