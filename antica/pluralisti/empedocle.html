@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Empedocle — Fisica antica — Fisica</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../index.html">Home</a></span>
+      <span>Fisica antica</span>
+      <span>Pluralisti</span>
+      <span>Empedocle</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Empedocle: le quattro radici, Amore e Contesa</h1>
+      <p>Empedocle di Agrigento (ca. 495 – 435 a.C.) · Poema <em>Sulla natura</em></p>
+    </div>
+
+    <div class="page-content" style="padding:0 0 8px">
+      <p>
+        Parmenide aveva sostenuto che l'essere non può nascere dal non essere né finire nel
+        non essere: nascita, morte e mutamento sono solo apparenza. Empedocle accetta il principio,
+        ma vuole «salvare» il mondo che vediamo. La sua soluzione: esistono
+        <strong>quattro radici</strong> eterne e immutabili, che non nascono e non muoiono.
+        Ciò che chiamiamo nascere è il loro <strong>mescolarsi</strong>, ciò che chiamiamo morire è
+        il loro <strong>separarsi</strong>. A unirle e dividerle sono due forze opposte:
+        <strong>Amore</strong> e <strong>Contesa</strong>.
+      </p>
+    </div>
+
+    <div class="canvas-wrapper" id="canvas-container"></div>
+
+    <div class="root-legend">
+      <span><i style="background:#E04A3A"></i>Fuoco</span>
+      <span><i style="background:#8FD3FF"></i>Aria</span>
+      <span><i style="background:#2F6FE0"></i>Acqua</span>
+      <span><i style="background:#B07A45"></i>Terra</span>
+    </div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="force-slider">Amore</label>
+        <input type="range" id="force-slider" min="0" max="100" value="0" step="1" style="width:200px">
+        <label for="force-slider">Contesa</label>
+      </div>
+      <div class="control-group">
+        <input type="checkbox" id="cycle-chk">
+        <label for="cycle-chk">Ciclo cosmico automatico</label>
+      </div>
+      <div class="control-group">
+        <button class="btn-control" id="shuffle-btn">Rimescola</button>
+        <button class="btn-control" id="toggle-btn">Pausa</button>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      Sposta il cursore. Con il solo <strong>Amore</strong> le radici si fondono in un'unica
+      sfera in cui ogni particella sta accanto a particelle diverse: è lo <strong>Sfero</strong>.
+      Con la sola <strong>Contesa</strong> ogni radice si raccoglie con le sue simili e i quattro
+      elementi si dispongono a strati: la terra in basso, poi l'acqua, l'aria e in alto il fuoco.
+      Nelle posizioni intermedie si formano mescolanze parziali: è il mondo in cui viviamo, fatto
+      di cose che nascono e muoiono. L'<strong>indice di mescolanza</strong> misura quante delle
+      particelle vicine sono di una radice diversa (100% = mescolanza perfetta).
+    </p>
+    <p class="anim-explain" style="margin-top:10px">
+      <em>Attenzione:</em> Empedocle non descriveva il mondo con numeri o equazioni. La simulazione
+      è un <strong>modello visivo</strong> della sua teoria, non una ricostruzione di calcoli suoi.
+    </p>
+
+    <div class="page-content" style="padding-top:36px">
+
+      <div class="law ant">
+        <div class="law-number">1 · Le quattro radici</div>
+        <h2>Fuoco, aria, acqua e terra: eterni, immutabili, irriducibili.</h2>
+        <p>
+          Empedocle le chiama <em>rizòmata</em>, «radici», e dà loro nomi di divinità:
+        </p>
+        <blockquote class="quote ant">
+          Ascolta anzitutto le quattro radici di tutte le cose: Zeus splendente, Era che dà la vita,
+          Aidoneo, e Nesti, che con le sue lacrime bagna la fonte dei mortali.
+          <cite>— fr. 6 DK (traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          Quale dio corrisponda a quale elemento era discusso già dagli antichi. Su Nesti = acqua
+          e Zeus = fuoco c'è accordo; per Era e Aidoneo (aria e terra) le interpretazioni divergono.
+        </p>
+        <p>
+          La novità rispetto ai monisti (Talete, Anassimene…) è che le radici
+          <strong>non si trasformano l'una nell'altra</strong>: l'acqua non diventa mai terra,
+          il fuoco non diventa mai aria. Ognuna resta sempre sé stessa, come vuole Parmenide;
+          cambia solo il modo in cui sono combinate.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">2 · Nascere è mescolarsi</div>
+        <h2>Non c'è nascita né morte, ma solo mescolanza e separazione.</h2>
+        <blockquote class="quote ant">
+          Un'altra cosa ti dirò: non c'è nascita di nessuna delle cose mortali, né fine nella
+          morte funesta, ma soltanto mescolanza e separazione delle cose mescolate; «nascita» è
+          solo il nome che gli uomini le danno.
+          <cite>— fr. 8 DK (traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          Le cose sono diverse perché le radici vi sono mescolate in
+          <strong>proporzioni</strong> diverse. Empedocle dà persino una «ricetta» per le ossa:
+        </p>
+        <blockquote class="quote ant">
+          La terra benigna nei suoi ampi crogioli ricevette, su otto parti, due dello splendore
+          di Nesti e quattro di Efesto: e nacquero le bianche ossa.
+          <cite>— fr. 96 DK (traduzione adattata)</cite>
+        </blockquote>
+        <div class="recipe">
+          <i style="background:#B07A45"></i><i style="background:#B07A45"></i>
+          <i style="background:#2F6FE0"></i><i style="background:#2F6FE0"></i>
+          <i style="background:#E04A3A"></i><i style="background:#E04A3A"></i>
+          <i style="background:#E04A3A"></i><i style="background:#E04A3A"></i>
+        </div>
+        <div class="recipe-caption">
+          Osso = 2 parti di terra + 2 di acqua (Nesti) + 4 di fuoco (Efesto, il dio del fuoco).
+          È uno dei primi tentativi di descrivere una sostanza con una proporzione numerica.
+        </div>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">3 · Amore e Contesa</div>
+        <h2>Due forze opposte muovono le radici.</h2>
+        <p>
+          Le radici da sole non si muovono. Servono due forze:
+        </p>
+        <p>
+          <strong>Amore</strong> (<em>Philìa</em>) unisce ciò che è <em>diverso</em>: mescola le
+          radici tra loro. <strong>Contesa</strong> (<em>Nèikos</em>, anche tradotto «Odio»)
+          separa ciò che è diverso e così raccoglie il <em>simile con il simile</em>: tutto il fuoco
+          con il fuoco, tutta l'acqua con l'acqua.
+        </p>
+        <p>
+          Aristotele nota che Empedocle fu il primo a distinguere la materia (le radici) dalle
+          cause del movimento (le due forze), e il primo a porre due cause motrici opposte
+          (<em>Metafisica</em>, libro A).
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">4 · Il ciclo cosmico</div>
+        <h2>Il predominio delle due forze si alterna all'infinito.</h2>
+        <div class="cycle-steps">
+          <div><b>1 · Sfero</b>Domina l'Amore: le radici sono perfettamente mescolate in una sfera immobile e omogenea.</div>
+          <div><b>2 · Cresce la Contesa</b>Le radici cominciano a separarsi: si formano mescolanze parziali, le cose mortali.</div>
+          <div><b>3 · Domina la Contesa</b>Le radici sono del tutto separate, ciascuna raccolta con le sue simili.</div>
+          <div><b>4 · Torna l'Amore</b>Le radici si rimescolano: nascono di nuovo le cose mortali, fino a un nuovo Sfero.</div>
+        </div>
+        <blockquote class="quote ant">
+          Duplice cosa dirò: ora l'uno crebbe ad essere solo da molti, ora di nuovo
+          si divise ad essere molti da uno.
+          <cite>— fr. 17 DK (traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          Il nostro mondo, con piante, animali e uomini, esiste solo nelle fasi intermedie, quando
+          nessuna delle due forze domina del tutto. Prova il <em>ciclo cosmico automatico</em>
+          nella simulazione.
+        </p>
+      </div>
+
+      <div class="philo-box">
+        <strong>Il punto filosofico</strong>
+        Empedocle è il primo <em>pluralista</em>. Il principio di Parmenide resta intatto
+        (nulla nasce dal nulla, nulla finisce nel nulla), ma non vale più per «l'essere», che è
+        uno solo: vale per quattro realtà eterne. Così il divenire si salva senza contraddizione:
+        non è un passaggio dal non essere all'essere, ma un cambiamento di <em>disposizione</em>
+        di ciò che c'è sempre. È lo schema che la scienza userà per secoli, fino alla chimica
+        moderna: la varietà delle cose nasce dalla combinazione di pochi elementi stabili.
+      </div>
+
+      <div class="info-box">
+        <strong>Dopo Empedocle.</strong> Aristotele adotterà i quattro elementi, ma li renderà
+        trasformabili l'uno nell'altro e aggiungerà un quinto elemento per i cieli, l'etere.
+        La dottrina dei quattro elementi durerà fino al Seicento e al Settecento, quando sarà
+        abbandonata con Robert Boyle (<em>The Sceptical Chymist</em>, 1661) e con la chimica
+        di Lavoisier. Le stesse domande (che cosa resta stabile sotto il cambiamento? da quanti
+        principi è fatto il mondo?) torneranno in Anassagora e negli atomisti.
+      </div>
+
+    </div>
+
+    <div class="anim-nav">
+      <a href="../../index.html">
+        <span>← Indietro</span>
+        Home
+      </a>
+      <a href="../../index.html" class="next" style="pointer-events:none;opacity:.55">
+        <span>Prossimamente →</span>
+        Anassagora
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+new p5(function(p) {
+  // Kinds: 0 fire, 1 air, 2 water, 3 earth. "layer" = height (fraction of canvas) where Strife gathers it.
+  const KINDS = [
+    { name: 'Fuoco', col: [224, 74, 58],   layer: 0.16 },
+    { name: 'Aria',  col: [143, 211, 255], layer: 0.38 },
+    { name: 'Acqua', col: [47, 111, 224],  layer: 0.60 },
+    { name: 'Terra', col: [176, 122, 69],  layer: 0.83 }
+  ];
+  const PER_KIND = 90, R = 5, RN = 26, CYCLE_T = 40;
+  let parts = [];
+  let s = 0;              // 0 = only Love, 1 = only Strife
+  let auto = false, running = true, tCycle = 0;
+  let mixIndex = 0;
+
+  function shuffle() {
+    parts = [];
+    for (let k = 0; k < 4; k++) {
+      for (let i = 0; i < PER_KIND; i++) {
+        parts.push({ x: p.random(20, p.width - 20), y: p.random(20, p.height - 20), vx: 0, vy: 0, k });
+      }
+    }
+  }
+
+  function setSlider(v) {
+    document.getElementById('force-slider').value = Math.round(v * 100);
+  }
+
+  function step() {
+    const L = 1 - s, S = s;
+    const n = parts.length;
+    const cx = p.width / 2, cy = p.height / 2;
+    const sphereR = Math.min(p.width, p.height) * 0.40;
+    for (const a of parts) { a.fx = 0; a.fy = 0; a.diff = 0; a.near = 0; }
+
+    for (let i = 0; i < n; i++) {
+      const a = parts[i];
+      for (let j = i + 1; j < n; j++) {
+        const b = parts[j];
+        const dx = b.x - a.x, dy = b.y - a.y;
+        if (dx > RN || dx < -RN || dy > RN || dy < -RN) continue;
+        const d2 = dx * dx + dy * dy;
+        if (d2 > RN * RN || d2 === 0) continue;
+        const d = Math.sqrt(d2), nx = dx / d, ny = dy / d;
+        let f = 0;
+        // hard core: particles do not overlap
+        if (d < 2 * R + 2) f -= (2 * R + 2 - d) * 0.35;
+        const same = a.k === b.k;
+        // Love unites the unlike; Strife unites the like and divides the unlike
+        const attract = same ? 0.05 * (S - L) : 0.05 * (L - S);   // balanced at 50%
+        f += attract * (1 - d / RN);
+        a.fx += f * nx; a.fy += f * ny;
+        b.fx -= f * nx; b.fy -= f * ny;
+        if (d < 2 * R + 7) {
+          a.near++; b.near++;
+          if (!same) { a.diff++; b.diff++; }
+        }
+      }
+    }
+
+    let diffSum = 0, nearSum = 0;
+    for (const a of parts) {
+      // Love: gather everything into the Sphere
+      const dx = a.x - cx, dy = a.y - cy;
+      const dist = Math.sqrt(dx * dx + dy * dy) || 1;
+      if (dist > sphereR * 0.55) {
+        const pull = (dist - sphereR * 0.55) * 0.004 * L;
+        a.fx -= dx / dist * pull; a.fy -= dy / dist * pull;
+      }
+      // Strife: each root goes to its own layer
+      const ty = KINDS[a.k].layer * p.height;
+      a.fy += (ty - a.y) * 0.004 * S * S;
+      // thermal jitter
+      a.fx += (Math.random() - 0.5) * 0.25;
+      a.fy += (Math.random() - 0.5) * 0.25;
+
+      a.vx = (a.vx + a.fx) * 0.86;
+      a.vy = (a.vy + a.fy) * 0.86;
+      const sp = Math.hypot(a.vx, a.vy);
+      if (sp > 3) { a.vx *= 3 / sp; a.vy *= 3 / sp; }
+      a.x += a.vx; a.y += a.vy;
+      // walls
+      if (a.x < R) { a.x = R; a.vx *= -0.5; }
+      if (a.x > p.width - R) { a.x = p.width - R; a.vx *= -0.5; }
+      if (a.y < R) { a.y = R; a.vy *= -0.5; }
+      if (a.y > p.height - R) { a.y = p.height - R; a.vy *= -0.5; }
+
+      diffSum += a.diff; nearSum += a.near;
+    }
+    // random mixture of 4 equal kinds → 3/4 of neighbours are different
+    const raw = nearSum ? diffSum / nearSum : 0;
+    mixIndex = mixIndex * 0.9 + Math.min(1, raw / 0.75) * 0.1;
+  }
+
+  function phaseLabel() {
+    if (s < 0.12) return ['Sfero: domina l\'Amore', [255, 150, 190]];
+    if (s > 0.88) return ['Domina la Contesa: le radici sono separate', [255, 140, 100]];
+    return ['Il mondo delle cose mortali: mescolanze parziali', [200, 210, 240]];
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('canvas-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), 460).parent('canvas-container');
+    document.getElementById('force-slider').addEventListener('input', function() {
+      s = this.value / 100;
+      if (auto) { auto = false; document.getElementById('cycle-chk').checked = false; }
+    });
+    document.getElementById('cycle-chk').addEventListener('change', function() {
+      auto = this.checked;
+      // start the cycle from the current position
+      tCycle = Math.acos(1 - 2 * s) / (2 * Math.PI) * CYCLE_T;
+    });
+    document.getElementById('shuffle-btn').addEventListener('click', shuffle);
+    document.getElementById('toggle-btn').addEventListener('click', function() {
+      running = !running; this.textContent = running ? 'Pausa' : 'Avvia';
+    });
+    shuffle();
+  };
+
+  p.draw = function() {
+    p.background('#0F1220');
+
+    if (running) {
+      if (auto) {
+        tCycle += Math.min(p.deltaTime / 1000, 0.05);
+        s = (1 - Math.cos(2 * Math.PI * tCycle / CYCLE_T)) / 2;
+        setSlider(s);
+      }
+      step();
+    }
+
+    // faint Sphere outline when Love prevails
+    const L = 1 - s;
+    if (L > 0.3) {
+      p.noFill(); p.stroke(255, 150, 190, 90 * (L - 0.3) / 0.7); p.strokeWeight(1.5);
+      p.ellipse(p.width / 2, p.height / 2, Math.min(p.width, p.height) * 0.62, Math.min(p.width, p.height) * 0.62);
+    }
+    // faint layer guides when Strife prevails
+    if (s > 0.3) {
+      p.noStroke(); p.textFont('IBM Plex Mono'); p.textSize(10); p.textAlign(p.RIGHT);
+      KINDS.forEach(k => {
+        p.fill(k.col[0], k.col[1], k.col[2], 160 * (s - 0.3) / 0.7);
+        p.text(k.name.toLowerCase(), p.width - 10, k.layer * p.height + 4);
+      });
+    }
+
+    // particles
+    p.noStroke();
+    for (const a of parts) {
+      const c = KINDS[a.k].col;
+      p.fill(c[0], c[1], c[2]);
+      p.ellipse(a.x, a.y, 2 * R, 2 * R);
+    }
+
+    // HUD
+    const [label, col] = phaseLabel();
+    p.noStroke(); p.fill(15, 18, 32, 200); p.rect(8, 8, 330, 52, 3);
+    p.fill(col[0], col[1], col[2]); p.textFont('IBM Plex Mono'); p.textSize(12); p.textAlign(p.LEFT);
+    p.text(label, 16, 28);
+    p.fill('#8899CC'); p.textSize(11);
+    p.text('Amore ' + Math.round((1 - s) * 100) + '%  ·  Contesa ' + Math.round(s * 100) + '%  ·  mescolanza ' + Math.round(mixIndex * 100) + '%', 16, 48);
+
+    // cycle dial (top right): top = Sphere/Love, bottom = Strife
+    const dx = 46, dy = p.height - 46, rr = 26;
+    p.noFill(); p.stroke('#2E3860'); p.strokeWeight(2); p.ellipse(dx, dy, rr * 2, rr * 2);
+    const ang = auto ? 2 * Math.PI * (tCycle / CYCLE_T) : Math.acos(1 - 2 * s);
+    p.noStroke(); p.fill(255, 220, 120);
+    p.ellipse(dx + Math.sin(ang) * rr, dy - Math.cos(ang) * rr, 8, 8);
+    p.fill('#6878A8'); p.textSize(9); p.textAlign(p.CENTER);
+    p.text('Amore', dx, dy - rr - 6);
+    p.text('Contesa', dx, dy + rr + 13);
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('canvas-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), 460);
+  };
+});
+</script>
+
+</body>
+</html>

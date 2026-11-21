@@ -15,6 +15,8 @@
   --accent-onde-light: #E8F7F3;
   --accent-em: #7525A8;
   --accent-em-light: #F5EEFF;
+  --accent-ant: #A3542B;
+  --accent-ant-light: #FBF0EA;
   --radius: 3px;
   --dot-color: #B4BBD0;
 }
@@ -169,6 +171,8 @@ body::before {
 .module-card.term::before { background: var(--accent-term); }
 .module-card.onde::before { background: var(--accent-onde); }
 .module-card.em::before   { background: var(--accent-em); }
+.module-card.ant::before  { background: var(--accent-ant); }
+.module-card.wide { grid-column: 1 / -1; }
 
 .module-label {
   font-family: 'IBM Plex Mono', monospace;
@@ -183,6 +187,7 @@ body::before {
 .module-label.term { color: var(--accent-term); }
 .module-label.onde { color: var(--accent-onde); }
 .module-label.em   { color: var(--accent-em); }
+.module-label.ant  { color: var(--accent-ant); }
 
 .module-title {
   font-family: 'IBM Plex Serif', serif;
@@ -202,6 +207,9 @@ body::before {
 
 .module-topics li {
   font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .module-topics a {
@@ -236,6 +244,17 @@ body::before {
 .topic-dot.active.term { background: var(--accent-term); }
 .topic-dot.active.onde { background: var(--accent-onde); }
 .topic-dot.active.em   { background: var(--accent-em); }
+.topic-dot.active.ant  { background: var(--accent-ant); }
+.module-topics a.ant:hover { color: var(--accent-ant); border-bottom-color: var(--accent-ant-light); }
+.module-topics .group-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
 
 .module-topics .locked {
   color: var(--text-muted);
@@ -707,6 +726,80 @@ canvas {
   color: var(--accent-mec);
 }
 
+/* ── Ancient physics ── */
+.root-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: -8px 0 24px;
+}
+
+.root-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.root-legend i {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.recipe {
+  display: flex;
+  gap: 4px;
+  margin: 10px 0 6px;
+}
+
+.recipe i {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.recipe-caption {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+
+.law.ant { border-left-color: var(--accent-ant-light); }
+.law.ant .law-number { color: var(--accent-ant); }
+.quote.ant { border-left-color: var(--accent-ant); }
+
+.cycle-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin: 14px 0;
+  font-size: 0.82rem;
+}
+
+.cycle-steps div {
+  background: var(--surface);
+  padding: 10px 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.cycle-steps b {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-ant);
+  margin-bottom: 4px;
+}
+
 @media (max-width: 640px) {
   .modules-grid {
     grid-template-columns: 1fr;
@@ -719,6 +812,10 @@ canvas {
 
   .control-group {
     flex-wrap: wrap;
+  }
+
+  .cycle-steps {
+    grid-template-columns: 1fr;
   }
 }
 
