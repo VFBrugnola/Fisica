@@ -825,3 +825,45 @@ canvas {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Atomists: letters example (figure, order, position) */
+.letters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  margin: 14px 0;
+  font-size: 0.82rem;
+}
+
+.letters div {
+  background: var(--surface);
+  padding: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.letters .lt {
+  display: block;
+  font-family: 'IBM Plex Serif', serif;
+  font-size: 1.9rem;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+
+.letters b {
+  display: block;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent-ant);
+  margin-bottom: 2px;
+}
+
+@media (max-width: 600px) {
+  .letters { grid-template-columns: 1fr; }
+}

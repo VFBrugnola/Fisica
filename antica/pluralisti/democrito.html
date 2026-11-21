@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Democrito — Fisica antica — Fisica</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="../../index.html" class="site-logo">
+      <span class="logo-main">Fisica</span>
+    </a>
+    <nav class="breadcrumb">
+      <span><a href="../../index.html">Home</a></span>
+      <span>Fisica antica</span>
+      <span>Pluralisti</span>
+      <span>Democrito</span>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+  <div class="anim-page">
+
+    <div class="anim-header">
+      <h1>Democrito: atomi e vuoto</h1>
+      <p>Leucippo (V sec. a.C.) e Democrito di Abdera (ca. 460 – 370 a.C.) · Gli atomisti</p>
+    </div>
+
+    <div class="page-content" style="padding:0 0 8px">
+      <p>
+        Anassagora aveva detto che la materia si può dividere senza fine. Leucippo e il suo allievo
+        Democrito rispondono che no: dividendo si arriva a corpi piccolissimi che <strong>non si
+        possono più tagliare</strong>, gli <em>átomoi</em>, «indivisibili». Tutto ciò che esiste è
+        fatto di due soli principi: gli <strong>atomi</strong>, infiniti di numero e di forme, e il
+        <strong>vuoto</strong> in cui si muovono. Nascere è aggregarsi, morire è disgregarsi.
+        Tutto il resto, colori, sapori, caldo e freddo, esiste solo per i nostri sensi.
+      </p>
+    </div>
+
+    <div class="root-legend">
+      <span><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="6" fill="#5A6070"/></svg>sferico: non si aggancia</span>
+      <span><svg width="14" height="14" viewBox="0 0 14 14"><rect x="1.5" y="1.5" width="11" height="11" fill="#5A6070"/></svg>cubico</span>
+      <span><svg width="14" height="14" viewBox="0 0 14 14"><polygon points="7,1 13,12 1,12" fill="#5A6070"/></svg>piramidale</span>
+      <span><svg width="14" height="14" viewBox="0 0 14 14"><circle cx="7" cy="7" r="3.5" fill="#5A6070"/><path d="M7 7 L7 1 L10 2 M7 7 L12.2 10 L10 12 M7 7 L1.8 10 L1.8 7" stroke="#5A6070" stroke-width="1.4" fill="none"/></svg>uncinato: si aggancia saldamente</span>
+    </div>
+
+    <!-- ── Simulation 1: the knife ── -->
+    <h2 class="section-title" style="font-family:'IBM Plex Serif',serif;font-size:1.25rem;margin:8px 0 14px">
+      1 · Il coltello: la divisione ha un limite
+    </h2>
+
+    <div class="canvas-wrapper" id="knife-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <button class="btn-control btn-primary" id="knife-btn">Taglia a metà</button>
+        <button class="btn-control" id="knife-reset">Ricomincia</button>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      Prendi un sasso e taglialo a metà, poi taglia a metà uno dei due pezzi, e così via. A occhio
+      nudo il sasso sembra pieno e compatto, ma il coltello può passare solo
+      <strong>dove c'è vuoto</strong>, cioè negli spazi tra gli atomi. A ogni taglio il pezzo ha la
+      metà degli atomi. Dopo un certo numero di tagli resta <strong>un solo atomo</strong>: dentro
+      non ha vuoto, e il coltello si ferma. È la differenza con la lente di
+      <a href="anassagora.html">Anassagora</a>, che si poteva ingrandire per sempre.
+    </p>
+
+    <!-- ── Simulation 2: atoms in the void ── -->
+    <h2 class="section-title" style="font-family:'IBM Plex Serif',serif;font-size:1.25rem;margin:40px 0 14px">
+      2 · Atomi nel vuoto: nascere è aggregarsi
+    </h2>
+
+    <div class="canvas-wrapper" id="void-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="agit">Agitazione</label>
+        <input type="range" id="agit" min="1" max="10" value="3" step="1">
+        <span class="value-display" id="agit-val">3</span>
+      </div>
+      <div class="control-group">
+        <button class="btn-control" id="shake-btn">Urto violento</button>
+        <button class="btn-control" id="void-reset">Ricomincia</button>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      Gli atomi si muovono nel vuoto e si urtano. Quando due atomi con le forme adatte si
+      incontrano, si <strong>agganciano</strong> (la linea arancione): gli uncinati
+      tengono saldamente, i cubici e i piramidali si incastrano più debolmente, gli sferici
+      rimbalzano sempre via. Così si formano i <strong>corpi composti</strong>. Se l'agitazione
+      cresce, o arriva un urto violento, gli aggregati si spezzano: il corpo «muore», ma
+      nessun atomo nasce né si distrugge.
+    </p>
+    <p class="anim-explain" style="margin-top:10px">
+      <em>Attenzione:</em> gli atomi sono disegnati tutti dello stesso grigio perché per Democrito
+      <strong>non hanno colore</strong>. Hanno solo forma, grandezza, ordine e posizione. Come per
+      Empedocle e Anassagora, la simulazione è un <strong>modello visivo</strong>: i bordi del
+      riquadro non ci sono nella teoria, dove il vuoto è illimitato.
+    </p>
+
+    <!-- ── Simulation 3: Epicurus and the swerve ── -->
+    <h2 class="section-title" style="font-family:'IBM Plex Serif',serif;font-size:1.25rem;margin:40px 0 14px">
+      3 · Dopo Democrito: Epicuro e il clinamen
+    </h2>
+
+    <div class="canvas-wrapper" id="clin-container"></div>
+
+    <div class="controls">
+      <div class="control-group">
+        <button class="btn-control btn-primary" id="clin-btn">Attiva il clinamen</button>
+        <button class="btn-control" id="clin-reset">Ricomincia</button>
+      </div>
+    </div>
+
+    <p class="anim-explain">
+      Per Epicuro gli atomi hanno un peso e cadono nel vuoto verso il basso, tutti alla
+      <strong>stessa velocità</strong>. Qui li guardi come se cadessi insieme a loro: per questo
+      sembrano fermi. Cadendo paralleli, come gocce di pioggia, non si incontrano mai e non nasce
+      nulla. Attiva il <strong>clinamen</strong>: ogni tanto, in un momento e in un punto
+      imprevedibili, un atomo devia di pochissimo. Basta questo perché gli atomi si urtino e si
+      aggancino, e il mondo cominci a formarsi.
+    </p>
+
+    <div class="page-content" style="padding-top:36px">
+
+      <div class="law ant">
+        <div class="law-number">1 · Atomi e vuoto</div>
+        <h2>L'essere non esiste più del non-essere.</h2>
+        <blockquote class="quote ant">
+          Leucippo e il suo compagno Democrito pongono come elementi il pieno e il vuoto, chiamando
+          l'uno essere e l'altro non-essere: il pieno e il solido sono l'essere, il vuoto e il raro
+          il non-essere. Per questo dicono che l'essere non esiste più del non-essere.
+          <cite>— Aristotele, <em>Metafisica</em> A 4, 985b (traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          È una risposta a <strong>Parmenide</strong>. Ogni atomo ha le caratteristiche dell'essere
+          parmenideo: è pieno, non nasce, non muore, non cambia, non si divide. Ma gli atomi sono
+          infiniti, e per muoversi hanno bisogno di uno spazio vuoto. Gli atomisti accettano
+          quindi ciò che Parmenide aveva negato: anche il <strong>non-essere</strong>, il vuoto,
+          in qualche modo esiste. Senza vuoto non ci sarebbe movimento, e senza movimento non ci
+          sarebbero né nascita né morte delle cose.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">2 · Perché la divisione deve finire</div>
+        <h2>Se tutto fosse divisibile, il corpo sarebbe fatto di nulla.</h2>
+        <p>
+          Aristotele (<em>Sulla generazione e la corruzione</em> I 2, 316a) riporta l'argomento degli
+          atomisti. Supponiamo che un corpo sia divisibile <strong>in ogni punto</strong>, e
+          immaginiamo di dividerlo davvero in ogni punto. Che cosa resta? Se restano parti con una
+          grandezza, quelle si potrebbero dividere ancora, e la divisione non era completa. Se
+          restano punti senza grandezza, il corpo sarebbe composto di cose senza grandezza, cioè di
+          nulla, e questo è impossibile. Quindi ci devono essere corpi indivisibili.
+        </p>
+        <p>
+          Anassagora diceva l'opposto: «del piccolo non c'è il minimo» (fr. 3 DK). Le due
+          simulazioni della lente e del coltello mettono a confronto le due risposte.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">3 · Figura, ordine, posizione</div>
+        <h2>Gli atomi differiscono come le lettere dell'alfabeto.</h2>
+        <p>
+          Gli atomi sono tutti della stessa materia. Differiscono solo per tre aspetti, che
+          Aristotele (<em>Metafisica</em> A 4) spiega con le lettere:
+        </p>
+        <div class="letters">
+          <div><span class="lt">A&nbsp;&nbsp;N</span><b>Figura</b>A differisce da N per la forma</div>
+          <div><span class="lt">AN&nbsp;&nbsp;NA</span><b>Ordine</b>stesse lettere, in ordine diverso</div>
+          <div><span class="lt">Z&nbsp;&nbsp;<span style="display:inline-block;transform:rotate(90deg)">Z</span></span><b>Posizione</b>la stessa Z, ruotata, diventa una N</div>
+        </div>
+        <p>
+          Come con poche lettere si scrivono infinite parole, così con atomi di forme diverse,
+          combinati in ordini e posizioni diversi, si formano tutte le cose. Gli atomi
+          <strong>sferici</strong>, lisci e mobilissimi, formano il fuoco e l'anima; quelli
+          <strong>uncinati</strong> si agganciano e formano i corpi duri e stabili.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">4 · Le qualità sono per convenzione</div>
+        <h2>Colori e sapori esistono solo per chi percepisce.</h2>
+        <blockquote class="quote ant">
+          Per convenzione il dolce, per convenzione l'amaro, per convenzione il caldo, per
+          convenzione il freddo, per convenzione il colore; in realtà, atomi e vuoto.
+          <cite>— fr. 9 DK (traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          Il sapore dolce viene da atomi tondi e lisci, l'amaro e l'aspro da atomi angolosi che
+          «graffiano» la lingua. Il colore non è negli atomi ma nasce dall'incontro tra i corpi e i
+          nostri sensi. È la prima distinzione tra quelle che la filosofia moderna chiamerà
+          qualità <strong>primarie</strong> (forma, grandezza, movimento) e
+          <strong>secondarie</strong> (colore, sapore, odore). La riprenderà
+          <a href="../../meccanica/galileo/index.html">Galileo</a> nel <em>Saggiatore</em>, quando dice
+          che sapori, odori e colori, fuori dal corpo che sente, «non sieno altro che puri nomi».
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">5 · Tutto per necessità</div>
+        <h2>Nessuna mente guida il cosmo.</h2>
+        <blockquote class="quote ant">
+          Nessuna cosa avviene per caso, ma tutte secondo una ragione e per necessità.
+          <cite>— Leucippo, fr. 2 DK (traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          Gli atomi si muovono da sempre: il movimento non ha bisogno di una causa iniziale come il
+          Nous di Anassagora. Dagli urti nasce un vortice che separa e raccoglie gli atomi e forma un
+          mondo. Poiché gli atomi e il vuoto sono infiniti, i mondi sono <strong>infiniti</strong>:
+          nascono e muoiono, come i corpi. Non c'è un fine né un progetto, solo urti meccanici
+          secondo necessità.
+        </p>
+      </div>
+
+      <div class="law ant">
+        <div class="law-number">6 · Epicuro e il clinamen</div>
+        <h2>Una piccola deviazione, per il mondo e per la libertà.</h2>
+        <p>
+          Un secolo dopo <strong>Epicuro</strong> (341 – 270 a.C.) riprende l'atomismo e lo cambia
+          in un punto. Gli atomi hanno un peso e cadono verso il basso, e nel vuoto cadono tutti
+          alla stessa velocità, pesanti o leggeri (<em>Lettera a Erodoto</em> 61). Ma allora non si
+          incontrerebbero mai. Serve una deviazione minima, il <em>clinamen</em>. Lo conosciamo
+          soprattutto dal poema di Lucrezio:
+        </p>
+        <blockquote class="quote ant">
+          Quando i corpi primi cadono in basso nel vuoto per il loro peso, in un tempo del tutto
+          incerto e in luoghi incerti deviano un poco dalla loro via, quel tanto che basta a dire
+          che il movimento è cambiato. Se non deviassero, cadrebbero tutti verso il basso come gocce
+          di pioggia, e la natura non avrebbe mai creato nulla.
+          <cite>— Lucrezio, <em>La natura delle cose</em> II, 216 – 224 (traduzione adattata)</cite>
+        </blockquote>
+        <p>
+          Il clinamen ha anche un significato morale. Se tutto fosse necessità, come per
+          Democrito, anche le nostre scelte sarebbero già decise. La deviazione imprevedibile
+          spezza la catena delle cause e lascia spazio alla <strong>libertà</strong>, la
+          <em>fatis avolsa voluntas</em>, «la volontà strappata al destino» (II, 257).
+        </p>
+      </div>
+
+      <div class="philo-box">
+        <strong>Il punto filosofico</strong>
+        L'atomismo è la prima spiegazione interamente <em>meccanica</em> della natura: niente
+        fini, niente menti, solo materia, vuoto e urti. Per questo fu molto criticato. Aristotele
+        lo respinge e Platone, secondo un aneddoto di Diogene Laerzio (IX 40), avrebbe voluto
+        bruciare i libri di Democrito. Tornerà nel Seicento con Gassendi e con la nuova scienza, e
+        Dalton nel 1808 chiamerà «atomi» le unità degli elementi chimici. Ma quegli atomi non sono
+        quelli di Democrito: oggi sappiamo che si possono dividere in elettroni e nucleo, e il
+        nucleo in particelle ancora più piccole. È rimasto il nome, non l'indivisibilità. La
+        domanda se esista un limite alla divisione, che divideva Anassagora e Democrito, è ancora
+        aperta. Sulla differenza tra Democrito ed Epicuro scrisse la sua tesi di laurea anche il
+        giovane Karl Marx (1841).
+      </div>
+
+      <div class="info-box">
+        <strong>La vita.</strong> Di Leucippo sappiamo pochissimo, tanto che già nell'antichità
+        qualcuno dubitava che fosse esistito. Democrito nacque ad Abdera, in Tracia, ed era più o
+        meno coetaneo di Socrate. La tradizione racconta che viaggiò molto, in Egitto e in Persia,
+        e che fu chiamato «il filosofo che ride». Diogene Laerzio elenca circa settanta opere,
+        di fisica, etica, matematica e musica: ne restano solo frammenti.
+      </div>
+
+    </div>
+
+    <div class="anim-nav">
+      <a href="anassagora.html">
+        <span>← Indietro</span>
+        Anassagora
+      </a>
+      <a href="../../index.html" class="next" style="pointer-events:none;opacity:.55">
+        <span>Prossimamente →</span>
+        Aristotele
+      </a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+// ── Shared: atom shapes ──
+// slots = how many other atoms it can hook; str = how firmly it holds
+const KINDS = [
+  { name: 'sferico',    slots: 0, str: 0 },
+  { name: 'cubico',     slots: 2, str: 1 },
+  { name: 'piramidale', slots: 2, str: 1 },
+  { name: 'uncinato',   slots: 3, str: 2 }
+];
+const ATOM_COL = [217, 222, 234];   // atoms have no colour: all drawn the same grey
+const BOND_COL = [214, 128, 78];
+
+function drawAtom(p, x, y, s, k, ang, alpha) {
+  const a = alpha === undefined ? 255 : alpha, r = s / 2;
+  p.push(); p.translate(x, y); p.rotate(ang);
+  p.noStroke(); p.fill(ATOM_COL[0], ATOM_COL[1], ATOM_COL[2], a);
+  if (k === 0) p.ellipse(0, 0, s, s);
+  else if (k === 1) p.rect(-r * 0.82, -r * 0.82, r * 1.64, r * 1.64);
+  else if (k === 2) p.triangle(0, -r, r * 0.92, r * 0.66, -r * 0.92, r * 0.66);
+  else {
+    p.ellipse(0, 0, s * 0.56, s * 0.56);
+    p.noFill(); p.stroke(ATOM_COL[0], ATOM_COL[1], ATOM_COL[2], a);
+    p.strokeWeight(Math.max(1.2, s * 0.1)); p.strokeCap(p.ROUND);
+    for (let i = 0; i < 3; i++) {
+      const t = i * 2 * Math.PI / 3, c = Math.cos(t), sn = Math.sin(t);
+      const hx = c * r * 0.9, hy = sn * r * 0.9;
+      p.line(c * r * 0.25, sn * r * 0.25, hx, hy);
+      p.line(hx, hy, hx - sn * r * 0.38 - c * r * 0.12, hy + c * r * 0.38 - sn * r * 0.12);   // the hook
+    }
+  }
+  p.pop();
+}
+
+function gauss() { return (Math.random() + Math.random() + Math.random() - 1.5) * 2; }
+
+// ── Shared: a tiny physics engine for atoms in the void ──
+function makeWorld(W, H, n, R, layout) {
+  const atoms = [];
+  const add = (x, y) => atoms.push({ x, y, vx: 0, vy: 0, k: atoms.length % 4,
+    ang: Math.random() * Math.PI * 2, av: (Math.random() - 0.5) * 0.03, nb: 0 });
+  if (layout === 'grid') {
+    const cols = Math.max(3, Math.round(Math.sqrt(n * W / H))), rows = Math.ceil(n / cols);
+    const dx = W / cols, dy = (H - 78) / rows;
+    for (let j = 0; j < rows; j++) for (let i = 0; i < cols; i++) {
+      if (atoms.length < n) add((i + 0.5 + (Math.random() - 0.5) * 0.4) * dx, 78 + (j + 0.5 + (Math.random() - 0.5) * 0.4) * dy);
+    }
+    // shuffle kinds so neighbours differ randomly
+    for (const a of atoms) a.k = Math.floor(Math.random() * 4);
+  } else {
+    let tries = 0;
+    while (atoms.length < n && tries++ < n * 300) {
+      const x = R + Math.random() * (W - 2 * R), y = R + Math.random() * (H - 2 * R);
+      if (atoms.every(a => (a.x - x) ** 2 + (a.y - y) ** 2 > (2.6 * R) ** 2)) add(x, y);
+    }
+  }
+  return { atoms, bonds: [], bonded: new Set(), W, H, R, meetings: 0 };
+}
+
+function stepWorld(w, o, dt) {
+  const steps = Math.max(1, Math.min(6, Math.round(dt * 120)));
+  const A = w.atoms, R = w.R, D = 2 * R;
+  for (let s = 0; s < steps; s++) {
+    for (const a of A) {
+      if (o.T > 0) {                                     // thermal agitation
+        a.vx = a.vx * (1 - o.gamma) + gauss() * o.T;
+        a.vy = a.vy * (1 - o.gamma) + gauss() * o.T;
+      }
+      if (o.clin > 0 && Math.random() < o.clin) a.vx += (Math.random() < 0.5 ? -1 : 1) * 0.1;   // the swerve
+    }
+    // contacts: elastic bounce, and hooking if the shapes allow it
+    for (let i = 0; i < A.length; i++) {
+      const a = A[i];
+      for (let j = i + 1; j < A.length; j++) {
+        const b = A[j];
+        const dx = b.x - a.x; if (dx > D || dx < -D) continue;
+        const dy = b.y - a.y; if (dy > D || dy < -D) continue;
+        const d2 = dx * dx + dy * dy; if (d2 >= D * D || d2 === 0) continue;
+        const d = Math.sqrt(d2), nx = dx / d, ny = dy / d, ov = (D - d) / 2;
+        a.x -= nx * ov; a.y -= ny * ov; b.x += nx * ov; b.y += ny * ov;
+        const vn = (b.vx - a.vx) * nx + (b.vy - a.vy) * ny;
+        if (vn < 0) {
+          const im = vn * 0.95;
+          a.vx += im * nx; a.vy += im * ny; b.vx -= im * nx; b.vy -= im * ny;
+          const key = i * 4096 + j;
+          if (!w.bonded.has(key)) {
+            if (vn < -0.02) w.meetings++;
+            const ka = KINDS[a.k], kb = KINDS[b.k];
+            if (a.nb < ka.slots && b.nb < kb.slots && Math.random() < 0.3 * ka.str * kb.str) {
+              w.bonds.push({ i, j, s: Math.min(ka.str, kb.str) });
+              w.bonded.add(key); a.nb++; b.nb++;
+            }
+          }
+        }
+      }
+    }
+    // hooks: springs that break if stretched too much
+    for (let q = w.bonds.length - 1; q >= 0; q--) {
+      const bd = w.bonds[q], a = A[bd.i], b = A[bd.j];
+      const dx = b.x - a.x, dy = b.y - a.y, d = Math.sqrt(dx * dx + dy * dy) || 1e-6;
+      const nx = dx / d, ny = dy / d, st = d - D;
+      if (st > R * 0.3 * bd.s) {
+        w.bonds.splice(q, 1); w.bonded.delete(bd.i * 4096 + bd.j); a.nb--; b.nb--;
+        continue;
+      }
+      const f = 0.125 * st, rvx = (b.vx - a.vx) * 0.1, rvy = (b.vy - a.vy) * 0.1;
+      a.vx += nx * f + rvx; a.vy += ny * f + rvy;
+      b.vx -= nx * f + rvx; b.vy -= ny * f + rvy;
+    }
+    for (const a of A) {
+      const sp = Math.hypot(a.vx, a.vy);
+      if (sp > o.vmax) { a.vx *= o.vmax / sp; a.vy *= o.vmax / sp; }
+      a.x += a.vx; a.y += a.vy; a.ang += a.av;
+      if (a.x < R) { a.x = R; a.vx = Math.abs(a.vx); }
+      if (a.x > w.W - R) { a.x = w.W - R; a.vx = -Math.abs(a.vx); }
+      if (a.y < o.top + R) { a.y = o.top + R; a.vy = Math.abs(a.vy); }
+      if (a.y > w.H - R) { a.y = w.H - R; a.vy = -Math.abs(a.vy); }
+    }
+  }
+}
+
+// connected aggregates (union-find over the hooks)
+function aggregates(w) {
+  const n = w.atoms.length, par = Array.from({ length: n }, (_, i) => i);
+  const find = (x) => { while (par[x] !== x) { par[x] = par[par[x]]; x = par[x]; } return x; };
+  for (const b of w.bonds) par[find(b.i)] = find(b.j);
+  const size = new Map();
+  for (let i = 0; i < n; i++) { const r = find(i); size.set(r, (size.get(r) || 0) + 1); }
+  let free = 0, groups = 0, biggest = 0;
+  for (const v of size.values()) { if (v === 1) free++; else { groups++; biggest = Math.max(biggest, v); } }
+  return { free, groups, biggest };
+}
+
+function drawWorld(p, w) {
+  const A = w.atoms;
+  p.stroke(BOND_COL[0], BOND_COL[1], BOND_COL[2]); p.strokeWeight(2.5);
+  for (const b of w.bonds) p.line(A[b.i].x, A[b.i].y, A[b.j].x, A[b.j].y);
+  for (const a of A) drawAtom(p, a.x, a.y, 2 * w.R, a.k, a.ang);
+}
+
+function hudBox(p, lines, w) {
+  p.noStroke(); p.fill(15, 18, 32, 215); p.rect(8, 8, w, 14 + lines.length * 16, 3);
+  p.textFont('IBM Plex Mono'); p.textAlign(p.LEFT); p.textSize(11);
+  lines.forEach((l, i) => { p.fill(l[1] || '#A8B8D8'); p.text(l[0], 16, 26 + i * 16); });
+}
+
+// ── Simulation 1: the knife ──
+new p5(function(p) {
+  const G = 16, CH = 440;
+  let kinds, angs, rect, cuts, phase, pt, cut, cam, s0;
+  const btn = () => document.getElementById('knife-btn');
+
+  function target(r) {
+    const w = r.x1 - r.x0, h = r.y1 - r.y0;
+    return { s: Math.min((p.width - 60) / w, (p.height - 140) / h, 150), x: (r.x0 + r.x1) / 2, y: (r.y0 + r.y1) / 2 };
+  }
+  function reset() {
+    kinds = []; angs = [];
+    for (let i = 0; i < G * G; i++) { kinds.push(Math.floor(Math.random() * 4)); angs.push(Math.random() * Math.PI * 2); }
+    rect = { x0: 0, y0: 0, x1: G, y1: G }; cuts = 0; phase = 'idle'; pt = 0; cut = null;
+    const t = target(rect); cam = { s: t.s, x: t.x, y: t.y }; s0 = t.s;
+    btn().disabled = false; btn().textContent = 'Taglia a metà';
+  }
+  const cy0 = () => p.height / 2 + 28;
+  const toS = (x, y) => [p.width / 2 + (x - cam.x) * cam.s, cy0() + (y - cam.y) * cam.s];
+
+  function doCut() {
+    if (phase !== 'idle') return;
+    const w = rect.x1 - rect.x0, h = rect.y1 - rect.y0;
+    if (w === 1 && h === 1) { phase = 'blocked'; pt = 0; btn().disabled = true; return; }
+    const vertical = w >= h, keepFirst = Math.random() < 0.5;
+    const mid = vertical ? rect.x0 + w / 2 : rect.y0 + h / 2;
+    const A = vertical ? { ...rect, x1: mid } : { ...rect, y1: mid };
+    const B = vertical ? { ...rect, x0: mid } : { ...rect, y0: mid };
+    cut = { vertical, mid, keep: keepFirst ? A : B, drop: keepFirst ? B : A, dir: keepFirst ? 1 : -1 };
+    phase = 'cut'; pt = 0; btn().disabled = true;
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('knife-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), CH).parent('knife-container');
+    btn().addEventListener('click', doCut);
+    document.getElementById('knife-reset').addEventListener('click', reset);
+    reset();
+  };
+
+  function drawPiece(r, ox, oy, alpha, naked) {
+    for (let j = r.y0; j < r.y1; j++) for (let i = r.x0; i < r.x1; i++) {
+      const [sx, sy] = toS(i + 0.5 + ox, j + 0.5 + oy);
+      if (sx < -cam.s || sx > p.width + cam.s || sy < -cam.s || sy > p.height + cam.s) continue;
+      drawAtom(p, sx, sy, cam.s * 0.74, kinds[j * G + i], angs[j * G + i], alpha);
+    }
+    if (naked > 0) {                               // to the naked eye: a compact stone
+      const [ax, ay] = toS(r.x0 + ox, r.y0 + oy), [bx, by] = toS(r.x1 + ox, r.y1 + oy);
+      p.noStroke(); p.fill(122, 116, 106, naked * alpha);
+      p.rect(ax, ay, bx - ax, by - ay, cam.s * 0.5);
+    }
+  }
+
+  // how far the atom reaches upward from its centre (in units of its radius), given its rotation
+  function atomTop(k, ang) {
+    const pts = k === 0 ? null : k === 1 ? [[-0.82, -0.82], [0.82, -0.82], [0.82, 0.82], [-0.82, 0.82]]
+      : k === 2 ? [[0, -1], [0.92, 0.66], [-0.92, 0.66]]
+      : [0, 1, 2].map(i => [Math.cos(i * 2 * Math.PI / 3) * 0.9, Math.sin(i * 2 * Math.PI / 3) * 0.9]);
+    if (!pts) return 1;
+    let m = k === 3 ? 0.56 : 0;
+    for (const [px, py] of pts) m = Math.max(m, -(px * Math.sin(ang) + py * Math.cos(ang)));
+    return m;
+  }
+
+  function knife(x, yTip) {
+    const L = 70;
+    p.noStroke(); p.fill(230, 226, 214);
+    p.quad(x - 5, yTip - L, x + 5, yTip - L, x + 1.5, yTip, x - 1.5, yTip);
+    p.fill(120, 84, 52); p.rect(x - 6, yTip - L - 34, 12, 34, 3);
+  }
+
+  p.draw = function() {
+    const dt = Math.min(p.deltaTime / 1000, 0.05);
+    pt += dt;
+    if (phase === 'cut' && pt > 0.9) { phase = 'sep'; pt = 0; }
+    else if (phase === 'sep' && pt > 0.7) {
+      rect = cut.keep; cuts++; phase = 'idle'; cut = null;
+      btn().disabled = false;
+      if (rect.x1 - rect.x0 === 1 && rect.y1 - rect.y0 === 1) btn().textContent = 'Prova a tagliare ancora';
+    }
+    else if (phase === 'blocked' && pt > 1.6) { phase = 'done'; btn().textContent = 'Indivisibile'; }
+
+    const tg = target(phase === 'sep' ? cut.keep : rect), k = 1 - Math.exp(-dt * 4);
+    cam.s += (tg.s - cam.s) * k; cam.x += (tg.x - cam.x) * k; cam.y += (tg.y - cam.y) * k;
+    const naked = Math.max(0, Math.min(1, 1 - (cam.s - s0) / (s0 * 0.8)));
+
+    p.background('#0F1220');
+    if (phase === 'sep') {
+      const e0 = Math.min(1, pt / 0.7), e = e0 * e0 * (3 - 2 * e0);
+      const size = cut.vertical ? cut.drop.x1 - cut.drop.x0 : cut.drop.y1 - cut.drop.y0;
+      const off = cut.dir * e * (size * 0.5 + 0.6);
+      drawPiece(cut.keep, 0, 0, 255, naked);
+      drawPiece(cut.drop, cut.vertical ? off : 0, cut.vertical ? 0 : off, 255 * (1 - e), naked);
+    } else {
+      drawPiece(rect, 0, 0, 255, naked);
+    }
+
+    if (phase === 'cut') {
+      const e = Math.min(1, pt / 0.8);
+      p.stroke(BOND_COL[0], BOND_COL[1], BOND_COL[2], 200); p.strokeWeight(2);
+      if (cut.vertical) {
+        const [x, ya] = toS(cut.mid, rect.y0 - 0.4), [, yb] = toS(cut.mid, rect.y1 + 0.4);
+        const yt = ya + (yb - ya) * e;
+        p.line(x, ya, x, yt); knife(x, yt);
+      } else {
+        const [xa, y] = toS(rect.x0 - 0.4, cut.mid), [xb] = toS(rect.x1 + 0.4, cut.mid);
+        const xt = xa + (xb - xa) * e;
+        p.line(xa, y, xt, y);
+        p.push(); p.translate(xt, y); p.rotate(-Math.PI / 2); knife(0, 0); p.pop();
+      }
+    }
+    if (phase === 'blocked' || phase === 'done') {
+      const [x, yTop] = toS(rect.x0 + 0.5, rect.y0 + 0.5 - 0.37 * atomTop(kinds[rect.y0 * G + rect.x0], angs[rect.y0 * G + rect.x0]));
+      const e = Math.min(1, pt / 0.5);
+      const shake = (phase === 'blocked' && pt > 0.5 && pt < 1.0) ? Math.sin(pt * 70) * 3 : 0;
+      knife(x + shake, yTop - 90 * (1 - e));
+    }
+
+    // HUD
+    const n = (rect.x1 - rect.x0) * (rect.y1 - rect.y0);
+    let status;
+    if (phase === 'blocked' || phase === 'done') status = ['Il coltello si ferma: nell\'atomo non c\'è vuoto', '#F2B27A'];
+    else if (n === 1) status = ['È rimasto un solo atomo', '#F2B27A'];
+    else if (naked > 0.5) status = ['A occhio nudo: un sasso pieno e compatto', '#8899CC'];
+    else status = ['Il taglio passa nel vuoto tra gli atomi', '#8899CC'];
+    hudBox(p, [['Tagli: ' + cuts + '   ·   atomi nel pezzo: ' + n, '#D9DEEA'], status], Math.min(p.width - 16, 330));
+    if (phase === 'done') {
+      p.noStroke(); p.fill('#F2B27A'); p.textAlign(p.CENTER); p.textFont('IBM Plex Serif'); p.textSize(18);
+      p.text('átomos · «indivisibile»', p.width / 2, p.height - 22);
+    }
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('knife-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), CH);
+    s0 = target({ x0: 0, y0: 0, x1: G, y1: G }).s;
+  };
+});
+
+// ── Simulation 2: atoms in the void ──
+new p5(function(p) {
+  const CH = 440, R = 7;
+  let world, agit = 3, hudTick = 0, stats = { free: 0, groups: 0, biggest: 0 };
+
+  function reset() {
+    const n = Math.round(Math.min(170, p.width * CH / 2300));
+    world = makeWorld(p.width, CH, n, R, 'random');
+    for (const a of world.atoms) { a.vx = gauss() * 0.6; a.vy = gauss() * 0.6; }
+    stats = aggregates(world);
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('void-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), CH).parent('void-container');
+    const sl = document.getElementById('agit');
+    sl.addEventListener('input', function() { agit = parseInt(this.value); document.getElementById('agit-val').textContent = agit; });
+    document.getElementById('shake-btn').addEventListener('click', function() {
+      for (const a of world.atoms) { a.vx += gauss() * 3; a.vy += gauss() * 3; }
+    });
+    document.getElementById('void-reset').addEventListener('click', reset);
+    reset();
+  };
+
+  p.draw = function() {
+    const dt = Math.min(p.deltaTime / 1000, 0.05);
+    stepWorld(world, { T: 0.012 * Math.pow(agit, 1.5), gamma: 0.02, clin: 0, vmax: 4, top: 0 }, dt);
+    p.background('#0F1220');
+    drawWorld(p, world);
+    if (++hudTick % 10 === 0) stats = aggregates(world);
+    hudBox(p, [
+      ['Corpi composti: ' + stats.groups + '   ·   il più grande: ' + stats.biggest + ' atomi', '#D9DEEA'],
+      ['Atomi liberi: ' + stats.free + ' su ' + world.atoms.length, '#8899CC']
+    ], Math.min(p.width - 16, 350));
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('void-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), CH);
+    world.W = p.width;
+  };
+});
+
+// ── Simulation 3: falling atoms and the swerve ──
+new p5(function(p) {
+  const CH = 440, R = 7;
+  let world, clin = false, hudTick = 0, stats = { free: 0, groups: 0, biggest: 0 }, fall = 0;
+
+  function reset() {
+    const n = Math.round(Math.min(110, p.width * CH / 3400));
+    world = makeWorld(p.width, CH, n, R, 'grid');
+    stats = aggregates(world);
+  }
+
+  p.setup = function() {
+    let w = document.getElementById('clin-container').offsetWidth || 800;
+    p.createCanvas(Math.min(w, 900), CH).parent('clin-container');
+    document.getElementById('clin-btn').addEventListener('click', function() {
+      clin = !clin; this.textContent = clin ? 'Spegni il clinamen' : 'Attiva il clinamen';
+    });
+    document.getElementById('clin-reset').addEventListener('click', function() {
+      clin = false; document.getElementById('clin-btn').textContent = 'Attiva il clinamen'; reset();
+    });
+    reset();
+  };
+
+  p.draw = function() {
+    const dt = Math.min(p.deltaTime / 1000, 0.05);
+    stepWorld(world, { T: 0, gamma: 0, clin: clin ? 0.004 : 0, vmax: 0.9, top: 68 }, dt);
+    fall = (fall + dt * 90) % 40;
+    p.background('#0F1220');
+    // falling streaks: every atom leaves a short trail above it (we fall together with them)
+    p.strokeWeight(1.5);
+    for (const a of world.atoms) {
+      for (let q = 0; q < 3; q++) {
+        const y0 = a.y - R - 6 - q * 9 - (fall % 9);
+        p.stroke(217, 222, 234, 70 - q * 20);
+        p.line(a.x, y0, a.x, y0 - 5);
+      }
+    }
+    drawWorld(p, world);
+    if (++hudTick % 10 === 0) stats = aggregates(world);
+    const lines = [['Clinamen: ' + (clin ? 'attivo' : 'spento') + '   ·   incontri: ' + world.meetings, '#D9DEEA']];
+    if (!clin && world.meetings === 0) lines.push(['Cadono paralleli: nessun incontro, nessun corpo', '#8899CC']);
+    else lines.push(['Corpi composti: ' + stats.groups + '   ·   il più grande: ' + stats.biggest + ' atomi', '#8899CC']);
+    lines.push(['↓ tutti cadono alla stessa velocità', '#6878A8']);
+    hudBox(p, lines, Math.min(p.width - 16, 360));
+  };
+
+  p.windowResized = function() {
+    let w = document.getElementById('clin-container').offsetWidth;
+    p.resizeCanvas(Math.min(w, 900), CH);
+    world.W = p.width;
+  };
+});
+</script>
+
+</body>
+</html>
