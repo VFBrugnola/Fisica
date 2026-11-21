@@ -6,7 +6,8 @@ Materiali interattivi di fisica
 
 ### Fisica antica
 - **Pluralisti · Empedocle** — le quattro radici, Amore e Contesa, ciclo cosmico + simulazione
-- Monisti, Parmenide e Zenone, Anassagora, Atomisti, Aristotele *(in arrivo)*
+- **Pluralisti · Anassagora** — semi, «tutto in tutto», divisibilità infinita (lente con zoom senza fine), vortice del Nous
+- Monisti, Parmenide e Zenone, Atomisti, Aristotele *(in arrivo)*
 
 ### Meccanica
 - **Galileo Galilei** — metodo, contesto filosofico + 6 simulazioni (caduta dei gravi, piano inclinato, pendolo, due piani inclinati / inerzia, nave di Galileo, moto dei proiettili)
